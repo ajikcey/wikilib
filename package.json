@@ -5,7 +5,7 @@
   "dependencies": {
     "@vkontakte/vk-bridge": "^2.4.2",
     "@vkontakte/vkui": "^4.10.0",
-    "@vkontakte/icons": "^1.92.0",
+    "@vkontakte/icons": "^1.104.0",
     "@vkontakte/vkjs": "^0.21.0",
     "babel-eslint": "^10.1.0",
     "chalk": "^4.1.0",
