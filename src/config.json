@@ -1,0 +1,18 @@
+{
+  "name": "WikiLib",
+  "app_id": 7896414,
+  "url": "https://vk.com/app7896414",
+  "community": "https://vk.com/wikilib",
+
+  "routes": {
+    "landing": "landing",
+    "home": "home",
+    "token": "token",
+    "intro": "intro"
+  },
+
+  "storage_keys": {
+    "status": "status",
+    "access_token": "access_token"
+  }
+}
