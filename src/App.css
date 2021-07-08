@@ -1,0 +1,9 @@
+::-webkit-scrollbar {
+    width: 5px;
+    background: inherit;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--button_secondary_background_highlighted);
+    border-radius: 5px;
+}

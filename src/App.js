@@ -5,6 +5,8 @@ import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";
 import {Icon24Error} from "@vkontakte/icons";
 
+import './App.css';
+
 import Home from './panels/Home';
 import Intro from './panels/Intro';
 import Landing from './panels/Landing';
@@ -17,7 +19,8 @@ const App = () => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
     const [fetchedUser, setUser] = useState(null);
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
-    const [userStatus, setUserStatus] = useState(false);
+    const [userStatus, setUserStatus] = useState(null);
+    const [cachedLastCommunities, setCachedLastCommunities] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
     const [community, setCommunity] = useState(null);
@@ -47,32 +50,18 @@ const App = () => {
                     keys: Object.values(configData.storage_keys)
                 });
 
-                if (process.env.NODE_ENV === "development") {
-                    console.log("storageData", storageData);
-                }
-
                 await storageData.keys.forEach(({key, value}) => {
                     data[key] = value ? JSON.parse(value) : {};
-
-                    switch (key) {
-                        case configData.storage_keys.status:
-                            setUserStatus(data[key]);
-                            break;
-                        case configData.storage_keys.access_token:
-                            setAccessToken(data[key]);
-                            break;
-                        default:
-                            break;
-                    }
                 });
 
-                // route after get token
+                setAccessToken(data[configData.storage_keys.access_token]);
+                setUserStatus(data[configData.storage_keys.status]);
+                setCachedLastCommunities(Object.values(data[configData.storage_keys.last_communities]));
+
                 if (data[configData.storage_keys.status].tokenReceived) {
                     setActivePanel(configData.routes.home);
                 } else if (data[configData.storage_keys.status].hasSeenIntro) {
                     setActivePanel(configData.routes.token);
-                } else {
-                    setUserStatus(false);
                 }
             } catch (e) {
                 console.log(e);
@@ -113,19 +102,24 @@ const App = () => {
         }).then(data => {
             try {
                 if (data.access_token) {
+                    setAccessToken(data);
+
                     bridge.send('VKWebAppStorageSet', {
                         key: configData.storage_keys.access_token,
                         value: JSON.stringify(data)
                     });
 
+                    userStatus.tokenReceived = true;
+
                     bridge.send('VKWebAppStorageSet', {
                         key: configData.storage_keys.status,
-                        value: JSON.stringify({tokenReceived: true})
+                        value: JSON.stringify(userStatus)
                     });
 
-                    setAccessToken(data);
                     setActivePanel(configData.routes.home); // route after get token
                 } else {
+                    console.log(data);
+
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
@@ -167,10 +161,13 @@ const App = () => {
                 <View activePanel={activePanel} popout={popout}>
                     <Landing id={configData.routes.landing}/>
                     <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} fetchedUser={fetchedUser}
+                           setUserStatus={setUserStatus}
                            userStatus={userStatus}/>
                     <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                    <Home id={configData.routes.home} setCommunity={setCommunity} accessToken={accessToken} snackbarError={snackbar} go={go}/>
-                    <Community id={configData.routes.community} community={community} accessToken={accessToken} snackbarError={snackbar} go={go}/>
+                    <Home id={configData.routes.home} setCommunity={setCommunity} accessToken={accessToken}
+                          snackbarError={snackbar} cachedLastCommunities={cachedLastCommunities} go={go}/>
+                    <Community id={configData.routes.community} community={community} accessToken={accessToken}
+                               snackbarError={snackbar} go={go}/>
                 </View>
             </AppRoot>
         </AdaptivityProvider>

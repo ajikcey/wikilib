@@ -2,8 +2,22 @@ import React, {Fragment, useEffect, useState} from 'react';
 
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Avatar, Group, Header, Panel, PanelHeader,
-    Cell, List, HorizontalScroll, HorizontalCell, Search, PanelHeaderButton, Snackbar, Link, Placeholder, PanelSpinner
+    Avatar,
+    Group,
+    Header,
+    Panel,
+    PanelHeader,
+    Cell,
+    List,
+    HorizontalScroll,
+    HorizontalCell,
+    Search,
+    PanelHeaderButton,
+    Snackbar,
+    Link,
+    Placeholder,
+    PanelSpinner,
+    Footer
 } from '@vkontakte/vkui';
 import {
     Icon12Verified, Icon24Error,
@@ -12,9 +26,10 @@ import {
 
 import configData from "../config.json";
 
-const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
+const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [communities, setCommunities] = useState(null);
+    const [lastCommunityIds] = useState(cachedLastCommunities);
     const [lastCommunities, setLastCommunities] = useState([]);
     const [countCommunities, setCountCommunities] = useState(0);
 
@@ -32,7 +47,7 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
                     fields: ['members_count', 'verified'].join(','),
                     filter: 'moder',
                     offset: 0,
-                    count: 100,
+                    count: 1000,
                     v: "5.131",
                     access_token: accessToken.access_token
                 }
@@ -41,6 +56,8 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
                     setCommunities(data.response.items);
                     setCountCommunities(data.response.count);
                 } else {
+                    console.log(data);
+
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
@@ -69,46 +86,49 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
          * @returns {Promise<void>}
          */
         async function fetchLastCommunities() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "groups.get",
-                params: {
-                    extended: 1,
-                    fields: ['members_count', 'verified'].join(','),
-                    filter: 'moder',
-                    offset: 0,
-                    count: 100,
-                    v: "5.131",
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
-                if (data.response) {
-                    setLastCommunities(data.response.items);
-                } else {
+            if (lastCommunityIds.length > 0) {
+                await bridge.send("VKWebAppCallAPIMethod", {
+                    method: "groups.getById",
+                    params: {
+                        group_ids: lastCommunityIds.join(','),
+                        fields: ['members_count', 'verified'].join(','),
+                        v: "5.131",
+                        access_token: accessToken.access_token
+                    }
+                }).then(data => {
+                    if (data.response) {
+                        setLastCommunities(data.response);
+                    } else {
+                        console.log(data);
+
+                        setSnackbar(<Snackbar
+                            layout='vertical'
+                            onClose={() => setSnackbar(null)}
+                            before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                            ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        >
+                            Error get groups
+                        </Snackbar>);
+                    }
+                }).catch(e => {
+                    console.log(e);
+
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
                         ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
                     >
-                        Error get groups
+                        {e.error_data ? e.error_data.error_reason.error_msg : 'Error get groups by id'}
                     </Snackbar>);
-                }
-            }).catch(e => {
-                console.log(e);
-
-                setSnackbar(<Snackbar
-                    layout='vertical'
-                    onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
-                >
-                    {e.error_data ? e.error_data.error_reason.error_msg : 'Error get groups'}
-                </Snackbar>);
-            });
+                });
+            }
         }
 
         fetchCommunities();
         fetchLastCommunities();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**
@@ -117,6 +137,24 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
      */
     const clearLast = async function () {
         setLastCommunities([]);
+
+        try {
+            bridge.send('VKWebAppStorageSet', {
+                key: configData.storage_keys.last_communities,
+                value: JSON.stringify([])
+            });
+        } catch (e) {
+            console.log(e);
+
+            setSnackbar(<Snackbar
+                layout='vertical'
+                onClose={() => setSnackbar(null)}
+                before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+            >
+                Error with sending data to Storage
+            </Snackbar>);
+        }
     }
 
     /**
@@ -124,8 +162,35 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
      * @param item
      */
     const selectCommunity = function (item) {
-        setCommunity(item);
-        go(configData.routes.community);
+        const index = lastCommunityIds.indexOf(item.id);
+        if (index > -1) {
+            // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
+            lastCommunityIds.splice(index, 1);
+        }
+        lastCommunityIds.unshift(item.id);
+
+        lastCommunityIds.splice(configData.max_last_communities, lastCommunityIds.length - configData.max_last_communities);
+
+        try {
+            bridge.send('VKWebAppStorageSet', {
+                key: configData.storage_keys.last_communities,
+                value: JSON.stringify(lastCommunityIds)
+            });
+
+            setCommunity(item);
+            go(configData.routes.community);
+        } catch (e) {
+            console.log(e);
+
+            setSnackbar(<Snackbar
+                layout='vertical'
+                onClose={() => setSnackbar(null)}
+                before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+            >
+                Error with sending data to Storage
+            </Snackbar>);
+        }
     }
 
     return (
@@ -189,6 +254,7 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
                             );
                         })}
                     </List>
+                    <Footer>{countCommunities} сообществ</Footer>
                 </Fragment>
                 }
             </Group>

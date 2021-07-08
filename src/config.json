@@ -3,6 +3,7 @@
   "app_id": 7896414,
   "url": "https://vk.com/app7896414",
   "community": "https://vk.com/wikilib",
+  "max_last_communities": 25,
 
   "routes": {
     "community": "community",
@@ -13,6 +14,7 @@
   },
 
   "storage_keys": {
+    "last_communities": "last_communities",
     "status": "status",
     "access_token": "access_token"
   }

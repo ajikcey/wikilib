@@ -1,22 +1,22 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Avatar, Button, Cell,
+    Avatar, Cell, Footer,
     Group,
-    Header, List,
+    Header, IconButton, Link, List,
     Panel,
     PanelHeader,
-    PanelHeaderBack, PanelSpinner,
+    PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Snackbar
+    Snackbar, TooltipContainer
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24Error,
-    Icon24ExternalLinkOutline,
+    Icon24InfoCircleOutline, Icon28AddCircleFillBlue,
     Icon28Document,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
@@ -67,6 +67,8 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
         }
 
         fetchWikiPages();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function ParseData(timestamp) {
@@ -82,23 +84,37 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
             ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2) + ":" + ('0' + seconds).slice(-2);
     }
 
+    /**
+     * Выбор wiki-страницы для показа информации
+     * @param item
+     */
+    const infoWikiPage = function (item) {
+        console.log(item);
+    }
+
     return (
-        <Panel id={id}>
+        <Panel id={id} >
             <PanelHeader
                 left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
             >
-                {configData.name}
+                <PanelHeaderContent
+                    status={'Участников: ' + community.members_count }
+                    before={<Avatar size={36} src={community.photo_200} />}
+                >
+                    {community.name}
+                </PanelHeaderContent>
             </PanelHeader>
-            <Group header={<Header mode="primary" indicator={wikiPages ? wikiPages.length : 0}>Wiki-страницы</Header>}>
+            <Group header={<Header mode="primary" indicator={wikiPages ? wikiPages.length : 0}
+            >
+                Wiki-страницы</Header>}>
+
                 {(!wikiPages) && <PanelSpinner/>}
                 {(wikiPages && wikiPages.length < 1) &&
                 <Fragment>
                     <Placeholder
                         icon={<Icon32SearchOutline/>}
-                        action={<a href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
-                                   target='_blank'><Button size='l'>Создать Wiki-страницу</Button></a>}
                     >
-                        Wiki-страниц не найдено
+                        Не найдено
                     </Placeholder>
                 </Fragment>
                 }
@@ -110,20 +126,29 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
                             return (
                                 <Cell key={item.id} before={<Icon28Document/>}
                                       description={'Изменено: ' + ParseData(item.edited)}
-                                      after={<a
-                                          style={{color: 'var(--dynamic_blue)'}}
-                                          href={'https://vk.com/page-' + community.id + '_' + item.id + '?act=edit&section=edit'}
-                                          target='_blank'
+                                      // href={'https://vk.com/page-' + community.id + '_' + item.id + '?act=edit&section=edit'}
+                                      // target='_blank' rel='noreferrer'
+                                      onClick={()=>{infoWikiPage(item); return false;}}
+                                      after={<IconButton
+                                          onClick={()=>{infoWikiPage(item); return false;}}
                                       >
-                                          <Icon24ExternalLinkOutline/></a>}
+                                          <Icon24InfoCircleOutline/></IconButton>}
                                 >
                                     {item.title}
                                 </Cell>
                             );
                         })}
                     </List>
+                    <Footer>{wikiPages.length} wiki-страниц</Footer>
                 </Fragment>
                 }
+                <TooltipContainer fixed style={{position: 'fixed', bottom: 0, right: 0, padding: 20}}>
+                    <Link fill='#fff'
+                          href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
+                          target='_blank' rel='noreferrer'
+                    >
+                        <Icon28AddCircleFillBlue width={54} height={54}/></Link>
+                </TooltipContainer>
             </Group>
             {snackbar}
         </Panel>

@@ -6,7 +6,7 @@ import {Icon24Error} from "@vkontakte/icons";
 
 import configData from "../config.json";
 
-const Intro = ({id, snackbarError, fetchedUser, userStatus, go}) => {
+const Intro = ({id, snackbarError, fetchedUser, userStatus, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     /**
@@ -21,11 +21,10 @@ const Intro = ({id, snackbarError, fetchedUser, userStatus, go}) => {
         try {
             await bridge.send('VKWebAppStorageSet', {
                 key: configData.storage_keys.status,
-                value: JSON.stringify({
-                    hasSeenIntro: true
-                })
+                value: JSON.stringify({hasSeenIntro: true})
             });
 
+            setUserStatus({hasSeenIntro: true});
             go(configData.routes.token);
         } catch (e) {
             console.log(e);
