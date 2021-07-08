@@ -11,6 +11,7 @@ import Landing from './panels/Landing';
 
 import configData from "./config.json";
 import Token from "./panels/Token";
+import Community from "./panels/Community";
 
 const App = () => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -19,6 +20,7 @@ const App = () => {
     const [userStatus, setUserStatus] = useState(false);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
+    const [community, setCommunity] = useState(null);
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
@@ -167,7 +169,8 @@ const App = () => {
                     <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} fetchedUser={fetchedUser}
                            userStatus={userStatus}/>
                     <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                    <Home id={configData.routes.home} accessToken={accessToken} snackbarError={snackbar}/>
+                    <Home id={configData.routes.home} setCommunity={setCommunity} accessToken={accessToken} snackbarError={snackbar} go={go}/>
+                    <Community id={configData.routes.community} community={community} accessToken={accessToken} snackbarError={snackbar} go={go}/>
                 </View>
             </AppRoot>
         </AdaptivityProvider>

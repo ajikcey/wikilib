@@ -1,18 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {
-    Button,
-    Group,
-    Panel,
-    PanelHeader,
-    Placeholder
-} from '@vkontakte/vkui';
-import {
-    Icon56InfoOutline
-} from '@vkontakte/icons';
+import {Button, Group, Panel, PanelHeader, Placeholder} from '@vkontakte/vkui';
+import {Icon56InfoOutline} from '@vkontakte/icons';
+
 import configData from "../config.json";
 
-const Home = ({id, fetchToken, snackbarError}) => {
+const Token = ({id, fetchToken, snackbarError}) => {
+    const [snackbar, setSnackbar] = useState(snackbarError);
+
     return (
         <Panel id={id}>
             <PanelHeader>
@@ -27,9 +22,9 @@ const Home = ({id, fetchToken, snackbarError}) => {
                     Для работы сервиса необходимо выдать доступ к сообществам и wiki-страницам.
                 </Placeholder>
             </Group>
-            {snackbarError}
+            {snackbar}
         </Panel>
     )
 }
 
-export default Home;
+export default Token;

@@ -1,8 +1,5 @@
 import React, {Fragment} from 'react';
-
 import {Group, Div, Panel, Button} from '@vkontakte/vkui';
-
-import './Landing.css';
 import {Icon48Services} from "@vkontakte/icons";
 
 import configData from "../config.json";
@@ -10,11 +7,12 @@ import configData from "../config.json";
 const Landing = ({id}) => {
     return (
         <Panel id={id} centered={true}>
-
             <Fragment>
                 <Group>
-                    <Div className='User'>
-                        <Icon48Services style={{color: 'var(--dynamic_blue)'}}/>
+                    <Div style={{textAlign: 'center'}}>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <Icon48Services style={{color: 'var(--dynamic_blue)'}}/>
+                        </div>
 
                         <h2>{configData.name}</h2>
                         <h3>Сервис, который хранит все wiki-страницы ВКонтакте в одном месте.</h3>

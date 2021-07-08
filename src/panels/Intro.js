@@ -1,10 +1,10 @@
 import React, {Fragment, useState} from 'react';
 
 import {Group, Panel, PanelHeader, Avatar, Button, Placeholder, Snackbar} from '@vkontakte/vkui';
-
-import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {Icon24Error} from "@vkontakte/icons";
+
+import configData from "../config.json";
 
 const Intro = ({id, snackbarError, fetchedUser, userStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);

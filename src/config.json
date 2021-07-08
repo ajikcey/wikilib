@@ -5,6 +5,7 @@
   "community": "https://vk.com/wikilib",
 
   "routes": {
+    "community": "community",
     "landing": "landing",
     "home": "home",
     "token": "token",
