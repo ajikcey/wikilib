@@ -90,22 +90,22 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
                 {configData.name}
             </PanelHeader>
             <Group header={<Header mode="primary" indicator={wikiPages ? wikiPages.length : 0}>Wiki-страницы</Header>}>
-                <Search/>
-                <List>
-                    {(!wikiPages) && <PanelSpinner/>}
-                    {(wikiPages && wikiPages.length < 1) &&
-                    <Fragment>
-                        <Placeholder
-                            icon={<Icon32SearchOutline/>}
-                            action={<a href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
-                                       target='_blank'><Button size='l'>Создать страницу</Button></a>}
-                        >
-                            Wiki-страниц не найдено
-                        </Placeholder>
-                    </Fragment>
-                    }
-                    {(wikiPages && wikiPages.length > 0) &&
-                    <Fragment>
+                {(!wikiPages) && <PanelSpinner/>}
+                {(wikiPages && wikiPages.length < 1) &&
+                <Fragment>
+                    <Placeholder
+                        icon={<Icon32SearchOutline/>}
+                        action={<a href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
+                                   target='_blank'><Button size='l'>Создать страницу</Button></a>}
+                    >
+                        Wiki-страниц не найдено
+                    </Placeholder>
+                </Fragment>
+                }
+                {(wikiPages && wikiPages.length > 0) &&
+                <Fragment>
+                    <Search/>
+                    <List>
                         {wikiPages.map((item) => {
                             return (
                                 <Cell key={item.id} before={<Icon28Document/>}
@@ -121,9 +121,9 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
                                 </Cell>
                             );
                         })}
-                    </Fragment>
-                    }
-                </List>
+                    </List>
+                </Fragment>
+                }
             </Group>
             {snackbar}
         </Panel>

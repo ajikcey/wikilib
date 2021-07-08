@@ -161,20 +161,20 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
             }
 
             <Group header={<Header mode="primary" indicator={countCommunities}>Все сообщества</Header>}>
-                <Search/>
-                <List>
-                    {(!communities) && <PanelSpinner/>}
-                    {(communities && communities.length < 1) &&
-                    <Fragment>
-                        <Placeholder
-                            icon={<Icon36Users/>}
-                        >
-                            Сообществ не найдено
-                        </Placeholder>
-                    </Fragment>
-                    }
-                    {(communities && communities.length > 0) &&
-                    <Fragment>
+                {(!communities) && <PanelSpinner/>}
+                {(communities && communities.length < 1) &&
+                <Fragment>
+                    <Placeholder
+                        icon={<Icon36Users/>}
+                    >
+                        Сообществ не найдено
+                    </Placeholder>
+                </Fragment>
+                }
+                {(communities && communities.length > 0) &&
+                <Fragment>
+                    <Search/>
+                    <List>
                         {communities.map((item) => {
                             return (
                                 <Cell key={item.id} before={<Avatar size={48} src={item.photo_200}/>}
@@ -188,9 +188,9 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
                                 </Cell>
                             );
                         })}
-                    </Fragment>
-                    }
-                </List>
+                    </List>
+                </Fragment>
+                }
             </Group>
             {snackbar}
         </Panel>
