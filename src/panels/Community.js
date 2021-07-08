@@ -96,7 +96,7 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
                     <Placeholder
                         icon={<Icon32SearchOutline/>}
                         action={<a href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
-                                   target='_blank'><Button size='l'>Создать страницу</Button></a>}
+                                   target='_blank'><Button size='l'>Создать Wiki-страницу</Button></a>}
                     >
                         Wiki-страниц не найдено
                     </Placeholder>
