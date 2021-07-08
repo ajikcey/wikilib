@@ -17,6 +17,7 @@ yarn.lock
 
 # Prod Bundle
 /build
+build.zip
 
 .vscode
 .idea
