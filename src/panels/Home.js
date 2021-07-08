@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import bridge from "@vkontakte/vk-bridge";
 import {
     Avatar, Group, Header, Panel, PanelHeader,
-    Cell, List, HorizontalScroll, HorizontalCell, Search, PanelHeaderButton, Snackbar, Link, Placeholder
+    Cell, List, HorizontalScroll, HorizontalCell, Search, PanelHeaderButton, Snackbar, Link, Placeholder, PanelSpinner
 } from '@vkontakte/vkui';
 import {
     Icon12Verified, Icon24Error,
@@ -14,7 +14,7 @@ import configData from "../config.json";
 
 const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [communities, setCommunities] = useState([]);
+    const [communities, setCommunities] = useState(null);
     const [lastCommunities, setLastCommunities] = useState([]);
     const [countCommunities, setCountCommunities] = useState(0);
 
@@ -163,7 +163,8 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
             <Group header={<Header mode="primary" indicator={countCommunities}>Все сообщества</Header>}>
                 <Search/>
                 <List>
-                    {(communities.length < 1) &&
+                    {(!communities) && <PanelSpinner/>}
+                    {(communities && communities.length < 1) &&
                     <Fragment>
                         <Placeholder
                             icon={<Icon36Users/>}
@@ -172,7 +173,7 @@ const Home = ({id, accessToken, go, setCommunity, snackbarError}) => {
                         </Placeholder>
                     </Fragment>
                     }
-                    {(communities.length > 0) &&
+                    {(communities && communities.length > 0) &&
                     <Fragment>
                         {communities.map((item) => {
                             return (

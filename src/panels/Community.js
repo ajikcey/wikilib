@@ -1,12 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Avatar, Cell,
+    Avatar, Button, Cell,
     Group,
     Header, List,
     Panel,
     PanelHeader,
-    PanelHeaderBack,
+    PanelHeaderBack, PanelSpinner,
     Placeholder,
     Search,
     Snackbar
@@ -23,7 +23,7 @@ import {
 
 const Community = ({id, accessToken, community, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [wikiPages, setWikiPages] = useState([]);
+    const [wikiPages, setWikiPages] = useState(null);
 
     useEffect(() => {
 
@@ -89,19 +89,22 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
             >
                 {configData.name}
             </PanelHeader>
-            <Group header={<Header mode="primary" indicator={wikiPages.length}>Wiki-страницы</Header>}>
+            <Group header={<Header mode="primary" indicator={wikiPages ? wikiPages.length : 0}>Wiki-страницы</Header>}>
                 <Search/>
                 <List>
-                    {(wikiPages.length < 1) &&
+                    {(!wikiPages) && <PanelSpinner/>}
+                    {(wikiPages && wikiPages.length < 1) &&
                     <Fragment>
                         <Placeholder
                             icon={<Icon32SearchOutline/>}
+                            action={<a href={'https://vk.com/pages?oid=-' + community.id + '&p=Title'}
+                                       target='_blank'><Button size='l'>Создать страницу</Button></a>}
                         >
                             Wiki-страниц не найдено
                         </Placeholder>
                     </Fragment>
                     }
-                    {(wikiPages.length > 0) &&
+                    {(wikiPages && wikiPages.length > 0) &&
                     <Fragment>
                         {wikiPages.map((item) => {
                             return (
@@ -124,7 +127,7 @@ const Community = ({id, accessToken, community, go, snackbarError}) => {
             </Group>
             {snackbar}
         </Panel>
-)
+    )
 }
 
 export default Community;
