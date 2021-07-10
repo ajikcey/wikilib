@@ -15,15 +15,15 @@ const Landing = ({id}) => {
                         </div>
 
                         <h2>{configData.name}</h2>
-                        <h3>Сервис, который хранит все wiki-страницы ВКонтакте в одном месте.</h3>
+                        <h3>Приложение для доступа к wiki-страницам ВКонтакте.</h3>
 
                         <Div>
-                            <Button href={configData.url} mode='commerce' size='l'>
+                            <Button href={configData.app_url} mode='commerce' size='l'>
                                 Открыть приложение
                             </Button>
                         </Div>
                         <Div>
-                            <Button href={configData.community} mode='tertiary' size='l'>
+                            <Button href={configData.community.url} mode='tertiary' size='l'>
                                 Перейти в сообщество
                             </Button>
                         </Div>

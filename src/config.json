@@ -1,21 +1,30 @@
 {
   "name": "WikiLib",
   "app_id": 7896414,
-  "url": "https://vk.com/app7896414",
-  "community": "https://vk.com/wikilib",
-  "max_last_communities": 25,
+  "app_url": "https://vk.com/app7896414",
+  "community": {
+    "id": 205670119,
+    "url": "https://vk.com/wikilib"
+  },
+  "max_last_groups": 25,
 
   "routes": {
-    "community": "community",
+    "pages": "pages",
+    "page": "page",
     "landing": "landing",
+    "about": "about",
     "home": "home",
     "token": "token",
     "intro": "intro"
   },
 
   "storage_keys": {
-    "last_communities": "last_communities",
+    "last_groups": "last_groups",
     "status": "status",
     "access_token": "access_token"
+  },
+
+  "modals": {
+    "renamePageModal": "renamePageModal"
   }
 }

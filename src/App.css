@@ -4,6 +4,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--button_secondary_background_highlighted);
+    background: var(--field_border);
     border-radius: 5px;
+}
+
+.vkuiSimpleCell__indicator {
+    flex-shrink: 0;
 }

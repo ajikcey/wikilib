@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import {View, ScreenSpinner, AdaptivityProvider, AppRoot, Snackbar, Avatar} from '@vkontakte/vkui';
+import {
+    View,
+    ScreenSpinner,
+    AdaptivityProvider,
+    AppRoot,
+    Snackbar,
+    Avatar,
+    ModalRoot,
+    ModalPage, ModalCard, ModalPageHeader, PanelHeaderClose, PanelHeaderSubmit, FormItem, Input
+} from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";
 import {Icon24Error} from "@vkontakte/icons";
@@ -13,17 +22,21 @@ import Landing from './panels/Landing';
 
 import configData from "./config.json";
 import Token from "./panels/Token";
-import Community from "./panels/Community";
+import Pages from "./panels/Pages";
+import About from "./panels/About";
+import Page from "./panels/Page";
 
 const App = () => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
-    const [fetchedUser, setUser] = useState(null);
+    const [activeModal, setActiveModal] = useState(null);
+    const [user, setFetchedUser] = useState(null);
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
     const [userStatus, setUserStatus] = useState(null);
-    const [cachedLastCommunities, setCachedLastCommunities] = useState([]);
+    const [cachedLastGroups, setCachedLastGroups] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
-    const [community, setCommunity] = useState(null);
+    const [group, setGroup] = useState(null);
+    const [page, setPage] = useState(null);
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
@@ -56,7 +69,7 @@ const App = () => {
 
                 setAccessToken(data[configData.storage_keys.access_token]);
                 setUserStatus(data[configData.storage_keys.status]);
-                setCachedLastCommunities(Object.values(data[configData.storage_keys.last_communities]));
+                setCachedLastGroups(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status].tokenReceived) {
                     setActivePanel(configData.routes.home);
@@ -76,7 +89,7 @@ const App = () => {
                 </Snackbar>);
             }
 
-            setUser(user);
+            setFetchedUser(user);
             setPopout(null);
         }
 
@@ -155,19 +168,49 @@ const App = () => {
         });
     }
 
+    const closeModal = function () {
+        setActiveModal(null); // null для скрытия
+    }
+
+    const submitModal = function () {
+        setActiveModal(null);
+    }
+
+    const modal = (
+        <ModalRoot activeModal={activeModal}>
+            <ModalPage
+                onClose={closeModal}
+                id={configData.modals.renamePageModal}
+                header={
+                    <ModalPageHeader
+                        left={<PanelHeaderClose onClick={closeModal}/>}
+                        right={<PanelHeaderSubmit onClick={submitModal}/>}
+                    >
+                    </ModalPageHeader>
+                }
+            >
+                <FormItem top="Название wiki-страницы">
+                    <Input/>
+                </FormItem>
+            </ModalPage>
+        </ModalRoot>
+    );
+
     return (
         <AdaptivityProvider>
             <AppRoot>
-                <View activePanel={activePanel} popout={popout}>
+                <View activePanel={activePanel} popout={popout} modal={modal}>
                     <Landing id={configData.routes.landing}/>
-                    <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} fetchedUser={fetchedUser}
-                           setUserStatus={setUserStatus}
-                           userStatus={userStatus}/>
+                    <About id={configData.routes.about} go={go} snackbarError={snackbar} accessToken={accessToken}/>
+                    <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                           setUserStatus={setUserStatus} userStatus={userStatus}/>
                     <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                    <Home id={configData.routes.home} setCommunity={setCommunity} accessToken={accessToken}
-                          snackbarError={snackbar} cachedLastCommunities={cachedLastCommunities} go={go}/>
-                    <Community id={configData.routes.community} community={community} accessToken={accessToken}
-                               snackbarError={snackbar} go={go}/>
+                    <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
+                          snackbarError={snackbar} cachedLastGroups={cachedLastGroups} go={go}/>
+                    <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
+                           snackbarError={snackbar} go={go} setPage={setPage}/>
+                    <Page id={configData.routes.page} page={page} group={group} accessToken={accessToken}
+                          snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                 </View>
             </AppRoot>
         </AdaptivityProvider>

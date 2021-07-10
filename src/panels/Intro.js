@@ -6,7 +6,7 @@ import {Icon24Error} from "@vkontakte/icons";
 
 import configData from "../config.json";
 
-const Intro = ({id, snackbarError, fetchedUser, userStatus, setUserStatus, go}) => {
+const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     /**
@@ -42,7 +42,7 @@ const Intro = ({id, snackbarError, fetchedUser, userStatus, setUserStatus, go}) 
 
     return (
         <Panel id={id} centered={true}>
-            {(!userStatus && fetchedUser) &&
+            {(!userStatus && user) &&
             <Fragment>
                 <PanelHeader>
                     {configData.name}
@@ -50,11 +50,12 @@ const Intro = ({id, snackbarError, fetchedUser, userStatus, setUserStatus, go}) 
 
                 <Group>
                     <Placeholder
-                        icon={fetchedUser.photo_200 && <Avatar src={fetchedUser.photo_200}/>}
-                        header={`Привет, ${fetchedUser.first_name}!`}
-                        action={<Button mode='commerce' size='l' onClick={viewIntro}>OK, все понятно!</Button>}
+                        icon={user.photo_200 && <Avatar src={user.photo_200}/>}
+                        header={`Привет, ${user.first_name}!`}
+                        action={<Button mode='commerce' size='l' onClick={viewIntro}>Открыть приложение</Button>}
                     >
-                        Этот сервис позволяет хранить все wiki-страницы в одном месте.
+                        Это приложение, с помощью которого можно посмотреть wiki-страницы во всех своих сообществах
+                        ВКонтакте.
                     </Placeholder>
                 </Group>
             </Fragment>

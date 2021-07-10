@@ -14,32 +14,60 @@ import {
     Search,
     PanelHeaderButton,
     Snackbar,
-    Link,
     Placeholder,
     PanelSpinner,
-    Footer
+    Footer, Link
 } from '@vkontakte/vkui';
 import {
-    Icon12Verified, Icon24Error,
+    Icon12Verified, Icon16Clear, Icon24Error,
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
+import {cutDeclNum, declOfNum} from "../functions";
 
-const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackbarError}) => {
+const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [communities, setCommunities] = useState(null);
-    const [lastCommunityIds] = useState(cachedLastCommunities);
-    const [lastCommunities, setLastCommunities] = useState([]);
-    const [countCommunities, setCountCommunities] = useState(0);
+    const [groups, setGroups] = useState(null);
+    const [lastCommunityIds] = useState(cachedLastGroups);
+    const [lastGroups, setLastGroups] = useState([]);
+    const [countGroups, setCountGroups] = useState(0);
 
     useEffect(() => {
+
+        function handleError(e, options) {
+            let error_msg = null;
+
+            if (e.error_data) {
+                switch (e.error_data.error_reason.error_msg) {
+                    case 'User authorization failed: access_token has expired.':
+                    case 'User authorization failed: access_token was given to another ip address.':
+                        go(configData.routes.token);
+                        break;
+                    default:
+                        error_msg = e.error_data.error_reason.error_msg;
+                }
+            } else {
+                error_msg = options.error_msg || 'Undefined error';
+            }
+
+            if (error_msg) {
+                setSnackbar(<Snackbar
+                    layout='vertical'
+                    onClose={() => setSnackbar(null)}
+                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                >
+                    {error_msg}
+                </Snackbar>);
+            }
+        }
 
         /**
          * Получение сообществ пользователя
          * @returns {Promise<void>}
          */
-        async function fetchCommunities() {
+        async function fetchGroups() {
             await bridge.send("VKWebAppCallAPIMethod", {
                 method: "groups.get",
                 params: {
@@ -53,31 +81,25 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
                 }
             }).then(data => {
                 if (data.response) {
-                    setCommunities(data.response.items);
-                    setCountCommunities(data.response.count);
+                    setGroups(data.response.items);
+                    setCountGroups(data.response.count);
                 } else {
+                    setGroups([]);
+
                     console.log(data);
 
-                    setSnackbar(<Snackbar
-                        layout='vertical'
-                        onClose={() => setSnackbar(null)}
-                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
-                    >
-                        Error get groups
-                    </Snackbar>);
+                    handleError({}, {
+                        error_msg: 'Error get groups'
+                    });
                 }
             }).catch(e => {
+                setGroups([]);
+
                 console.log(e);
 
-                setSnackbar(<Snackbar
-                    layout='vertical'
-                    onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
-                >
-                    {e.error_data ? e.error_data.error_reason.error_msg : 'Error get groups'}
-                </Snackbar>);
+                handleError(e, {
+                    error_msg: 'Error get groups'
+                });
             });
         }
 
@@ -85,7 +107,7 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
          * Получение посещенных недавно сообществ
          * @returns {Promise<void>}
          */
-        async function fetchLastCommunities() {
+        async function fetchLastGroups() {
             if (lastCommunityIds.length > 0) {
                 await bridge.send("VKWebAppCallAPIMethod", {
                     method: "groups.getById",
@@ -97,36 +119,30 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
                     }
                 }).then(data => {
                     if (data.response) {
-                        setLastCommunities(data.response);
+                        setLastGroups(data.response);
                     } else {
+                        setLastGroups([]);
+
                         console.log(data);
 
-                        setSnackbar(<Snackbar
-                            layout='vertical'
-                            onClose={() => setSnackbar(null)}
-                            before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                            ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
-                        >
-                            Error get groups
-                        </Snackbar>);
+                        handleError({}, {
+                            error_msg: 'Error get groups by id'
+                        });
                     }
                 }).catch(e => {
+                    setLastGroups([]);
+
                     console.log(e);
 
-                    setSnackbar(<Snackbar
-                        layout='vertical'
-                        onClose={() => setSnackbar(null)}
-                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
-                    >
-                        {e.error_data ? e.error_data.error_reason.error_msg : 'Error get groups by id'}
-                    </Snackbar>);
+                    handleError(e, {
+                        error_msg: 'Error get groups by id'
+                    });
                 });
             }
         }
 
-        fetchCommunities();
-        fetchLastCommunities();
+        fetchGroups();
+        fetchLastGroups();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -136,11 +152,11 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
      * @returns {Promise<void>}
      */
     const clearLast = async function () {
-        setLastCommunities([]);
+        setLastGroups([]);
 
         try {
-            bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.last_communities,
+            await bridge.send('VKWebAppStorageSet', {
+                key: configData.storage_keys.last_groups,
                 value: JSON.stringify([])
             });
         } catch (e) {
@@ -161,7 +177,7 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
      * Выбор сообщества для показа wiki-страниц
      * @param item
      */
-    const selectCommunity = function (item) {
+    const selectGroup = function (item) {
         const index = lastCommunityIds.indexOf(item.id);
         if (index > -1) {
             // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
@@ -169,16 +185,18 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
         }
         lastCommunityIds.unshift(item.id);
 
-        lastCommunityIds.splice(configData.max_last_communities, lastCommunityIds.length - configData.max_last_communities);
+        if (lastCommunityIds.length > configData.max_last_groups) {
+            lastCommunityIds.splice(configData.max_last_groups, lastCommunityIds.length - configData.max_last_groups);
+        }
 
         try {
             bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.last_communities,
+                key: configData.storage_keys.last_groups,
                 value: JSON.stringify(lastCommunityIds)
             });
 
-            setCommunity(item);
-            go(configData.routes.community);
+            setGroup(item);
+            go(configData.routes.pages);
         } catch (e) {
             console.log(e);
 
@@ -196,26 +214,37 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
     return (
         <Panel id={id}>
             <PanelHeader
-                left={<PanelHeaderButton><Icon28InfoOutline/></PanelHeaderButton>}
+                left={<PanelHeaderButton><Icon28InfoOutline onClick={() => {
+                    go(configData.routes.about)
+                }}/></PanelHeaderButton>}
             >
                 {configData.name}
             </PanelHeader>
 
-            {(lastCommunities.length > 0) &&
+            {(lastGroups.length > 0) &&
             <Fragment>
-                <Group header={<Header aside={<Link onClick={clearLast}>Очистить</Link>}>
-                    Недавно просмотренные</Header>}>
+                <Group
+                    header={<Header
+                        aside={<Link
+                            style={{color: 'var(--icon_secondary)'}} mode="tertiary"
+                            onClick={clearLast}
+                        >
+                            <Icon16Clear/>
+                        </Link>}>
+                        Недавно просмотренные
+                    </Header>}>
 
                     <HorizontalScroll showArrows getScrollToLeft={i => i - 320} getScrollToRight={i => i + 320}>
                         <div style={{display: 'flex'}}>
-                            {lastCommunities.map((item) => {
+                            {lastGroups.map((group) => {
                                 return (
-                                    <HorizontalCell key={item.id} header={item.name}
-                                                    onClick={() => {
-                                                        selectCommunity(item)
-                                                    }}
+                                    <HorizontalCell
+                                        key={group.id} header={group.name}
+                                        onClick={() => {
+                                            selectGroup(group)
+                                        }}
                                     >
-                                        <Avatar size={64} src={item.photo_200}/>
+                                        <Avatar size={64} src={group.photo_200}/>
                                     </HorizontalCell>
                                 );
                             })}
@@ -225,36 +254,35 @@ const Home = ({id, accessToken, go, setCommunity, cachedLastCommunities, snackba
             </Fragment>
             }
 
-            <Group header={<Header mode="primary" indicator={countCommunities}>Все сообщества</Header>}>
-                {(!communities) && <PanelSpinner/>}
-                {(communities && communities.length < 1) &&
+            <Group header={<Header mode="primary" indicator={countGroups}>Все сообщества</Header>}>
+                <Search/>
+
+                {(!groups) && <PanelSpinner/>}
+                {(groups && groups.length < 1) &&
                 <Fragment>
-                    <Placeholder
-                        icon={<Icon36Users/>}
-                    >
-                        Сообществ не найдено
-                    </Placeholder>
+                    <Placeholder icon={<Icon36Users/>}>Сообществ не найдено</Placeholder>
                 </Fragment>
                 }
-                {(communities && communities.length > 0) &&
+                {(groups && groups.length > 0) &&
                 <Fragment>
-                    <Search/>
+
                     <List>
-                        {communities.map((item) => {
+                        {groups.map((group) => {
                             return (
-                                <Cell key={item.id} before={<Avatar size={48} src={item.photo_200}/>}
-                                      badge={item.verified ? <Icon12Verified/> : null}
-                                      description={'Участников: ' + item.members_count}
-                                      onClick={() => {
-                                          selectCommunity(item)
-                                      }}
+                                <Cell
+                                    key={group.id} before={<Avatar size={48} src={group.photo_200}/>}
+                                    badge={group.verified ? <Icon12Verified/> : null}
+                                    description={cutDeclNum(group.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                                    onClick={() => {
+                                        selectGroup(group)
+                                    }}
                                 >
-                                    {item.name}
+                                    {group.name}
                                 </Cell>
                             );
                         })}
                     </List>
-                    <Footer>{countCommunities} сообществ</Footer>
+                    <Footer>{countGroups} {declOfNum(countGroups, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
                 </Fragment>
                 }
             </Group>
