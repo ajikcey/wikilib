@@ -20,7 +20,7 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
 
         try {
             await bridge.send('VKWebAppStorageSet', {
-                // key: configData.storage_keys.status,
+                key: configData.storage_keys.status,
                 value: JSON.stringify({hasSeenIntro: true})
             });
 
@@ -49,6 +49,7 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
 
                 <Group>
                     <Placeholder
+                        style={{maxWidth: 620}}
                         icon={user.photo_200 && <Avatar src={user.photo_200}/>}
                         header={`Привет, ${user.first_name}!`}
                         action={<Button mode='commerce' size='l' onClick={viewIntro}>Открыть приложение</Button>}

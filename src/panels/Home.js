@@ -16,7 +16,7 @@ import {
     Snackbar,
     Placeholder,
     PanelSpinner,
-    Footer, Link
+    Footer, Link, Spacing
 } from '@vkontakte/vkui';
 import {
     Icon12Verified, Icon16Clear, Icon24ErrorCircle,
@@ -236,10 +236,10 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                 {configData.name}
             </PanelHeader>
 
-            {(lastGroups.length > 0) &&
-            <Fragment>
-                <Group
-                    header={<Header
+            <Group>
+                {(lastGroups.length > 0) &&
+                <Fragment>
+                    <Header
                         aside={<Link
                             style={{color: 'var(--icon_secondary)'}} mode="tertiary"
                             onClick={clearLast}
@@ -247,7 +247,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                             <Icon16Clear/>
                         </Link>}>
                         Недавно просмотренные
-                    </Header>}>
+                    </Header>
 
                     <HorizontalScroll showArrows getScrollToLeft={i => i - 320} getScrollToRight={i => i + 320}>
                         <div style={{display: 'flex'}}>
@@ -271,19 +271,22 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                             })}
                         </div>
                     </HorizontalScroll>
-                </Group>
-            </Fragment>
-            }
 
-            <Group header={<Header mode="primary" indicator={countGroups}>Все сообщества</Header>}>
+                    <Spacing separator size={16}/>
+                </Fragment>
+                }
+
+                <Header mode="primary" indicator={countGroups}>Все сообщества</Header>
                 <Search/>
 
                 {(!groups) && <PanelSpinner/>}
+
                 {(groups && groups.length < 1) &&
                 <Fragment>
                     <Placeholder icon={<Icon36Users/>}>Сообществ не найдено</Placeholder>
                 </Fragment>
                 }
+
                 {(groups && groups.length > 0) &&
                 <Fragment>
 

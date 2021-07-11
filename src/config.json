@@ -7,6 +7,13 @@
     "url": "https://vk.com/wikilib"
   },
   "max_last_groups": 25,
+  "prefix_deleted_page": "[deleted] ",
+
+  "wiki_access": {
+    "all": 2,
+    "member": 1,
+    "staff": 0
+  },
 
   "routes": {
     "pages": "pages",

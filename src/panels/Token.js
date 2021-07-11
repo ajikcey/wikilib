@@ -14,6 +14,7 @@ const Token = ({id, fetchToken, snackbarError}) => {
             </PanelHeader>
             <Group>
                 <Placeholder
+                    style={{maxWidth: 620}}
                     icon={<Icon56InfoOutline/>}
                     header="Права доступа"
                     action={<Button size="l" onClick={fetchToken}>Продолжить</Button>}

@@ -7,7 +7,7 @@ import {
     AppRoot,
     Snackbar,
     ModalRoot,
-    ModalPage, ModalPageHeader, PanelHeaderClose, PanelHeaderSubmit, FormItem, Input
+    ModalPage, FormItem, Input, Button, Group, ConfigProvider, withAdaptivity, SplitLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";
@@ -24,11 +24,12 @@ import Token from "./panels/Token";
 import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
+import AppModalPageHeader from "./components/AppModalPageHeader";
 
-const App = () => {
+const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
     const [activeModal, setActiveModal] = useState(null);
-    const [user, setFetchedUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
     const [userStatus, setUserStatus] = useState(null);
     const [lastGroupIds, setLastGroupIds] = useState([]);
@@ -67,8 +68,8 @@ const App = () => {
                 });
 
                 setAccessToken(data[configData.storage_keys.access_token]);
-                setUserStatus(data[configData.storage_keys.status]);
                 setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+                setUserStatus(data[configData.storage_keys.status]);
 
                 if (data[configData.storage_keys.status].tokenReceived) {
                     setActivePanel(configData.routes.home);
@@ -87,7 +88,7 @@ const App = () => {
                 </Snackbar>);
             }
 
-            setFetchedUser(user);
+            setUser(user);
             setPopout(null);
         }
 
@@ -163,53 +164,70 @@ const App = () => {
         });
     }
 
-    const closeModal = function () {
+    const onCloseModal = function () {
         setActiveModal(null); // null для скрытия
     }
 
-    const submitModal = function () {
-        setActiveModal(null);
+    const onSubmitModal = function () {
+        setActiveModal(null); // null для скрытия
     }
 
     const modal = (
-        <ModalRoot activeModal={activeModal}>
+        <ModalRoot
+            activeModal={activeModal}
+            onClose={onCloseModal}
+        >
             <ModalPage
-                onClose={closeModal}
                 id={configData.modals.renamePageModal}
-                header={
-                    <ModalPageHeader
-                        left={<PanelHeaderClose onClick={closeModal}/>}
-                        right={<PanelHeaderSubmit onClick={submitModal}/>}
-                    >
-                    </ModalPageHeader>
+                onClose={onCloseModal}
+                header={<AppModalPageHeader
+                    onCloseModal={onCloseModal}
+                    onSubmitModal={onSubmitModal}
+                >
+                    Название страницы
+                </AppModalPageHeader>
+                }
+                actions={
+                    <Button size="l" mode="primary">
+                        Сохранить
+                    </Button>
                 }
             >
-                <FormItem top="Название wiki-страницы">
-                    <Input/>
-                </FormItem>
+                <Group>
+                    <FormItem top="Название wiki-страницы">
+                        <Input defaultValue=""/>
+                    </FormItem>
+                </Group>
             </ModalPage>
         </ModalRoot>
     );
 
     return (
-        <AdaptivityProvider>
-            <AppRoot>
-                <View activePanel={activePanel} popout={popout} modal={modal}>
-                    <Landing id={configData.routes.landing}/>
-                    <About id={configData.routes.about} go={go} snackbarError={snackbar} accessToken={accessToken}/>
-                    <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
-                           setUserStatus={setUserStatus} userStatus={userStatus}/>
-                    <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                    <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                          snackbarError={snackbar} lastGroupIds={lastGroupIds} setLastGroupIds={setLastGroupIds} go={go}/>
-                    <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
-                           snackbarError={snackbar} go={go} setPage={setPage}/>
-                    <Page id={configData.routes.page} page={page} group={group} accessToken={accessToken}
-                          snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
-                </View>
-            </AppRoot>
-        </AdaptivityProvider>
+        <ConfigProvider>
+            <AdaptivityProvider>
+                <AppRoot>
+                    <SplitLayout>
+                        <View activePanel={activePanel} popout={popout} modal={modal}>
+                            <Landing id={configData.routes.landing}/>
+                            <About id={configData.routes.about} go={go} snackbarError={snackbar}
+                                   accessToken={accessToken}/>
+                            <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                                   setUserStatus={setUserStatus} userStatus={userStatus}/>
+                            <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
+                            <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
+                                  snackbarError={snackbar} lastGroupIds={lastGroupIds} setLastGroupIds={setLastGroupIds}
+                                  go={go}/>
+                            <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
+                                   snackbarError={snackbar} go={go} setPage={setPage}/>
+                            <Page id={configData.routes.page} page={page} group={group} user={user}
+                                  accessToken={accessToken}
+                                  snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
+                        </View>
+                    </SplitLayout>
+                </AppRoot>
+            </AdaptivityProvider>
+        </ConfigProvider>
     );
-}
+}, {viewWidth: true});
 
 export default App;

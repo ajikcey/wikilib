@@ -75,19 +75,20 @@ const About = ({id, go, snackbarError, accessToken}) => {
                         Приложение, с помощью которого можно посмотреть wiki-страницы во всех своих сообществах
                         ВКонтакте.
                     </Div>
-                </Group>
-                <Group
-                    header={<Header mode='secondary'>Разработчик</Header>}>
+
                     {(!appCommunity) && <PanelSpinner/>}
                     {(appCommunity) &&
-                    <CellButton
-                        before={<Avatar size={48} src={appCommunity.photo_200}/>}
-                        badge={appCommunity.verified ? <Icon12Verified/> : null}
-                        description={cutDeclNum(appCommunity.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
-                        href={'https://vk.com/' + appCommunity.screen_name} target='_blank'
-                    >
-                        {appCommunity.name}
-                    </CellButton>
+                    <Fragment>
+                        <Header mode='secondary'>Разработчик</Header>
+                        <CellButton
+                            before={<Avatar size={48} src={appCommunity.photo_200}/>}
+                            badge={appCommunity.verified ? <Icon12Verified/> : null}
+                            description={cutDeclNum(appCommunity.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                            href={'https://vk.com/' + appCommunity.screen_name} target='_blank'
+                        >
+                            {appCommunity.name}
+                        </CellButton>
+                    </Fragment>
                     }
                 </Group>
             </Fragment>

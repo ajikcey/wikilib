@@ -15,7 +15,7 @@ const Landing = ({id}) => {
                         </div>
 
                         <h2>{configData.name}</h2>
-                        <h3>Приложение для доступа к wiki-страницам ВКонтакте.</h3>
+                        <h3>Приложение для работы с wiki-страницам ВКонтакте.</h3>
 
                         <Div>
                             <Button href={configData.app_url} mode='commerce' size='l'>

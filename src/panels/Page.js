@@ -1,31 +1,35 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Avatar, Cell, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
+    Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton
+    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, Header, PanelHeaderContent, Spacing
 } from '@vkontakte/vkui';
 
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon24CheckCircleOutline,
-    Icon24ErrorCircle, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline,
+    Icon24CheckCircleOutline, Icon24DeleteOutline,
+    Icon24ErrorCircle,
+    Icon24ExternalLinkOutline,
+    Icon24HistoryBackwardOutline,
+    Icon24Write,
+    Icon28CopyOutline, Icon28Document,
     Icon28EditOutline,
     Icon28HashtagOutline,
-    Icon28ViewOutline,
     Icon32SearchOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {copyToClipboard, declOfNum, timestampToDate} from "../functions";
+import {copyToClipboard, cutDeclNum, declOfNum, timestampToDate} from "../functions";
 
-const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
     const [editor, setEditor] = useState(null);
     const [history, setHistory] = useState(null);
     const [tab, setTab] = useState('info');
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
 
@@ -39,12 +43,17 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                 params: {
                     page_id: page.id,
                     owner_id: ('-' + page.group_id),
+                    need_source: 1,
                     v: "5.131",
                     access_token: accessToken.access_token
                 }
             }).then(data => {
                 if (data.response) {
                     fetchUsers([data.response.creator_id, data.response.editor_id]);
+
+                    if (data.response.title.indexOf(configData.prefix_deleted_page) > -1) {
+                        setDisabled(true);
+                    }
 
                     setInfoPage(data.response);
                 } else {
@@ -198,12 +207,16 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    /**
+     * Переименование wiki-страницы
+     */
     const renamePage = () => {
-        console.log(infoPage);
-
         setActiveModal(configData.modals.renamePageModal);
     }
 
+    /**
+     * Копирование ID wiki-страницы
+     */
     const copyId = () => {
         copyToClipboard(infoPage.id);
 
@@ -216,13 +229,80 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
         </Snackbar>);
     }
 
+    /**
+     * Название уровня доступа
+     * @param key
+     * @returns {string}
+     */
+    const nameAccess = (key) => {
+        switch (key) {
+            case configData.wiki_access.staff:
+                return "Руководители";
+            case configData.wiki_access.member:
+                return "Участники";
+            case configData.wiki_access.all:
+                return "Все";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Восстановление wiki-страницы
+     */
+    const restorePage = () => {
+        infoPage.title = infoPage.title.replace(configData.prefix_deleted_page, '');
+
+        savePage(infoPage.title, infoPage.source).then(() => {
+            setDisabled(false);
+        });
+    }
+
+    /**
+     * Удаление wiki-страницы
+     */
+    const delPage = (infoPage) => {
+        if (infoPage.title.indexOf(configData.prefix_deleted_page) < 0) {
+            // если еще нет префикса
+            infoPage.title = configData.prefix_deleted_page + infoPage.title;
+        }
+
+        savePage(infoPage.title, infoPage.source).then(() => {
+            setDisabled(true);
+        });
+    }
+
+    /**
+     * Сохраняет текст вики-страницы.
+     */
+    const savePage = (title, text) => {
+        return bridge.send("VKWebAppCallAPIMethod", {
+            method: "pages.save",
+            params: {
+                page_id: infoPage.id,
+                group_id: infoPage.group_id,
+                user_id: user.id,
+                text: text,
+                title: title,
+                v: "5.131",
+                access_token: accessToken.access_token
+            }
+        });
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={() => go(configData.routes.pages)}/>}
             >
-                {page.title}
+                <PanelHeaderContent
+                    status={cutDeclNum(page.views, ['просмотр', 'просмотра', 'просмотров'])}
+                    before={<Icon28Document style={{color: 'var(--dynamic_gray)'}}/>}
+                >
+                    {page.title}
+                </PanelHeaderContent>
             </PanelHeader>
+
             <Group>
                 <Tabs>
                     <HorizontalScroll>
@@ -241,10 +321,18 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                     </HorizontalScroll>
                 </Tabs>
 
-                {(tab === 'info' && !(infoPage && creator && editor)) && <PanelSpinner/>}
-                {(tab === 'info' && (infoPage && creator && editor)) &&
-                <Fragment>
-                    <Group>
+                {(tab === 'info') && <Fragment>
+                    {!(infoPage && creator && editor) && <PanelSpinner/>}
+                    {(infoPage && creator && editor) &&
+                    <Fragment>
+
+                        <Header mode="secondary">Меню</Header>
+                        <CellButton
+                            before={<Icon24ExternalLinkOutline/>}
+                            href={'https://vk.com/page-' + group.id + '_' + page.id + '?act=edit&section=edit'}
+                            target='_blank' rel='noreferrer'
+                        >
+                            Открыть редактор ВКонтакте</CellButton>
                         <CellButton
                             before={<Icon24Write/>}
                             onClick={() => {
@@ -252,33 +340,42 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                             }}
                         >
                             Переименовать</CellButton>
+
+                        {(!disabled) &&
                         <CellButton
-                            before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/page-' + group.id + '_' + page.id + '?act=edit&section=edit'}
-                            target='_blank' rel='noreferrer'
+                            before={<Icon24DeleteOutline/>}
+                            mode="danger"
+                            onClick={() => {
+                                delPage(infoPage);
+                            }}
                         >
-                            Открыть редактор ВКонтакте</CellButton>
-                    </Group>
-                    <Group>
-                        <Cell
+                            Удалить</CellButton>
+                        }
+                        {(disabled) &&
+                        <CellButton
+                            before={<Icon24HistoryBackwardOutline/>}
+                            onClick={restorePage}
+                        >
+                            Восстановить</CellButton>
+                        }
+
+                        <Spacing separator size={16}/>
+
+                        <Header mode="secondary">Настройки</Header>
+                        <SimpleCell indicator={nameAccess(infoPage.who_can_view)}>Просмотр</SimpleCell>
+                        <SimpleCell indicator={nameAccess(infoPage.who_can_edit)}>Редактирование</SimpleCell>
+
+                        <Spacing separator size={16}/>
+
+                        <SimpleCell
                             before={<Icon28HashtagOutline/>}
                             after={<IconButton onClick={copyId}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header="ID страницы">
                                 {infoPage.id}
                             </InfoRow>
-                        </Cell>
-                        <Cell
-                            before={<Icon28ViewOutline/>}
-                            after={<Link
-                                href={'https://vk.com/page-' + group.id + '_' + infoPage.id} target='_blank'
-                            ><Icon24ExternalLinkOutline/></Link>}
-                        >
-                            <InfoRow header="Всего просмотров">
-                                {infoPage.views}
-                            </InfoRow>
-                        </Cell>
-                        <Cell
+                        </SimpleCell>
+                        <SimpleCell
                             before={<Icon28EditOutline/>}
                             after={<Link
                                 href={'https://vk.com/id' + editor.id} target='_blank'
@@ -288,8 +385,8 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                             <InfoRow header="Последнее изменение">
                                 {timestampToDate(infoPage.edited)}
                             </InfoRow>
-                        </Cell>
-                        <Cell
+                        </SimpleCell>
+                        <SimpleCell
                             before={<Icon36CalendarOutline/>}
                             after={<Link
                                 href={'https://vk.com/id' + creator.id} target='_blank'
@@ -299,33 +396,36 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                             <InfoRow header="Создано">
                                 {timestampToDate(infoPage.created)}
                             </InfoRow>
-                        </Cell>
-                    </Group>
+                        </SimpleCell>
+                    </Fragment>
+                    }
                 </Fragment>
                 }
 
-                {(tab === 'history' && !(history)) && <PanelSpinner/>}
-                {(tab === 'history' && (history && history.length < 1)) &&
-                <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>}
-                {(tab === 'history' && (history && history.length > 0)) &&
-                <Fragment>
-                    <Group>
+                {(tab === 'history') && <Fragment>
+                    {(!history) && <PanelSpinner/>}
+                    {(history && history.length < 1) &&
+                    <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>}
+                    {(history && history.length > 0) &&
+                    <Fragment>
                         {history.map((item) => {
                             return (
-                                <Cell
-                                    after={timestampToDate(item.date)}
+                                <SimpleCell
+                                    indicator={timestampToDate(item.date)}
                                     key={item.id}
                                     description={'Размер текста: ' + item.length}
                                 >
                                     {page.editor_name}
-                                </Cell>
+                                </SimpleCell>
                             );
                         })}
-                    </Group>
-                    <Footer>{history.length} {declOfNum(history.length, ['изменение', 'изменения', 'изменений'])}</Footer>
+                        <Footer>{history.length} {declOfNum(history.length, ['изменение', 'изменения', 'изменений'])}</Footer>
+                    </Fragment>
+                    }
                 </Fragment>
                 }
             </Group>
+
             {snackbar}
         </Panel>
     )
