@@ -51,7 +51,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                 error_msg = options.error_msg;
             }
 
-            error_msg = error_msg ?? 'Undefined error';
+            error_msg = (error_msg || 'Undefined error');
 
             if (error_msg) {
                 setSnackbar(<Snackbar
@@ -78,7 +78,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                     offset: 0,
                     count: 1000,
                     v: "5.131",
-                    // access_token: accessToken.access_token
+                    access_token: accessToken.access_token
                 }
             }).then(data => {
                 if (data.response) {
