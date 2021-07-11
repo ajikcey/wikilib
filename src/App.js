@@ -6,7 +6,6 @@ import {
     AdaptivityProvider,
     AppRoot,
     Snackbar,
-    Avatar,
     ModalRoot,
     ModalPage, ModalPageHeader, PanelHeaderClose, PanelHeaderSubmit, FormItem, Input
 } from '@vkontakte/vkui';
