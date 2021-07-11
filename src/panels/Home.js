@@ -45,11 +45,15 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                         'User authorization failed: access_token was given to another ip address.'
                     ].indexOf(e.error_data.error_reason.error_msg) > -1) {
                         go(configData.routes.token);
-                    } else {
+                    } else if (e.error_data.error_reason.error_msg) {
                         error_msg = e.error_data.error_reason.error_msg;
+                    } else {
+                        error_msg = JSON.stringify(e.error_data.error_reason);
                     }
-                } else {
+                } else if (e.error_data.error_reason) {
                     error_msg = e.error_data.error_reason;
+                } else {
+                    error_msg = JSON.stringify(e.error_data);
                 }
             }
 
