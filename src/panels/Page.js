@@ -218,7 +218,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
             onClose={() => setSnackbar(null)}
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >
-            ID страницы скопирован
+            Скопировано в буфер
         </Snackbar>);
     }
 
