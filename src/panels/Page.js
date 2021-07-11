@@ -9,7 +9,7 @@ import {
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline,
-    Icon24Error, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline, Icon28EditCircleFillBlue,
+    Icon24Error, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline,
     Icon28EditOutline,
     Icon28HashtagOutline,
     Icon28ViewOutline,
