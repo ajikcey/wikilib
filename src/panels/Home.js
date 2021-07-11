@@ -39,25 +39,32 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
             let error_msg = options.default_error_msg;
 
             if (e.error_data) {
-                if (typeof e.error_data.error_reason === 'object') {
+                if (e.error_data.error_reason) {
+                    if (typeof e.error_data.error_reason === 'object') {
+                        if ([
+                            'User authorization failed: access_token has expired.',
+                            'User authorization failed: access_token was given to another ip address.'
+                        ].indexOf(e.error_data.error_reason.error_msg) > -1) {
+                            go(configData.routes.token); // refresh token
+                        } else if (e.error_data.error_reason.error_msg) {
+                            error_msg = e.error_data.error_reason.error_msg;
+                        }
+                    } else {
+                        error_msg = e.error_data.error_reason; // бывает строкой
+                    }
+                } else if (e.error_data.error_msg) {
                     if ([
                         'User authorization failed: access_token has expired.',
                         'User authorization failed: access_token was given to another ip address.'
-                    ].indexOf(e.error_data.error_reason.error_msg) > -1) {
-                        go(configData.routes.token);
-                    } else if (e.error_data.error_reason.error_msg) {
-                        error_msg = e.error_data.error_reason.error_msg;
+                    ].indexOf(e.error_data.error_msg) > -1) {
+                        go(configData.routes.token); // refresh token
                     } else {
-                        error_msg = JSON.stringify(e.error_data.error_reason);
+                        error_msg = e.error_data.error_msg;
                     }
-                } else if (e.error_data.error_reason) {
-                    error_msg = e.error_data.error_reason;
-                } else {
-                    error_msg = JSON.stringify(e.error_data);
                 }
             }
 
-            error_msg = (error_msg || 'Undefined error');
+            error_msg = (error_msg || JSON.stringify(e));
 
             if (error_msg) {
                 setSnackbar(<Snackbar
