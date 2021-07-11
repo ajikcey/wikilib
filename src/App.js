@@ -8,7 +8,7 @@ import {
     Snackbar,
     Avatar,
     ModalRoot,
-    ModalPage, ModalCard, ModalPageHeader, PanelHeaderClose, PanelHeaderSubmit, FormItem, Input
+    ModalPage, ModalPageHeader, PanelHeaderClose, PanelHeaderSubmit, FormItem, Input
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";

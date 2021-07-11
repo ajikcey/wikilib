@@ -56,7 +56,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
             }).catch(e => {
                 console.log(e);
 
-                let error_msg = null;
+                let error_msg;
 
                 if (e.error_data) {
                     switch (e.error_data.error_reason.error_msg) {
@@ -135,7 +135,6 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                                     description={timestampToDate(page.edited) + ' ' + page.editor_name}
                                     onClick={() => {
                                         selectPage(page);
-                                        return false;
                                     }}
                                 >
                                     {page.title}

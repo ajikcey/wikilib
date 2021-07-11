@@ -1,24 +1,31 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Avatar, Cell, CellButton, Group, Header, HorizontalScroll, InfoRow, Link, List,
-    Panel, PanelHeader, PanelHeaderBack, PanelSpinner,
-    Snackbar, Tabs, TabsItem
+    Avatar, Cell, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
+    Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
+    Snackbar, Tabs, TabsItem, IconButton
 } from '@vkontakte/vkui';
 
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon24Error, Icon28EditOutline, Icon28ViewOutline, Icon36CalendarOutline,
+    Icon24CheckCircleOutline,
+    Icon24Error, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline, Icon28EditCircleFillBlue,
+    Icon28EditOutline,
+    Icon28HashtagOutline,
+    Icon28ViewOutline,
+    Icon32SearchOutline,
+    Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {timestampToDate} from "../functions";
+import {copyToClipboard, declOfNum, timestampToDate} from "../functions";
 
 const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
     const [editor, setEditor] = useState(null);
-    const [tab, setTab] = useState('first');
+    const [history, setHistory] = useState(null);
+    const [tab, setTab] = useState('info');
 
     useEffect(() => {
 
@@ -114,7 +121,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
             }).catch(e => {
                 console.log(e);
 
-                let error_msg = null;
+                let error_msg;
 
                 if (e.error_data) {
                     switch (e.error_data.error_reason.error_msg) {
@@ -138,7 +145,61 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
             });
         }
 
+        /**
+         * Возвращает список всех старых версий вики-страницы.
+         * @returns {Promise<void>}
+         */
+        async function fetchHistory() {
+            await bridge.send("VKWebAppCallAPIMethod", {
+                method: "pages.getHistory",
+                params: {
+                    page_id: page.id,
+                    group_id: group.id,
+                    v: "5.131",
+                    access_token: accessToken.access_token
+                }
+            }).then(data => {
+                if (data.response) {
+                    setHistory(data.response);
+                } else {
+                    setSnackbar(<Snackbar
+                        layout='vertical'
+                        onClose={() => setSnackbar(null)}
+                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                    >
+                        Error get history
+                    </Snackbar>);
+                }
+            }).catch(e => {
+                console.log(e);
+
+                let error_msg;
+
+                if (e.error_data) {
+                    switch (e.error_data.error_reason.error_msg) {
+                        default:
+                            error_msg = e.error_data.error_reason.error_msg;
+                    }
+                } else {
+                    error_msg = 'Error get history';
+                }
+
+                if (error_msg) {
+                    setSnackbar(<Snackbar
+                        layout='vertical'
+                        onClose={() => setSnackbar(null)}
+                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
+                        ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+                    >
+                        {error_msg}
+                    </Snackbar>);
+                }
+            });
+        }
+
         fetchInfoPage();
+        fetchHistory();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -147,6 +208,18 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
         console.log(infoPage);
 
         setActiveModal(configData.modals.renamePageModal);
+    }
+
+    const copyId = () => {
+        copyToClipboard(infoPage.id);
+
+        setSnackbar(<Snackbar
+            layout='vertical'
+            onClose={() => setSnackbar(null)}
+            before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+        >
+            ID страницы скопирован
+        </Snackbar>);
     }
 
     return (
@@ -160,38 +233,52 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                 <Tabs>
                     <HorizontalScroll>
                         <TabsItem
-                            onClick={() => setTab('first')}
-                            selected={tab === 'first'}
+                            onClick={() => setTab('info')}
+                            selected={tab === 'info'}
                         >
                             Информация
                         </TabsItem>
                         <TabsItem
-                            onClick={() => setTab('second')}
-                            selected={tab === 'second'}
-                        >
-                            Редактирование
-                        </TabsItem>
-                        <TabsItem
-                            onClick={() => setTab('third')}
-                            selected={tab === 'third'}
+                            onClick={() => setTab('history')}
+                            selected={tab === 'history'}
                         >
                             История
-                        </TabsItem>
-                        <TabsItem
-                            onClick={() => setTab('fourth')}
-                            selected={tab === 'fourth'}
-                        >
-                            Просмотр
                         </TabsItem>
                     </HorizontalScroll>
                 </Tabs>
 
-                {(tab === 'first' && !(infoPage && creator && editor)) && <PanelSpinner/>}
-                {(tab === 'first' && (infoPage && creator && editor)) &&
+                {(tab === 'info' && !(infoPage && creator && editor)) && <PanelSpinner/>}
+                {(tab === 'info' && (infoPage && creator && editor)) &&
                 <Fragment>
                     <Group>
+                        <CellButton
+                            before={<Icon24Write/>}
+                            onClick={() => {
+                                renamePage();
+                            }}
+                        >
+                            Переименовать</CellButton>
+                        <CellButton
+                            before={<Icon24ExternalLinkOutline/>}
+                            href={'https://vk.com/page-' + group.id + '_' + page.id + '?act=edit&section=edit'}
+                            target='_blank' rel='noreferrer'
+                        >
+                            Открыть редактор ВКонтакте</CellButton>
+                    </Group>
+                    <Group>
+                        <Cell
+                            before={<Icon28HashtagOutline/>}
+                            after={<IconButton onClick={copyId}><Icon28CopyOutline/></IconButton>}
+                        >
+                            <InfoRow header="ID страницы">
+                                {infoPage.id}
+                            </InfoRow>
+                        </Cell>
                         <Cell
                             before={<Icon28ViewOutline/>}
+                            after={<Link
+                                href={'https://vk.com/page-' + group.id + '_' + infoPage.id} target='_blank'
+                            ><Icon24ExternalLinkOutline/></Link>}
                         >
                             <InfoRow header="Всего просмотров">
                                 {infoPage.views}
@@ -219,20 +306,29 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                                 {timestampToDate(infoPage.created)}
                             </InfoRow>
                         </Cell>
-
-                        <CellButton
-                            onClick={() => {
-                                renamePage();
-                            }}
-                        >
-                            Переименовать</CellButton>
-
-                        <CellButton
-                            href={'https://vk.com/page-' + group.id + '_' + page.id + '?act=edit&section=view'}
-                            target='_blank' rel='noreferrer'
-                        >
-                            Перейти ВКонтакте</CellButton>
                     </Group>
+                </Fragment>
+                }
+
+                {(tab === 'history' && !(history)) && <PanelSpinner/>}
+                {(tab === 'history' && (history && history.length < 1)) &&
+                <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>}
+                {(tab === 'history' && (history && history.length > 0)) &&
+                <Fragment>
+                    <Group>
+                        {history.map((item) => {
+                            return (
+                                <Cell
+                                    after={timestampToDate(item.date)}
+                                    key={item.id}
+                                    description={'Размер текста: ' + item.length}
+                                >
+                                    {page.editor_name}
+                                </Cell>
+                            );
+                        })}
+                    </Group>
+                    <Footer>{history.length} {declOfNum(history.length, ['изменение', 'изменения', 'изменений'])}</Footer>
                 </Fragment>
                 }
             </Group>
