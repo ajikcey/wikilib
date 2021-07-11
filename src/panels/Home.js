@@ -26,10 +26,10 @@ import {
 import configData from "../config.json";
 import {cutDeclNum, declOfNum} from "../functions";
 
-const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) => {
+const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [groups, setGroups] = useState(null);
-    const [lastCommunityIds] = useState(cachedLastGroups);
+
     const [lastGroups, setLastGroups] = useState([]);
     const [countGroups, setCountGroups] = useState(0);
 
@@ -122,11 +122,11 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
          * @returns {Promise<void>}
          */
         async function fetchLastGroups() {
-            if (lastCommunityIds.length > 0) {
+            if (lastGroupIds.length > 0) {
                 await bridge.send("VKWebAppCallAPIMethod", {
                     method: "groups.getById",
                     params: {
-                        group_ids: lastCommunityIds.join(','),
+                        group_ids: lastGroupIds.join(','),
                         fields: ['members_count', 'verified'].join(','),
                         v: "5.131",
                         access_token: accessToken.access_token
@@ -152,6 +152,8 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                         default_error_msg: 'Error get groups by id'
                     });
                 });
+            } else {
+                setLastGroups([]);
             }
         }
 
@@ -166,6 +168,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
      * @returns {Promise<void>}
      */
     const clearLast = async function () {
+        setLastGroupIds([]);
         setLastGroups([]);
 
         try {
@@ -191,21 +194,21 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
      * @param item
      */
     const selectGroup = function (item) {
-        const index = lastCommunityIds.indexOf(item.id);
+        const index = lastGroupIds.indexOf(item.id);
         if (index > -1) {
             // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
-            lastCommunityIds.splice(index, 1);
+            lastGroupIds.splice(index, 1);
         }
-        lastCommunityIds.unshift(item.id);
+        lastGroupIds.unshift(item.id);
 
-        if (lastCommunityIds.length > configData.max_last_groups) {
-            lastCommunityIds.splice(configData.max_last_groups, lastCommunityIds.length - configData.max_last_groups);
+        if (lastGroupIds.length > configData.max_last_groups) {
+            lastGroupIds.splice(configData.max_last_groups, lastGroupIds.length - configData.max_last_groups);
         }
 
         try {
             bridge.send('VKWebAppStorageSet', {
                 key: configData.storage_keys.last_groups,
-                value: JSON.stringify(lastCommunityIds)
+                value: JSON.stringify(lastGroupIds)
             });
 
             setGroup(item);

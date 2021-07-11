@@ -32,7 +32,7 @@ const App = () => {
     const [user, setFetchedUser] = useState(null);
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
     const [userStatus, setUserStatus] = useState(null);
-    const [cachedLastGroups, setCachedLastGroups] = useState([]);
+    const [lastGroupIds, setLastGroupIds] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
     const [group, setGroup] = useState(null);
@@ -69,7 +69,7 @@ const App = () => {
 
                 setAccessToken(data[configData.storage_keys.access_token]);
                 setUserStatus(data[configData.storage_keys.status]);
-                setCachedLastGroups(Object.values(data[configData.storage_keys.last_groups]));
+                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status].tokenReceived) {
                     setActivePanel(configData.routes.home);
@@ -203,7 +203,7 @@ const App = () => {
                            setUserStatus={setUserStatus} userStatus={userStatus}/>
                     <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
                     <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                          snackbarError={snackbar} cachedLastGroups={cachedLastGroups} go={go}/>
+                          snackbarError={snackbar} lastGroupIds={lastGroupIds} setLastGroupIds={setLastGroupIds} go={go}/>
                     <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
                            snackbarError={snackbar} go={go} setPage={setPage}/>
                     <Page id={configData.routes.page} page={page} group={group} accessToken={accessToken}
