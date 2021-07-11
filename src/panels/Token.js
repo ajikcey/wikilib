@@ -16,7 +16,7 @@ const Token = ({id, fetchToken, snackbarError}) => {
                 <Placeholder
                     icon={<Icon56InfoOutline/>}
                     header="Права доступа"
-                    action={<Button size="l" onClick={fetchToken}>Выдать доступ</Button>}
+                    action={<Button size="l" onClick={fetchToken}>Продолжить</Button>}
                 >
                     Для работы сервиса необходимо выдать доступ к сообществам и wiki-страницам.
                 </Placeholder>

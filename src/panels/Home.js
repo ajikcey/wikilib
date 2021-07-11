@@ -252,7 +252,13 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                             {lastGroups.map((group) => {
                                 return (
                                     <HorizontalCell
-                                        key={group.id} header={group.name}
+                                        key={group.id} header={<div style={{
+                                        WebkitBoxOrient: 'vertical',
+                                        WebkitLineClamp: 2,
+                                        display: '-webkit-box',
+                                        overflow: 'hidden',
+                                        wordBreak: 'break-word'
+                                    }}>{group.name}</div>}
                                         onClick={() => {
                                             selectGroup(group)
                                         }}
