@@ -15,7 +15,7 @@ import {
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon24Error,
+    Icon24ErrorCircle,
     Icon28AddOutline,
     Icon28Document,
     Icon32SearchOutline,
@@ -44,17 +44,21 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                 if (data.response) {
                     setPages(data.response.reverse()); // переворот массива, чтобы свежие изменения были вверху
                 } else {
+                    setPages([]);
+
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         Error get pages
                     </Snackbar>);
                 }
             }).catch(e => {
                 console.log(e);
+
+                setPages([]);
 
                 let error_msg;
 
@@ -72,7 +76,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         {error_msg}
                     </Snackbar>);

@@ -19,7 +19,7 @@ import {
     Footer, Link
 } from '@vkontakte/vkui';
 import {
-    Icon12Verified, Icon16Clear, Icon24Error,
+    Icon12Verified, Icon16Clear, Icon24ErrorCircle,
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
@@ -55,8 +55,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                 setSnackbar(<Snackbar
                     layout='vertical'
                     onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
                     {error_msg}
                 </Snackbar>);
@@ -165,8 +164,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
             setSnackbar(<Snackbar
                 layout='vertical'
                 onClose={() => setSnackbar(null)}
-                before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
                 Error with sending data to Storage
             </Snackbar>);
@@ -204,7 +202,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                 layout='vertical'
                 onClose={() => setSnackbar(null)}
                 before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+                ><Icon24ErrorCircle fill='#fff' width={14} height={14}/></Avatar>}
             >
                 Error with sending data to Storage
             </Snackbar>);

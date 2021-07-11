@@ -9,7 +9,7 @@ import {
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline,
-    Icon24Error, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline,
+    Icon24ErrorCircle, Icon24ExternalLinkOutline, Icon24Write, Icon28CopyOutline,
     Icon28EditOutline,
     Icon28HashtagOutline,
     Icon28ViewOutline,
@@ -52,7 +52,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         Error get page
                     </Snackbar>);
@@ -76,7 +76,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width={14} height={14}/></Avatar>}
                     >
                         {error_msg}
                     </Snackbar>);
@@ -113,7 +113,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         Error get page
                     </Snackbar>);
@@ -137,7 +137,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width={14} height={14}/></Avatar>}
                     >
                         {error_msg}
                     </Snackbar>);
@@ -166,7 +166,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         Error get history
                     </Snackbar>);
@@ -190,7 +190,7 @@ const Page = ({id, accessToken, page, group, go, setActiveModal, snackbarError})
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width={14} height={14}/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width={14} height={14}/></Avatar>}
                     >
                         {error_msg}
                     </Snackbar>);

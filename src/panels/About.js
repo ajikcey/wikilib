@@ -15,7 +15,7 @@ import {
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
-import {Icon12Verified, Icon24Error} from "@vkontakte/icons";
+import {Icon12Verified, Icon24ErrorCircle} from "@vkontakte/icons";
 import {cutDeclNum} from "../functions";
 
 const About = ({id, go, snackbarError, accessToken}) => {
@@ -49,8 +49,7 @@ const About = ({id, go, snackbarError, accessToken}) => {
                 setSnackbar(<Snackbar
                     layout='vertical'
                     onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
                     Error get group
                 </Snackbar>);

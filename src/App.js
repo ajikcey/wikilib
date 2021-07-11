@@ -12,7 +12,7 @@ import {
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";
-import {Icon24Error} from "@vkontakte/icons";
+import {Icon24ErrorCircle} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -82,8 +82,7 @@ const App = () => {
                 setSnackbar(<Snackbar
                     layout='vertical'
                     onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
                     Error get data from Storage
                 </Snackbar>);
@@ -137,7 +136,7 @@ const App = () => {
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
                     >
                         Empty token
                     </Snackbar>);
@@ -148,8 +147,7 @@ const App = () => {
                 setSnackbar(<Snackbar
                     layout='vertical'
                     onClose={() => setSnackbar(null)}
-                    before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                    ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
                     Error with sending data to Storage
                 </Snackbar>);
@@ -160,8 +158,7 @@ const App = () => {
             setSnackbar(<Snackbar
                 layout='vertical'
                 onClose={() => setSnackbar(null)}
-                before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                ><Icon24Error fill='#fff' width='14' height='14'/></Avatar>}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
                 Error get token
             </Snackbar>);
