@@ -39,13 +39,15 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
             let error_msg = null;
 
             if (e.error_data) {
-                switch (e.error_data.error_reason) {
-                    case 'User authorization failed: access_token has expired.':
-                    case 'User authorization failed: access_token was given to another ip address.':
+                if (typeof e.error_data.error_reason === 'object') {
+                    if ([
+                        'User authorization failed: access_token has expired.',
+                        'User authorization failed: access_token was given to another ip address.'
+                    ].indexOf(e.error_data.error_reason.error_msg) > -1) {
                         go(configData.routes.token);
-                        break;
-                    default:
-                        error_msg = e.error_data.error_reason;
+                    }
+                } else {
+                    error_msg = e.error_data.error_reason;
                 }
             } else {
                 error_msg = options.error_msg;
