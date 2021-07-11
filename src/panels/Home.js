@@ -36,7 +36,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
     useEffect(() => {
 
         const handleError = (e, options) => {
-            let error_msg = null;
+            let error_msg = options.default_error_msg;
 
             if (e.error_data) {
                 if (typeof e.error_data.error_reason === 'object') {
@@ -45,12 +45,12 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                         'User authorization failed: access_token was given to another ip address.'
                     ].indexOf(e.error_data.error_reason.error_msg) > -1) {
                         go(configData.routes.token);
+                    } else {
+                        error_msg = e.error_data.error_reason.error_msg;
                     }
                 } else {
                     error_msg = e.error_data.error_reason;
                 }
-            } else {
-                error_msg = options.error_msg;
             }
 
             error_msg = (error_msg || 'Undefined error');
@@ -92,7 +92,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                     console.log(data);
 
                     handleError({}, {
-                        error_msg: 'Error get groups'
+                        default_error_msg: 'Error get groups'
                     });
                 }
             }).catch(e => {
@@ -101,7 +101,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                 console.log(e);
 
                 handleError(e, {
-                    error_msg: 'Error get groups'
+                    default_error_msg: 'Error get groups'
                 });
             });
         }
@@ -129,7 +129,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                         console.log(data);
 
                         handleError({}, {
-                            error_msg: 'Error get groups by id'
+                            default_error_msg: 'Error get groups by id'
                         });
                     }
                 }).catch(e => {
@@ -138,7 +138,7 @@ const Home = ({id, accessToken, go, setGroup, cachedLastGroups, snackbarError}) 
                     console.log(e);
 
                     handleError(e, {
-                        error_msg: 'Error get groups by id'
+                        default_error_msg: 'Error get groups by id'
                     });
                 });
             }
