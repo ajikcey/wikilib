@@ -49,8 +49,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
-                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
+                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
                         Error get pages
                     </Snackbar>);
@@ -75,8 +74,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
-                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
+                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
                         {error_msg}
                     </Snackbar>);

@@ -135,8 +135,7 @@ const App = () => {
                     setSnackbar(<Snackbar
                         layout='vertical'
                         onClose={() => setSnackbar(null)}
-                        before={<Avatar size={24} style={{backgroundColor: 'var(--dynamic_red)'}}
-                        ><Icon24ErrorCircle fill='#fff' width='14' height='14'/></Avatar>}
+                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
                         Empty token
                     </Snackbar>);
