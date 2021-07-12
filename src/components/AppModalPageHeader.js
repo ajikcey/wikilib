@@ -1,4 +1,13 @@
-import {ModalPageHeader, ANDROID, IOS, usePlatform, PanelHeaderClose, useAdaptivity, ViewWidth} from '@vkontakte/vkui';
+import {
+    ModalPageHeader,
+    ANDROID,
+    IOS,
+    usePlatform,
+    PanelHeaderClose,
+    useAdaptivity,
+    ViewWidth,
+    PanelHeaderSubmit
+} from '@vkontakte/vkui';
 import {Fragment} from "react";
 
 /*
@@ -25,10 +34,12 @@ const AppModalPageHeader = (props) => {
             left={(
                 <Fragment>
                     {(isMobile && platform === ANDROID) && <PanelHeaderClose onClick={props.onClose}/>}
+                    {(isMobile && platform === IOS) && <PanelHeaderSubmit onClick={props.onSubmit}/>}
                 </Fragment>
             )}
             right={(
                 <Fragment>
+                    {(isMobile && platform === ANDROID) && <PanelHeaderSubmit onClick={props.onClose}/>}
                     {platform === IOS && <PanelHeaderClose onClick={props.onSubmit}/>}
                 </Fragment>
             )}

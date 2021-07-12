@@ -30,7 +30,6 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
             console.log(e);
 
             setSnackbar(<Snackbar
-                layout='vertical'
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >

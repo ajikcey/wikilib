@@ -47,7 +47,6 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                     setPages([]);
 
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -72,7 +71,6 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
 
                 if (error_msg) {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >

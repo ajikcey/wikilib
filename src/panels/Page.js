@@ -10,7 +10,7 @@ import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
     Icon24ErrorCircle,
-    Icon24ExternalLinkOutline,
+    Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline,
     Icon24Write,
     Icon28CopyOutline, Icon28Document,
     Icon28EditOutline,
@@ -52,7 +52,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                     setInfoPage(data.response);
                 } else {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -75,7 +74,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
 
                 if (error_msg) {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -111,7 +109,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                     }
                 } else {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -134,7 +131,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
 
                 if (error_msg) {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -162,7 +158,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                     setHistory(data.response);
                 } else {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -185,7 +180,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
 
                 if (error_msg) {
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -229,7 +223,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
         copyToClipboard(infoPage.id);
 
         setSnackbar(<Snackbar
-            layout='vertical'
             onClose={() => setSnackbar(null)}
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >
@@ -256,20 +249,32 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     }
 
     /**
+     * Восстановление wiki-страницы
+     */
+    const restorePage = () => {
+        savePage(infoPage.title, infoPage.source).then(() => {
+
+            setSnackbar(null);
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24HistoryBackwardOutline fill='var(--accent)'/>}
+            >
+                Страница восстановлена
+            </Snackbar>);
+        });
+    }
+
+    /**
      * Удаление wiki-страницы
      */
     const delPage = () => {
-        if (infoPage.title.indexOf(configData.prefix_deleted_page) < 0) {
-            // если еще нет префикса
-            infoPage.title = configData.prefix_deleted_page + infoPage.title;
-        }
-
         savePage(infoPage.title, infoPage.source).then(() => {
 
             setSnackbar(<Snackbar
-                layout='vertical'
                 onClose={() => setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                action="Восстановить"
+                onActionClick={restorePage}
+                before={<Icon24DeleteOutline fill='var(--dynamic_red)'/>}
             >
                 Страница удалена
             </Snackbar>);
@@ -277,7 +282,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     }
 
     /**
-     * Сохраняет текст вики-страницы.
+     * Сохраняет текст wiki-страницы
      */
     const savePage = (title, text) => {
         return bridge.send("VKWebAppCallAPIMethod", {

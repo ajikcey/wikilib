@@ -47,7 +47,6 @@ const About = ({id, go, snackbarError, accessToken}) => {
                 console.log(e);
 
                 setSnackbar(<Snackbar
-                    layout='vertical'
                     onClose={() => setSnackbar(null)}
                     before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >

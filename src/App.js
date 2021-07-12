@@ -7,17 +7,13 @@ import {
     AppRoot,
     Snackbar,
     ModalRoot,
-    ModalPage,
-    FormItem,
     Input,
     Button,
-    Group,
     ConfigProvider,
     withAdaptivity,
     SplitLayout,
     SplitCol,
     ModalCard,
-    Select,
     NativeSelect
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
@@ -35,7 +31,6 @@ import Token from "./panels/Token";
 import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
-import AppModalPageHeader from "./components/AppModalPageHeader";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -91,7 +86,6 @@ const App = withAdaptivity(() => {
                 console.log(e);
 
                 setSnackbar(<Snackbar
-                    layout='vertical'
                     onClose={() => setSnackbar(null)}
                     before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
@@ -144,7 +138,6 @@ const App = withAdaptivity(() => {
                     console.log(data);
 
                     setSnackbar(<Snackbar
-                        layout='vertical'
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
@@ -155,7 +148,6 @@ const App = withAdaptivity(() => {
                 console.log(e);
 
                 setSnackbar(<Snackbar
-                    layout='vertical'
                     onClose={() => setSnackbar(null)}
                     before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
@@ -166,7 +158,6 @@ const App = withAdaptivity(() => {
             console.log(e);
 
             setSnackbar(<Snackbar
-                layout='vertical'
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
@@ -188,35 +179,18 @@ const App = withAdaptivity(() => {
             activeModal={activeModal}
             onClose={onCloseModal}
         >
-            <ModalPage
-                id='ModalPage123'
-                onClose={onCloseModal}
-                header={<AppModalPageHeader
-                    onClose={onCloseModal}
-                    onSubmit={onSubmitModal}
-                >
-                    Название
-                </AppModalPageHeader>
-                }
-            >
-                <Group>
-                    <FormItem top="Название wiki-страницы">
-                        <Input defaultValue=""/>
-                    </FormItem>
-                </Group>
-            </ModalPage>
-
             <ModalCard
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
                 header="Название"
                 actions={
-                    <Button size="l" mode="primary" onClick={onSubmitModal}>
+                    <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
                         Сохранить
                     </Button>
                 }
             >
                 <Input defaultValue=""/>
+
             </ModalCard>
 
             <ModalCard
@@ -229,13 +203,11 @@ const App = withAdaptivity(() => {
                     </Button>
                 }
             >
-                <FormItem top="Выберите">
-                    <NativeSelect>
-                        <option value={configData.wiki_access.all}>Все</option>
-                        <option value={configData.wiki_access.member}>Участники</option>
-                        <option value={configData.wiki_access.staff}>Руководители</option>
-                    </NativeSelect>
-                </FormItem>
+                <NativeSelect>
+                    <option value={configData.wiki_access.all}>Все</option>
+                    <option value={configData.wiki_access.member}>Участники</option>
+                    <option value={configData.wiki_access.staff}>Руководители</option>
+                </NativeSelect>
             </ModalCard>
 
             <ModalCard
@@ -248,13 +220,11 @@ const App = withAdaptivity(() => {
                     </Button>
                 }
             >
-                <FormItem top="Выберите">
-                    <NativeSelect>
-                        <option value={configData.wiki_access.all}>Все</option>
-                        <option value={configData.wiki_access.member}>Участники</option>
-                        <option value={configData.wiki_access.staff}>Руководители</option>
-                    </NativeSelect>
-                </FormItem>
+                <NativeSelect>
+                    <option value={configData.wiki_access.all}>Все</option>
+                    <option value={configData.wiki_access.member}>Участники</option>
+                    <option value={configData.wiki_access.staff}>Руководители</option>
+                </NativeSelect>
             </ModalCard>
         </ModalRoot>
     );

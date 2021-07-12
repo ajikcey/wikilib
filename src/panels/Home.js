@@ -68,7 +68,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
 
             if (error_msg) {
                 setSnackbar(<Snackbar
-                    layout='vertical'
                     onClose={() => setSnackbar(null)}
                     before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                 >
@@ -180,7 +179,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             console.log(e);
 
             setSnackbar(<Snackbar
-                layout='vertical'
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
@@ -217,7 +215,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             console.log(e);
 
             setSnackbar(<Snackbar
-                layout='vertical'
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
