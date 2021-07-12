@@ -10,7 +10,7 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner
+    PanelSpinner, Spacing
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
@@ -75,6 +75,8 @@ const About = ({id, go, snackbarError, accessToken}) => {
                         Приложение, с помощью которого можно посмотреть wiki-страницы во всех своих сообществах
                         ВКонтакте.
                     </Div>
+
+                    <Spacing separator size={16}/>
 
                     {(!appCommunity) && <PanelSpinner/>}
                     {(appCommunity) &&

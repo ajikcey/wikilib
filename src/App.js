@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import qs from 'querystring';
 import {
     View,
     ScreenSpinner,
@@ -14,10 +15,9 @@ import {
     SplitLayout,
     SplitCol,
     ModalCard,
-    NativeSelect
+    NativeSelect, VKCOM, IOS, ANDROID
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {isUndefined} from "@vkontakte/vkjs";
 import {Icon24ErrorCircle} from "@vkontakte/icons";
 
 import './App.css';
@@ -44,6 +44,9 @@ const App = withAdaptivity(() => {
     const [group, setGroup] = useState(null);
     const [page, setPage] = useState(null);
 
+    const params = window.location.search.slice(1);
+    const paramsAsObject = qs.parse(params);
+
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
 
@@ -53,7 +56,7 @@ const App = withAdaptivity(() => {
                 document.body.attributes.setNamedItem(schemeAttribute);
 
             } else if (type === 'vk-connect') {
-                if (isUndefined(data)) {
+                if (typeof data === 'undefined') {
                     setPopout(null);
                     setActivePanel(configData.routes.landing);
                 }
@@ -229,8 +232,13 @@ const App = withAdaptivity(() => {
         </ModalRoot>
     );
 
+    function fetchPlatform() {
+        return (['desktop_web'].indexOf(paramsAsObject.vk_platform) > -1 ? VKCOM :
+            (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(paramsAsObject.vk_platform) > -1 ? IOS : ANDROID));
+    }
+
     return (
-        <ConfigProvider>
+        <ConfigProvider platform={fetchPlatform()}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
