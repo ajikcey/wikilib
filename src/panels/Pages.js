@@ -100,6 +100,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
     return (
         <Panel id={id}>
             <PanelHeader
+                mode="secondary"
                 left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
             >
                 <PanelHeaderContent

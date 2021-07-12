@@ -229,6 +229,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
     return (
         <Panel id={id}>
             <PanelHeader
+                mode="secondary"
                 left={<PanelHeaderButton><Icon28InfoOutline onClick={() => {
                     go(configData.routes.about)
                 }}/></PanelHeaderButton>}

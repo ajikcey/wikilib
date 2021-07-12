@@ -9,7 +9,9 @@ const Token = ({id, fetchToken, snackbarError}) => {
 
     return (
         <Panel id={id} centered={true}>
-            <PanelHeader>
+            <PanelHeader
+                mode="secondary"
+            >
                 {configData.name}
             </PanelHeader>
             <Group>

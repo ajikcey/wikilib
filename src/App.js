@@ -7,7 +7,18 @@ import {
     AppRoot,
     Snackbar,
     ModalRoot,
-    ModalPage, FormItem, Input, Button, Group, ConfigProvider, withAdaptivity, SplitLayout
+    ModalPage,
+    FormItem,
+    Input,
+    Button,
+    Group,
+    ConfigProvider,
+    withAdaptivity,
+    SplitLayout,
+    SplitCol,
+    ModalCard,
+    Select,
+    NativeSelect
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {isUndefined} from "@vkontakte/vkjs";
@@ -178,19 +189,14 @@ const App = withAdaptivity(() => {
             onClose={onCloseModal}
         >
             <ModalPage
-                id={configData.modals.renamePageModal}
+                id='ModalPage123'
                 onClose={onCloseModal}
                 header={<AppModalPageHeader
-                    onCloseModal={onCloseModal}
-                    onSubmitModal={onSubmitModal}
+                    onClose={onCloseModal}
+                    onSubmit={onSubmitModal}
                 >
-                    Название страницы
+                    Название
                 </AppModalPageHeader>
-                }
-                actions={
-                    <Button size="l" mode="primary">
-                        Сохранить
-                    </Button>
                 }
             >
                 <Group>
@@ -199,6 +205,57 @@ const App = withAdaptivity(() => {
                     </FormItem>
                 </Group>
             </ModalPage>
+
+            <ModalCard
+                id={configData.modals.renamePage}
+                onClose={onCloseModal}
+                header="Название"
+                actions={
+                    <Button size="l" mode="primary" onClick={onSubmitModal}>
+                        Сохранить
+                    </Button>
+                }
+            >
+                <Input defaultValue=""/>
+            </ModalCard>
+
+            <ModalCard
+                id={configData.modals.settingPageView}
+                onClose={onCloseModal}
+                header="Просмотр страницы"
+                actions={
+                    <Button size="l" mode="primary" onClick={onSubmitModal}>
+                        Сохранить
+                    </Button>
+                }
+            >
+                <FormItem top="Выберите">
+                    <NativeSelect>
+                        <option value={configData.wiki_access.all}>Все</option>
+                        <option value={configData.wiki_access.member}>Участники</option>
+                        <option value={configData.wiki_access.staff}>Руководители</option>
+                    </NativeSelect>
+                </FormItem>
+            </ModalCard>
+
+            <ModalCard
+                id={configData.modals.settingPageEdit}
+                onClose={onCloseModal}
+                header="Редактирование страницы"
+                actions={
+                    <Button size="l" mode="primary" onClick={onSubmitModal}>
+                        Сохранить
+                    </Button>
+                }
+            >
+                <FormItem top="Выберите">
+                    <NativeSelect>
+                        <option value={configData.wiki_access.all}>Все</option>
+                        <option value={configData.wiki_access.member}>Участники</option>
+                        <option value={configData.wiki_access.staff}>Руководители</option>
+                    </NativeSelect>
+                </FormItem>
+            </ModalCard>
         </ModalRoot>
     );
 
@@ -206,23 +263,26 @@ const App = withAdaptivity(() => {
         <ConfigProvider>
             <AdaptivityProvider>
                 <AppRoot>
-                    <SplitLayout>
-                        <View activePanel={activePanel} popout={popout} modal={modal}>
-                            <Landing id={configData.routes.landing}/>
-                            <About id={configData.routes.about} go={go} snackbarError={snackbar}
-                                   accessToken={accessToken}/>
-                            <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
-                                   setUserStatus={setUserStatus} userStatus={userStatus}/>
-                            <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                            <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                                  snackbarError={snackbar} lastGroupIds={lastGroupIds} setLastGroupIds={setLastGroupIds}
-                                  go={go}/>
-                            <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
-                                   snackbarError={snackbar} go={go} setPage={setPage}/>
-                            <Page id={configData.routes.page} page={page} group={group} user={user}
-                                  accessToken={accessToken}
-                                  snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
-                        </View>
+                    <SplitLayout popout={popout} modal={modal}>
+                        <SplitCol>
+                            <View activePanel={activePanel}>
+                                <Landing id={configData.routes.landing}/>
+                                <About id={configData.routes.about} go={go} snackbarError={snackbar}
+                                       accessToken={accessToken}/>
+                                <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                                       setUserStatus={setUserStatus} userStatus={userStatus}/>
+                                <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
+                                <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
+                                      snackbarError={snackbar} lastGroupIds={lastGroupIds}
+                                      setLastGroupIds={setLastGroupIds}
+                                      go={go}/>
+                                <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
+                                       snackbarError={snackbar} go={go} setPage={setPage}/>
+                                <Page id={configData.routes.page} page={page} group={group} user={user}
+                                      accessToken={accessToken}
+                                      snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
+                            </View>
+                        </SplitCol>
                     </SplitLayout>
                 </AppRoot>
             </AdaptivityProvider>

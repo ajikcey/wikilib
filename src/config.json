@@ -32,6 +32,8 @@
   },
 
   "modals": {
-    "renamePageModal": "renamePageModal"
+    "renamePage": "renamePage",
+    "settingPageView": "settingPageView",
+    "settingPageEdit": "settingPageEdit"
   }
 }

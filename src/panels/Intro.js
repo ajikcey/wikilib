@@ -43,7 +43,9 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
         <Panel id={id} centered={true}>
             {(!userStatus && user) &&
             <Fragment>
-                <PanelHeader>
+                <PanelHeader
+                    mode="secondary"
+                >
                     {configData.name}
                 </PanelHeader>
 

@@ -11,7 +11,6 @@ import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
     Icon24ErrorCircle,
     Icon24ExternalLinkOutline,
-    Icon24HistoryBackwardOutline,
     Icon24Write,
     Icon28CopyOutline, Icon28Document,
     Icon28EditOutline,
@@ -29,7 +28,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     const [editor, setEditor] = useState(null);
     const [history, setHistory] = useState(null);
     const [tab, setTab] = useState('info');
-    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
 
@@ -50,10 +48,6 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
             }).then(data => {
                 if (data.response) {
                     fetchUsers([data.response.creator_id, data.response.editor_id]);
-
-                    if (data.response.title.indexOf(configData.prefix_deleted_page) > -1) {
-                        setDisabled(true);
-                    }
 
                     setInfoPage(data.response);
                 } else {
@@ -211,7 +205,21 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
      * Переименование wiki-страницы
      */
     const renamePage = () => {
-        setActiveModal(configData.modals.renamePageModal);
+        setActiveModal(configData.modals.renamePage);
+    }
+
+    /**
+     * Изменение настройки, что может просматривать страницу
+     */
+    const settingPageView = () => {
+        setActiveModal(configData.modals.settingPageView);
+    }
+
+    /**
+     * Изменение настройки, что может редактировать страницу
+     */
+    const settingPageEdit = () => {
+        setActiveModal(configData.modals.settingPageEdit);
     }
 
     /**
@@ -248,27 +256,23 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     }
 
     /**
-     * Восстановление wiki-страницы
-     */
-    const restorePage = () => {
-        infoPage.title = infoPage.title.replace(configData.prefix_deleted_page, '');
-
-        savePage(infoPage.title, infoPage.source).then(() => {
-            setDisabled(false);
-        });
-    }
-
-    /**
      * Удаление wiki-страницы
      */
-    const delPage = (infoPage) => {
+    const delPage = () => {
         if (infoPage.title.indexOf(configData.prefix_deleted_page) < 0) {
             // если еще нет префикса
             infoPage.title = configData.prefix_deleted_page + infoPage.title;
         }
 
         savePage(infoPage.title, infoPage.source).then(() => {
-            setDisabled(true);
+
+            setSnackbar(<Snackbar
+                layout='vertical'
+                onClose={() => setSnackbar(null)}
+                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+            >
+                Страница удалена
+            </Snackbar>);
         });
     }
 
@@ -293,6 +297,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     return (
         <Panel id={id}>
             <PanelHeader
+                mode="secondary"
                 left={<PanelHeaderBack onClick={() => go(configData.routes.pages)}/>}
             >
                 <PanelHeaderContent
@@ -341,29 +346,26 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                         >
                             Переименовать</CellButton>
 
-                        {(!disabled) &&
                         <CellButton
                             before={<Icon24DeleteOutline/>}
                             mode="danger"
-                            onClick={() => {
-                                delPage(infoPage);
-                            }}
+                            onClick={delPage}
                         >
                             Удалить</CellButton>
-                        }
-                        {(disabled) &&
-                        <CellButton
-                            before={<Icon24HistoryBackwardOutline/>}
-                            onClick={restorePage}
-                        >
-                            Восстановить</CellButton>
-                        }
 
                         <Spacing separator size={16}/>
 
                         <Header mode="secondary">Настройки</Header>
-                        <SimpleCell indicator={nameAccess(infoPage.who_can_view)}>Просмотр</SimpleCell>
-                        <SimpleCell indicator={nameAccess(infoPage.who_can_edit)}>Редактирование</SimpleCell>
+                        <SimpleCell
+                            indicator={nameAccess(infoPage.who_can_view)}
+                            onClick={settingPageView}
+                        >
+                            Просмотр</SimpleCell>
+                        <SimpleCell
+                            indicator={nameAccess(infoPage.who_can_edit)}
+                            onClick={settingPageEdit}
+                        >
+                            Редактирование</SimpleCell>
 
                         <Spacing separator size={16}/>
 

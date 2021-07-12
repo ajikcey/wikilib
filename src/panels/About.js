@@ -65,6 +65,7 @@ const About = ({id, go, snackbarError, accessToken}) => {
         <Panel id={id}>
             <Fragment>
                 <PanelHeader
+                    mode="secondary"
                     left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
                 >
                     О приложении
