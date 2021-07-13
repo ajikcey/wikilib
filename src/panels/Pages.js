@@ -17,10 +17,9 @@ import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24ErrorCircle,
     Icon28AddOutline,
-    Icon28Document,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, timestampToDate} from "../functions";
+import {cutDeclNum, cutNum, declOfNum, pageIcon, timestampToDate} from "../functions";
 
 const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -80,7 +79,8 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
             });
         }
 
-        fetchPages().then(() => {});
+        fetchPages().then(() => {
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -114,7 +114,7 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
                 <Search/>
                 <CellButton
                     before={<Icon28AddOutline/>}
-                    onClick={()=>{
+                    onClick={() => {
                         setActiveModal(configData.modals.addPage)
                     }}
                     // href={'https://vk.com/pages?oid=-' + group.id + '&p=Title'}
@@ -134,7 +134,7 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
                         {pages.map((page) => {
                             return (
                                 <Cell
-                                    key={page.id} before={<Icon28Document style={{color: 'var(--dynamic_gray)'}}/>}
+                                    key={page.id} before={pageIcon(page)}
                                     indicator={<Counter>{cutNum(page.views)}</Counter>}
                                     description={timestampToDate(page.edited) + ' ' + page.editor_name}
                                     onClick={() => {

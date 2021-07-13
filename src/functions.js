@@ -1,3 +1,6 @@
+import configData from "./config.json";
+import {Icon28Document} from "@vkontakte/icons";
+
 /**
  * Склонение слов в зависимости от числового значения
  * Пример: declOfNum(1, ['минута', 'минуты', 'минут']);
@@ -79,7 +82,7 @@ export function cutDeclNum(n, text_forms) {
  * Копирование строки в буфер обмена
  * @param str
  */
-export function copyToClipboard (str) {
+export function copyToClipboard(str) {
     const el = document.createElement('textarea');
     el.value = str;
     el.setAttribute('readonly', '');
@@ -89,4 +92,26 @@ export function copyToClipboard (str) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+}
+
+/**
+ * Выбор иконки для wiki-страницы в зависимости от настроек доступа
+ * - красная, если могут смотреть только администраторы или редактировать все
+ * - синяя, если могут смотреть или редактировать только участники
+ * - серая по умолчанию
+ * @param page
+ * @returns {JSX.Element}
+ */
+export function pageIcon(page) {
+    let color = '--dynamic_gray';
+
+    if (page.who_can_view === configData.wiki_access.staff ||
+        page.who_can_edit === configData.wiki_access.all) {
+        color = '--dynamic_red';
+    } else if (page.who_can_view === configData.wiki_access.member ||
+        page.who_can_edit === configData.wiki_access.member) {
+        color = '--dynamic_blue';
+    }
+
+    return <Icon28Document style={{color: 'var(' + color + ')'}}/>;
 }

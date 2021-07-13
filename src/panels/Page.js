@@ -12,14 +12,14 @@ import {
     Icon24ErrorCircle,
     Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline,
     Icon24Write,
-    Icon28CopyOutline, Icon28Document,
+    Icon28CopyOutline,
     Icon28EditOutline,
     Icon28HashtagOutline,
     Icon32SearchOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {copyToClipboard, cutDeclNum, declOfNum, timestampToDate} from "../functions";
+import {copyToClipboard, cutDeclNum, declOfNum, pageIcon, timestampToDate} from "../functions";
 
 const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -300,7 +300,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
             >
                 <PanelHeaderContent
                     status={cutDeclNum(page.views, ['просмотр', 'просмотра', 'просмотров'])}
-                    before={<Icon28Document style={{color: 'var(--dynamic_gray)'}}/>}
+                    before={pageIcon(page)}
                 >
                     {page.title}
                 </PanelHeaderContent>
