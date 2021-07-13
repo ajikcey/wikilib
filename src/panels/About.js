@@ -78,7 +78,7 @@ const About = ({id, go, snackbarError, accessToken}) => {
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >
-                    Сохранено в закладки
+                    Сохранено
                 </Snackbar>);
             } else {
                 console.log('VKWebAppAddToFavoritesResult', data);
