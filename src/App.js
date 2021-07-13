@@ -193,8 +193,7 @@ const App = withAdaptivity(() => {
                     </Button>
                 }
             >
-                <Input defaultValue=""/>
-
+                <Input defaultValue="" autoFocus={true}/>
             </ModalCard>
 
             <ModalCard
