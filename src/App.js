@@ -51,9 +51,9 @@ const App = withAdaptivity(() => {
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
-
             if (type === 'vk-connect') {
                 if (typeof data === 'undefined') {
+                    // outside VkMiniApp
                     setPopout(null);
                     setActivePanel(configData.routes.landing);
                 }

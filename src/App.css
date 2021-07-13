@@ -1,6 +1,7 @@
 ::-webkit-scrollbar {
     width: 5px;
     background: inherit;
+    background: var(--field_border);
 }
 
 ::-webkit-scrollbar-thumb {

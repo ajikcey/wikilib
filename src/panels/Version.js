@@ -21,6 +21,7 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [version, setVersion] = useState(null);
     const [creator, setCreator] = useState(null);
+    const [text, setText] = useState(null);
 
     useEffect(() => {
 
@@ -42,6 +43,7 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
                     fetchUsers([data.response.creator_id]);
 
                     setVersion(data.response);
+                    setText(data.response.source);
                 } else {
                     setSnackbar(<Snackbar
                         onClose={() => setSnackbar(null)}
@@ -125,9 +127,13 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
             });
         }
 
-        fetchVersion().then(() => {
-
-        });
+        if (historyItem) {
+            // если выбрана определенная версия wiki-страницы
+            fetchVersion().then(() => {
+            });
+        } else {
+            setText(page.text);
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -159,7 +165,7 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
                 left={<PanelHeaderBack onClick={() => go(configData.routes.page)}/>}
             >
                 <PanelHeaderContent
-                    status={'ver. ' + historyItem.id}
+                    status={'ver. ' + (historyItem ? historyItem.id : 'current')}
                     before={<IconPage page={page}/>}
                 >
                     {page.title}
@@ -167,24 +173,28 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
             </PanelHeader>
 
             <Group>
-                {!(version && creator) && <PanelSpinner/>}
-                {(version && creator) &&
+                {!(text) && <PanelSpinner/>}
+                {(text) &&
                 <Fragment>
                     <FormLayout onSubmit={onSubmitVersion}>
                         <FormItem top="Текст">
-                            <Textarea rows={10} placeholder="Введите текст" value={version.source}/>
+                            <Textarea rows={10} placeholder="Введите текст" value={text}/>
                         </FormItem>
-                        <SimpleCell
-                            before={<Icon36CalendarOutline/>}
-                            after={<Link
-                                href={'https://vk.com/id' + creator.id} target='_blank'
+                        {historyItem &&
+                        <Fragment>
+                            <SimpleCell
+                                before={<Icon36CalendarOutline/>}
+                                after={<Link
+                                    href={'https://vk.com/id' + creator.id} target='_blank'
+                                >
+                                    <Avatar size={32} src={creator.photo_200}/></Link>}
                             >
-                                <Avatar size={32} src={creator.photo_200}/></Link>}
-                        >
-                            <InfoRow header="Версия сохранена">
-                                {timestampToDate(version.version_created)}
-                            </InfoRow>
-                        </SimpleCell>
+                                <InfoRow header="Версия сохранена">
+                                    {timestampToDate(version.version_created)}
+                                </InfoRow>
+                            </SimpleCell>
+                        </Fragment>
+                        }
                         <FormItem>
                             <Button size="l" stretched type="">Применить данную версию</Button>
                         </FormItem>

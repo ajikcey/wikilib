@@ -10,7 +10,7 @@ import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
     Icon24ErrorCircle,
-    Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline,
+    Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline, Icon24TextOutline,
     Icon24Write,
     Icon28CopyOutline,
     Icon28EditOutline,
@@ -284,6 +284,13 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
         go(configData.routes.wiki_version);
     }
 
+    /**
+     * Редактирование wiki-страницы
+     */
+    const editPage = () => {
+        go(configData.routes.wiki_version);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -328,13 +335,22 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
                             target='_blank' rel='noreferrer'
                         >
                             Открыть редактор ВКонтакте</CellButton>
+
                         <CellButton
-                            before={<Icon24Write/>}
+                            before={<Icon24TextOutline/>}
                             onClick={() => {
                                 renamePage();
                             }}
                         >
                             Переименовать</CellButton>
+
+                        <CellButton
+                            before={<Icon24Write/>}
+                            onClick={() => {
+                                editPage();
+                            }}
+                        >
+                            Редактировать</CellButton>
 
                         <CellButton
                             before={<Icon24DeleteOutline/>}
