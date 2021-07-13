@@ -10,12 +10,16 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner, Title, Text, InfoRow, UsersStack
+    PanelSpinner, Title, Text, UsersStack, Spacing
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
-import {Icon12Verified, Icon24ErrorCircle} from "@vkontakte/icons";
+import {
+    Icon12Verified, Icon24CheckCircleOutline,
+    Icon24ErrorCircle,
+    Icon28BookmarkOutline
+} from "@vkontakte/icons";
 import {cutDeclNum} from "../functions";
 
 const About = ({id, go, snackbarError, accessToken}) => {
@@ -63,6 +67,27 @@ const About = ({id, go, snackbarError, accessToken}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    /**
+     * Добавление приложения в избранное
+     * @returns {Promise<void>}
+     */
+    const addFavourite = async () => {
+        await bridge.send("VKWebAppAddToFavorites").then((data) => {
+            if (data.result === true) {
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >
+                    Сохранено в закладки
+                </Snackbar>);
+            } else {
+                console.log('VKWebAppAddToFavoritesResult', data);
+            }
+        }).catch((e) => {
+            console.log('VKWebAppAddToFavoritesFailed', e);
+        });
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -82,7 +107,7 @@ const About = ({id, go, snackbarError, accessToken}) => {
                         justifyContent: 'center',
                         textAlign: 'center',
                     }}>
-                        <Avatar mode="app" size={86} src={app.items[0].icon_150}/>
+                        <Avatar mode="app" size={80} src={app.items[0].icon_150}/>
                         <Title
                             style={{marginBottom: 0, marginTop: 5}} level="2"
                             weight="medium"
@@ -98,10 +123,8 @@ const About = ({id, go, snackbarError, accessToken}) => {
                         </Text>
                         {(app.profiles.length > 0) &&
                         <Fragment>
+                            <Spacing size={16}/>
                             <UsersStack
-                                style={{
-                                    marginTop: 20,
-                                }}
                                 photos={
                                     app.profiles.map(function (item) {
                                         return item.photo_100
@@ -129,6 +152,11 @@ const About = ({id, go, snackbarError, accessToken}) => {
                     <Div>
                         {app.items[0].description}
                     </Div>
+                    <CellButton
+                        before={<Icon28BookmarkOutline/>}
+                        onClick={addFavourite}
+                    >
+                        Сохранить в закладки</CellButton>
                 </Group>
                 <Group>
                     <Header mode='secondary'>Разработчик</Header>
@@ -140,14 +168,6 @@ const About = ({id, go, snackbarError, accessToken}) => {
                     >
                         {app.groups[0].name}
                     </CellButton>
-                </Group>
-                <Group>
-                    <Header mode='secondary'>Техническая информация</Header>
-                    <Div>
-                        <InfoRow header="App ID">
-                            {app.items[0].id}
-                        </InfoRow>
-                    </Div>
                 </Group>
             </Fragment>
             }

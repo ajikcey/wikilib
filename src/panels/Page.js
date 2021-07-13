@@ -231,9 +231,9 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     const nameAccess = (key) => {
         switch (key) {
             case configData.wiki_access.staff:
-                return "Руководители";
+                return "Только руководители";
             case configData.wiki_access.member:
-                return "Участники";
+                return "Только участники";
             case configData.wiki_access.all:
                 return "Все";
             default:

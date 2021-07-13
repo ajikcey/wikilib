@@ -184,16 +184,29 @@ const App = withAdaptivity(() => {
             onClose={onCloseModal}
         >
             <ModalCard
+                id={configData.modals.addPage}
+                onClose={onCloseModal}
+                header="Создание страницы"
+                actions={
+                    <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
+                        Создать
+                    </Button>
+                }
+            >
+                <Input defaultValue="" autoFocus={true} placeholder='Введите название страницы'/>
+            </ModalCard>
+
+            <ModalCard
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
-                header="Название страницы"
+                header="Изменение страницы"
                 actions={
                     <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
                         Сохранить
                     </Button>
                 }
             >
-                <Input defaultValue="" autoFocus={true}/>
+                <Input defaultValue="" autoFocus={true} placeholder='Введите название страницы'/>
             </ModalCard>
 
             <ModalCard
@@ -247,7 +260,7 @@ const App = withAdaptivity(() => {
                                       setLastGroupIds={setLastGroupIds}
                                       go={go}/>
                                 <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
-                                       snackbarError={snackbar} go={go} setPage={setPage}/>
+                                       snackbarError={snackbar} go={go} setPage={setPage} setActiveModal={setActiveModal}/>
                                 <Page id={configData.routes.page} page={page} group={group} user={user}
                                       accessToken={accessToken}
                                       snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>

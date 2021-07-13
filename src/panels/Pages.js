@@ -22,7 +22,7 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, cutNum, declOfNum, timestampToDate} from "../functions";
 
-const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
+const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [pages, setPages] = useState(null);
 
@@ -114,8 +114,11 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
                 <Search/>
                 <CellButton
                     before={<Icon28AddOutline/>}
-                    href={'https://vk.com/pages?oid=-' + group.id + '&p=Title'}
-                    target='_blank' rel='noreferrer'
+                    onClick={()=>{
+                        setActiveModal(configData.modals.addPage)
+                    }}
+                    // href={'https://vk.com/pages?oid=-' + group.id + '&p=Title'}
+                    // target='_blank' rel='noreferrer'
                 >
                     Новая страница</CellButton>
 
