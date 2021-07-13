@@ -32,7 +32,6 @@
 
   "modals": {
     "renamePage": "renamePage",
-    "settingPageView": "settingPageView",
-    "settingPageEdit": "settingPageEdit"
+    "accessPage": "accessPage"
   }
 }

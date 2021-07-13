@@ -15,7 +15,7 @@ import {
     SplitLayout,
     SplitCol,
     ModalCard,
-    NativeSelect, VKCOM, IOS, ANDROID
+    VKCOM, IOS, ANDROID, FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon24ErrorCircle} from "@vkontakte/icons";
@@ -100,7 +100,8 @@ const App = withAdaptivity(() => {
             setPopout(null);
         }
 
-        fetchData().then(() => {});
+        fetchData().then(() => {
+        });
     }, []);
 
     /**
@@ -197,37 +198,31 @@ const App = withAdaptivity(() => {
             </ModalCard>
 
             <ModalCard
-                id={configData.modals.settingPageView}
+                id={configData.modals.accessPage}
                 onClose={onCloseModal}
-                header="Просмотр страницы"
+                header="Доступ к странице"
                 actions={
                     <Button size="l" mode="primary" onClick={onSubmitModal}>
                         Сохранить
                     </Button>
                 }
             >
-                <NativeSelect>
-                    <option value={configData.wiki_access.all}>Все</option>
-                    <option value={configData.wiki_access.member}>Участники</option>
-                    <option value={configData.wiki_access.staff}>Руководители</option>
-                </NativeSelect>
-            </ModalCard>
-
-            <ModalCard
-                id={configData.modals.settingPageEdit}
-                onClose={onCloseModal}
-                header="Редактирование страницы"
-                actions={
-                    <Button size="l" mode="primary" onClick={onSubmitModal}>
-                        Сохранить
-                    </Button>
-                }
-            >
-                <NativeSelect>
-                    <option value={configData.wiki_access.all}>Все</option>
-                    <option value={configData.wiki_access.member}>Участники</option>
-                    <option value={configData.wiki_access.staff}>Руководители</option>
-                </NativeSelect>
+                <FormLayout>
+                    <FormItem top="Кто может просматривать эту страницу?">
+                        <Radio name="who_can_view" value={configData.wiki_access.all} defaultChecked>Все</Radio>
+                        <Radio name="who_can_view" value={configData.wiki_access.member}>Только участники</Radio>
+                        <Radio name="who_can_view" value={configData.wiki_access.staff}>Только редакторы и
+                            администраторы</Radio>
+                    </FormItem>
+                </FormLayout>
+                <FormLayout>
+                    <FormItem top="Кто может редактировать эту страницу?">
+                        <Radio name="who_can_edit" value={configData.wiki_access.all} defaultChecked>Все</Radio>
+                        <Radio name="who_can_edit" value={configData.wiki_access.member}>Только участники</Radio>
+                        <Radio name="who_can_edit" value={configData.wiki_access.staff}>Только редакторы и
+                            администраторы</Radio>
+                    </FormItem>
+                </FormLayout>
             </ModalCard>
         </ModalRoot>
     );

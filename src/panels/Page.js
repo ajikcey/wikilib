@@ -205,15 +205,8 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     /**
      * Изменение настройки, что может просматривать страницу
      */
-    const settingPageView = () => {
-        setActiveModal(configData.modals.settingPageView);
-    }
-
-    /**
-     * Изменение настройки, что может редактировать страницу
-     */
-    const settingPageEdit = () => {
-        setActiveModal(configData.modals.settingPageEdit);
+    const settingAccessPage = () => {
+        setActiveModal(configData.modals.accessPage);
     }
 
     /**
@@ -363,12 +356,12 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                         <Header mode="secondary">Настройки</Header>
                         <SimpleCell
                             indicator={nameAccess(infoPage.who_can_view)}
-                            onClick={settingPageView}
+                            onClick={settingAccessPage}
                         >
                             Просмотр</SimpleCell>
                         <SimpleCell
                             indicator={nameAccess(infoPage.who_can_edit)}
-                            onClick={settingPageEdit}
+                            onClick={settingAccessPage}
                         >
                             Редактирование</SimpleCell>
 
