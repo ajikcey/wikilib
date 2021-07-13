@@ -19,7 +19,8 @@ import {
     Icon28AddOutline,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, pageIcon, timestampToDate} from "../functions";
+import {cutDeclNum, cutNum, declOfNum, timestampToDate} from "../functions";
+import IconPage from "../components/IconPage";
 
 const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -134,7 +135,7 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
                         {pages.map((page) => {
                             return (
                                 <Cell
-                                    key={page.id} before={pageIcon(page)}
+                                    key={page.id} before={<IconPage page={page}/>}
                                     indicator={<Counter>{cutNum(page.views)}</Counter>}
                                     description={timestampToDate(page.edited) + ' ' + page.editor_name}
                                     onClick={() => {

@@ -19,7 +19,8 @@ import {
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {copyToClipboard, cutDeclNum, declOfNum, pageIcon, timestampToDate} from "../functions";
+import {copyToClipboard, cutDeclNum, declOfNum, timestampToDate} from "../functions";
+import IconPage from "../components/IconPage";
 
 const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -300,7 +301,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
             >
                 <PanelHeaderContent
                     status={cutDeclNum(page.views, ['просмотр', 'просмотра', 'просмотров'])}
-                    before={pageIcon(page)}
+                    before={<IconPage page={page}/>}
                 >
                     {page.title}
                 </PanelHeaderContent>
