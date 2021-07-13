@@ -186,7 +186,7 @@ const App = withAdaptivity(() => {
             <ModalCard
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
-                header="Название"
+                header="Название страницы"
                 actions={
                     <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
                         Сохранить
@@ -211,16 +211,14 @@ const App = withAdaptivity(() => {
                     <FormItem top="Кто может просматривать эту страницу?">
                         <Radio name="who_can_view" value={configData.wiki_access.all} defaultChecked>Все</Radio>
                         <Radio name="who_can_view" value={configData.wiki_access.member}>Только участники</Radio>
-                        <Radio name="who_can_view" value={configData.wiki_access.staff}>Только редакторы и
-                            администраторы</Radio>
+                        <Radio name="who_can_view" value={configData.wiki_access.staff}>Только руководители</Radio>
                     </FormItem>
                 </FormLayout>
                 <FormLayout>
                     <FormItem top="Кто может редактировать эту страницу?">
                         <Radio name="who_can_edit" value={configData.wiki_access.all} defaultChecked>Все</Radio>
                         <Radio name="who_can_edit" value={configData.wiki_access.member}>Только участники</Radio>
-                        <Radio name="who_can_edit" value={configData.wiki_access.staff}>Только редакторы и
-                            администраторы</Radio>
+                        <Radio name="who_can_edit" value={configData.wiki_access.staff}>Только руководители</Radio>
                     </FormItem>
                 </FormLayout>
             </ModalCard>
