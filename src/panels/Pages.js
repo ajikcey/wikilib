@@ -80,7 +80,7 @@ const Pages = ({id, accessToken, group, go, setPage, snackbarError}) => {
             });
         }
 
-        fetchPages();
+        fetchPages().then(() => {});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

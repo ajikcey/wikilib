@@ -156,8 +156,8 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             }
         }
 
-        fetchGroups();
-        fetchLastGroups();
+        fetchGroups().then(() => {});
+        fetchLastGroups().then(() => {});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -207,7 +207,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             bridge.send('VKWebAppStorageSet', {
                 key: configData.storage_keys.last_groups,
                 value: JSON.stringify(lastGroupIds)
-            });
+            }).then(() => {});
 
             setGroup(item);
             go(configData.routes.pages);

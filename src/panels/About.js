@@ -10,7 +10,7 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner, Spacing
+    PanelSpinner, Title, Text, InfoRow, UsersStack
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
@@ -20,26 +20,28 @@ import {cutDeclNum} from "../functions";
 
 const About = ({id, go, snackbarError, accessToken}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [appCommunity, setAppCommunity] = useState(null);
+    const [app, setApp] = useState(null);
 
     useEffect(() => {
         /**
          * Получение сообществ пользователя
          * @returns {Promise<void>}
          */
-        async function fetchAppCommunity() {
+        async function fetchApp() {
 
             await bridge.send("VKWebAppCallAPIMethod", {
-                method: "groups.getById",
+                method: "apps.get",
                 params: {
-                    group_ids: configData.community.id,
-                    fields: ['members_count', 'verified'].join(','),
+                    app_id: configData.app_id,
+                    return_friends: 1,
+                    fields: ['photo_100', 'members_count'].join(','),
+                    extended: 1,
                     v: "5.131",
                     access_token: accessToken.access_token
                 }
             }).then(data => {
                 if (data.response) {
-                    setAppCommunity(data.response[0]);
+                    setApp(data.response);
                 } else {
                     console.log(data);
                 }
@@ -55,45 +57,100 @@ const About = ({id, go, snackbarError, accessToken}) => {
             });
         }
 
-        fetchAppCommunity();
+        fetchApp().then(() => {
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <Panel id={id}>
+            <PanelHeader
+                mode="secondary"
+                left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
+            >
+            </PanelHeader>
+
+            {(!app) && <PanelSpinner/>}
+            {(app) &&
             <Fragment>
-                <PanelHeader
-                    mode="secondary"
-                    left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
-                >
-                    О приложении
-                </PanelHeader>
-
                 <Group>
-                    <Div>
-                        Приложение, с помощью которого можно посмотреть wiki-страницы во всех своих сообществах
-                        ВКонтакте.
-                    </Div>
-
-                    <Spacing separator size={16}/>
-
-                    {(!appCommunity) && <PanelSpinner/>}
-                    {(appCommunity) &&
-                    <Fragment>
-                        <Header mode='secondary'>Разработчик</Header>
-                        <CellButton
-                            before={<Avatar size={48} src={appCommunity.photo_200}/>}
-                            badge={appCommunity.verified ? <Icon12Verified/> : null}
-                            description={cutDeclNum(appCommunity.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
-                            href={'https://vk.com/' + appCommunity.screen_name} target='_blank'
+                    <Div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                    }}>
+                        <Avatar mode="app" size={86} src={app.items[0].icon_150}/>
+                        <Title
+                            style={{marginBottom: 0, marginTop: 5}} level="2"
+                            weight="medium"
                         >
-                            {appCommunity.name}
-                        </CellButton>
-                    </Fragment>
-                    }
+                            {app.items[0].title}
+                        </Title>
+                        <Text
+                            style={{
+                                color: 'var(--text_secondary)'
+                            }}
+                        >
+                            {cutDeclNum(app.items[0].members_count, ['участник', 'участника', 'участников'])}
+                        </Text>
+                        {(app.profiles.length > 0) &&
+                        <Fragment>
+                            <UsersStack
+                                style={{
+                                    marginTop: 20,
+                                }}
+                                photos={
+                                    app.profiles.map(function (item) {
+                                        return item.photo_100
+                                    })
+                                }
+                                size="m"
+                                layout="vertical"
+                            >
+                                {app.profiles[0].first_name}
+                                {(app.profiles.length > 1) && <Fragment>, {app.profiles[1].first_name}</Fragment>}
+                                {(app.profiles.length > 2) && <Fragment>, {app.profiles[2].first_name}</Fragment>}
+                                {(app.profiles.length > 3) && <Fragment>
+                                    &nbsp;
+                                    и ещё {cutDeclNum(app.profiles.length - 3, ['друг', 'друга', 'друзей'])}
+                                </Fragment>
+                                }
+                                {app.profiles.length === 1 ? ' использует' : ' используют'} это приложение
+                            </UsersStack>
+                        </Fragment>
+                        }
+                    </Div>
+                </Group>
+                <Group>
+                    <Header mode='secondary'>О приложении</Header>
+                    <Div>
+                        {app.items[0].description}
+                    </Div>
+                </Group>
+                <Group>
+                    <Header mode='secondary'>Разработчик</Header>
+                    <CellButton
+                        before={<Avatar size={48} src={app.groups[0].photo_100}/>}
+                        badge={app.groups[0].verified ? <Icon12Verified/> : null}
+                        href={'https://vk.com/' + app.groups[0].screen_name} target='_blank'
+                        description={cutDeclNum(app.groups[0].members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                    >
+                        {app.groups[0].name}
+                    </CellButton>
+                </Group>
+                <Group>
+                    <Header mode='secondary'>Техническая информация</Header>
+                    <Div>
+                        <InfoRow header="App ID">
+                            {app.items[0].id}
+                        </InfoRow>
+                    </Div>
                 </Group>
             </Fragment>
+            }
             {snackbar}
         </Panel>
     )

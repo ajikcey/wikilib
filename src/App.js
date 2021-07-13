@@ -100,7 +100,7 @@ const App = withAdaptivity(() => {
             setPopout(null);
         }
 
-        fetchData();
+        fetchData().then(() => {});
     }, []);
 
     /**

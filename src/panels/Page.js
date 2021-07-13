@@ -189,8 +189,8 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
             });
         }
 
-        fetchInfoPage();
-        fetchHistory();
+        fetchInfoPage().then(() => {});
+        fetchHistory().then(() => {});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
