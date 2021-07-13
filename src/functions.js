@@ -1,3 +1,5 @@
+import bridge from "@vkontakte/vk-bridge";
+
 /**
  * Склонение слов в зависимости от числового значения
  * Пример: declOfNum(1, ['минута', 'минуты', 'минут']);
@@ -89,4 +91,29 @@ export function copyToClipboard(str) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+}
+
+/**
+ * Сохраняет текст wiki-страницы
+ * @param page_id
+ * @param group_id
+ * @param user_id
+ * @param access_token
+ * @param title
+ * @param text
+ * @returns {Promise}
+ */
+export function savePage(page_id, group_id, user_id, access_token, title, text) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "pages.save",
+        params: {
+            page_id: page_id,
+            group_id: group_id,
+            user_id: user_id,
+            text: text,
+            title: title,
+            v: "5.131",
+            access_token: access_token
+        }
+    });
 }

@@ -6,11 +6,19 @@ import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 
 // Init VK  Mini App
-bridge.send("VKWebAppInit");
+bridge.send("VKWebAppInit").then(() => {
+});
+bridge.subscribe(({detail: {type, data}}) => {
+    if (type === 'VKWebAppUpdateConfig') {
+        const schemeAttribute = document.createAttribute('scheme');
+        schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+        document.body.attributes.setNamedItem(schemeAttribute);
+    }
+});
 
 ReactDOM.render(<App/>, document.getElementById("root"));
 
 if (process.env.NODE_ENV === "development") {
-    import("./eruda").then(({default: eruda}) => {
+    import("./eruda").then(({}) => {
     }); //runtime download
 }

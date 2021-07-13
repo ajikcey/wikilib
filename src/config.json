@@ -17,6 +17,7 @@
   "routes": {
     "pages": "pages",
     "page": "page",
+    "wiki_version": "wiki_version",
     "landing": "landing",
     "about": "about",
     "home": "home",

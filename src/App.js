@@ -31,6 +31,7 @@ import Token from "./panels/Token";
 import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
+import Version from "./panels/Version";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -43,6 +44,7 @@ const App = withAdaptivity(() => {
     const [accessToken, setAccessToken] = useState(null);
     const [group, setGroup] = useState(null);
     const [page, setPage] = useState(null);
+    const [historyItem, setHistoryItem] = useState(null);
 
     const params = window.location.search.slice(1);
     const paramsAsObject = qs.parse(params);
@@ -50,12 +52,7 @@ const App = withAdaptivity(() => {
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
 
-            if (type === 'VKWebAppUpdateConfig') {
-                const schemeAttribute = document.createAttribute('scheme');
-                schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-                document.body.attributes.setNamedItem(schemeAttribute);
-
-            } else if (type === 'vk-connect') {
+            if (type === 'vk-connect') {
                 if (typeof data === 'undefined') {
                     setPopout(null);
                     setActivePanel(configData.routes.landing);
@@ -199,7 +196,7 @@ const App = withAdaptivity(() => {
             <ModalCard
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
-                header="Изменение страницы"
+                header="Название страницы"
                 actions={
                     <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
                         Сохранить
@@ -262,8 +259,11 @@ const App = withAdaptivity(() => {
                                 <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
                                        snackbarError={snackbar} go={go} setPage={setPage} setActiveModal={setActiveModal}/>
                                 <Page id={configData.routes.page} page={page} group={group} user={user}
-                                      accessToken={accessToken}
+                                      accessToken={accessToken} setHistoryItem={setHistoryItem}
                                       snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
+                                <Version id={configData.routes.wiki_version} historyItem={historyItem} page={page}
+                                      accessToken={accessToken} user={user}
+                                      snackbarError={snackbar} go={go}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

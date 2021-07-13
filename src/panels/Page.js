@@ -19,10 +19,10 @@ import {
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {copyToClipboard, cutDeclNum, declOfNum, timestampToDate} from "../functions";
+import {copyToClipboard, cutDeclNum, declOfNum, savePage, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -113,7 +113,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get page
+                        Error get users
                     </Snackbar>);
                 }
             }).catch(e => {
@@ -127,7 +127,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                             error_msg = e.error_data.error_reason.error_msg;
                     }
                 } else {
-                    error_msg = 'Error get page';
+                    error_msg = 'Error get users';
                 }
 
                 if (error_msg) {
@@ -246,7 +246,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
      * Восстановление wiki-страницы
      */
     const restorePage = () => {
-        savePage(infoPage.title, infoPage.source).then(() => {
+        savePage(infoPage.id, infoPage.group_id, user.id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
             setSnackbar(null);
             setSnackbar(<Snackbar
@@ -262,7 +262,7 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
      * Удаление wiki-страницы
      */
     const delPage = () => {
-        savePage(infoPage.title, infoPage.source).then(() => {
+        savePage(infoPage.id, infoPage.group_id, user.id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -276,21 +276,12 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
     }
 
     /**
-     * Сохраняет текст wiki-страницы
+     * Выбор версии wiki-страницы для сохранения
+     * @param item
      */
-    const savePage = (title, text) => {
-        return bridge.send("VKWebAppCallAPIMethod", {
-            method: "pages.save",
-            params: {
-                page_id: infoPage.id,
-                group_id: infoPage.group_id,
-                user_id: user.id,
-                text: text,
-                title: title,
-                v: "5.131",
-                access_token: accessToken.access_token
-            }
-        });
+    const selectVersion = function (item) {
+        setHistoryItem(item);
+        go(configData.routes.wiki_version);
     }
 
     return (
@@ -414,7 +405,8 @@ const Page = ({id, accessToken, page, user, group, go, setActiveModal, snackbarE
                                 <SimpleCell
                                     indicator={timestampToDate(item.date)}
                                     key={item.id}
-                                    description={'Размер текста: ' + item.length}
+                                    description={'ver. ' + item.id}
+                                    onClick={()=>{selectVersion(item)}}
                                 >
                                     {page.editor_name}
                                 </SimpleCell>

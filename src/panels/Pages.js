@@ -86,7 +86,6 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-
     /**
      * Выбор wiki-страницы для показа информации
      * @param item
