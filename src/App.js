@@ -18,7 +18,7 @@ import {
     VKCOM, IOS, ANDROID, FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {Icon24ErrorCircle} from "@vkontakte/icons";
+import {Icon24ErrorCircle, Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -44,6 +44,7 @@ const App = withAdaptivity(() => {
     const [accessToken, setAccessToken] = useState(null);
     const [group, setGroup] = useState(null);
     const [page, setPage] = useState(null);
+    const [pageTitle, setPageTitle] = useState(null);
     const [historyItem, setHistoryItem] = useState(null);
 
     const params = window.location.search.slice(1);
@@ -194,6 +195,23 @@ const App = withAdaptivity(() => {
             </ModalCard>
 
             <ModalCard
+                id={configData.modals.redirectToCommunity}
+                onClose={onCloseModal}
+                icon={<Icon56CheckCircleOutline fill='var(--dynamic_green)'/>}
+                header="Приложение установлено"
+                subheader="Перейдите в приложение, установленное в сообществе."
+                actions={
+                    <Button
+                        href={'https://vk.com/app' + configData.app_id + '_-' + 205670119}
+                        // href={'https://vk.com/app' + configData.app_id + '_-' + group.group_id}
+                        target='_blank' size="l" mode="primary" stretched>
+                        Перейти
+                    </Button>
+                }
+            >
+            </ModalCard>
+
+            <ModalCard
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
                 header="Название страницы"
@@ -248,7 +266,7 @@ const App = withAdaptivity(() => {
                             <View activePanel={activePanel}>
                                 <Landing id={configData.routes.landing}/>
                                 <About id={configData.routes.about} go={go} snackbarError={snackbar}
-                                       accessToken={accessToken}/>
+                                       accessToken={accessToken} setActiveModal={setActiveModal}/>
                                 <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
                                        setUserStatus={setUserStatus} userStatus={userStatus}/>
                                 <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
@@ -257,13 +275,15 @@ const App = withAdaptivity(() => {
                                       setLastGroupIds={setLastGroupIds}
                                       go={go}/>
                                 <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
-                                       snackbarError={snackbar} go={go} setPage={setPage} setActiveModal={setActiveModal}/>
-                                <Page id={configData.routes.page} page={page} group={group} user={user}
+                                       snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
+                                       setActiveModal={setActiveModal}/>
+                                <Page id={configData.routes.page} pageTitle={pageTitle} setPage={setPage} group={group}
+                                      user={user}
                                       accessToken={accessToken} setHistoryItem={setHistoryItem}
                                       snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version id={configData.routes.wiki_version} historyItem={historyItem} page={page}
-                                      accessToken={accessToken} user={user}
-                                      snackbarError={snackbar} go={go}/>
+                                         accessToken={accessToken} user={user}
+                                         snackbarError={snackbar} go={go}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

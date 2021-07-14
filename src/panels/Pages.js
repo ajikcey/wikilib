@@ -22,7 +22,7 @@ import {
 import {cutDeclNum, cutNum, declOfNum, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarError}) => {
+const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [pages, setPages] = useState(null);
 
@@ -91,7 +91,7 @@ const Pages = ({id, accessToken, group, go, setPage, setActiveModal, snackbarErr
      * @param item
      */
     const selectPage = function (item) {
-        setPage(item);
+        setPageTitle(item);
         go(configData.routes.page);
     }
 

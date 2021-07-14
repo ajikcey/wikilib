@@ -22,7 +22,7 @@ import configData from "../config.json";
 import {copyToClipboard, cutDeclNum, declOfNum, savePage, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryItem, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -40,8 +40,8 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
             await bridge.send("VKWebAppCallAPIMethod", {
                 method: "pages.get",
                 params: {
-                    page_id: page.id,
-                    owner_id: ('-' + page.group_id),
+                    page_id: pageTitle.id,
+                    owner_id: ('-' + pageTitle.group_id),
                     need_source: 1,
                     v: "5.131",
                     access_token: accessToken.access_token
@@ -149,7 +149,7 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
             await bridge.send("VKWebAppCallAPIMethod", {
                 method: "pages.getHistory",
                 params: {
-                    page_id: page.id,
+                    page_id: pageTitle.id,
                     group_id: group.id,
                     v: "5.131",
                     access_token: accessToken.access_token
@@ -280,6 +280,7 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
      * @param item
      */
     const selectVersion = function (item) {
+        setPage(infoPage);
         setHistoryItem(item);
         go(configData.routes.wiki_version);
     }
@@ -288,6 +289,8 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
      * Редактирование wiki-страницы
      */
     const editPage = () => {
+        setPage(infoPage);
+        setHistoryItem(null); // reset selected version before edit current
         go(configData.routes.wiki_version);
     }
 
@@ -298,10 +301,10 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
                 left={<PanelHeaderBack onClick={() => go(configData.routes.pages)}/>}
             >
                 <PanelHeaderContent
-                    status={cutDeclNum(page.views, ['просмотр', 'просмотра', 'просмотров'])}
-                    before={<IconPage page={page}/>}
+                    status={cutDeclNum(pageTitle.views, ['просмотр', 'просмотра', 'просмотров'])}
+                    before={<IconPage page={pageTitle}/>}
                 >
-                    {page.title}
+                    {pageTitle.title}
                 </PanelHeaderContent>
             </PanelHeader>
 
@@ -331,18 +334,10 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
                         <Header mode="secondary">Меню</Header>
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/page-' + group.id + '_' + page.id + '?act=edit&section=edit'}
+                            href={'https://vk.com/page-' + group.id + '_' + pageTitle.id + '?act=edit&section=edit'}
                             target='_blank' rel='noreferrer'
                         >
                             Открыть редактор ВКонтакте</CellButton>
-
-                        <CellButton
-                            before={<Icon24TextOutline/>}
-                            onClick={() => {
-                                renamePage();
-                            }}
-                        >
-                            Переименовать</CellButton>
 
                         <CellButton
                             before={<Icon24Write/>}
@@ -351,6 +346,14 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
                             }}
                         >
                             Редактировать</CellButton>
+
+                        <CellButton
+                            before={<Icon24TextOutline/>}
+                            onClick={() => {
+                                renamePage();
+                            }}
+                        >
+                            Переименовать</CellButton>
 
                         <CellButton
                             before={<Icon24DeleteOutline/>}
@@ -424,7 +427,7 @@ const Page = ({id, accessToken, page, user, group, go, setHistoryItem, setActive
                                     description={'ver. ' + item.id}
                                     onClick={()=>{selectVersion(item)}}
                                 >
-                                    {page.editor_name}
+                                    {pageTitle.editor_name}
                                 </SimpleCell>
                             );
                         })}

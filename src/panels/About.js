@@ -18,11 +18,11 @@ import bridge from "@vkontakte/vk-bridge";
 import {
     Icon12Verified, Icon24CheckCircleOutline,
     Icon24ErrorCircle,
-    Icon28BookmarkOutline
+    Icon28BookmarkOutline, Icon28UsersOutline
 } from "@vkontakte/icons";
 import {cutDeclNum} from "../functions";
 
-const About = ({id, go, snackbarError, accessToken}) => {
+const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [app, setApp] = useState(null);
 
@@ -32,7 +32,6 @@ const About = ({id, go, snackbarError, accessToken}) => {
          * @returns {Promise<void>}
          */
         async function fetchApp() {
-
             await bridge.send("VKWebAppCallAPIMethod", {
                 method: "apps.get",
                 params: {
@@ -71,7 +70,7 @@ const About = ({id, go, snackbarError, accessToken}) => {
      * Добавление приложения в избранное
      * @returns {Promise<void>}
      */
-    const addFavourite = async () => {
+    const AddToFavorites = async () => {
         await bridge.send("VKWebAppAddToFavorites").then((data) => {
             if (data.result === true) {
                 setSnackbar(<Snackbar
@@ -85,6 +84,22 @@ const About = ({id, go, snackbarError, accessToken}) => {
             }
         }).catch((e) => {
             console.log('VKWebAppAddToFavoritesFailed', e);
+        });
+    }
+
+    /**
+     * Добавление приложения в сообщество
+     * @returns {Promise<void>}
+     */
+    const AddToCommunity = async () => {
+        await bridge.send("VKWebAppAddToCommunity").then((data) => {
+            if (data.group_id) {
+                setActiveModal(configData.modals.redirectToCommunity);
+            } else {
+                console.log('VKWebAppAddToCommunityResult', data);
+            }
+        }).catch((e) => {
+            console.log('VKWebAppAddToCommunityFailed', e);
         });
     }
 
@@ -126,22 +141,14 @@ const About = ({id, go, snackbarError, accessToken}) => {
                             <Spacing size={16}/>
                             <UsersStack
                                 photos={
-                                    app.profiles.map(function (item) {
+                                    app.profiles.reverse().map(function (item) {
                                         return item.photo_100
                                     })
                                 }
                                 size="m"
                                 layout="vertical"
                             >
-                                {app.profiles[0].first_name}
-                                {(app.profiles.length > 1) && <Fragment>, {app.profiles[1].first_name}</Fragment>}
-                                {(app.profiles.length > 2) && <Fragment>, {app.profiles[2].first_name}</Fragment>}
-                                {(app.profiles.length > 3) && <Fragment>
-                                    &nbsp;
-                                    и ещё {cutDeclNum(app.profiles.length - 3, ['друг', 'друга', 'друзей'])}
-                                </Fragment>
-                                }
-                                {app.profiles.length === 1 ? ' использует' : ' используют'} это приложение
+                                {cutDeclNum(app.profiles.length, ['друг', 'друга', 'друзей'])}
                             </UsersStack>
                         </Fragment>
                         }
@@ -154,9 +161,14 @@ const About = ({id, go, snackbarError, accessToken}) => {
                     </Div>
                     <CellButton
                         before={<Icon28BookmarkOutline/>}
-                        onClick={addFavourite}
+                        onClick={AddToFavorites}
                     >
                         Сохранить в закладки</CellButton>
+                    <CellButton
+                        before={<Icon28UsersOutline/>}
+                        onClick={AddToCommunity}
+                    >
+                        Добавить в сообщество</CellButton>
                 </Group>
                 <Group>
                     <Header mode='secondary'>Разработчик</Header>

@@ -32,6 +32,7 @@
   },
 
   "modals": {
+    "redirectToCommunity": "redirectToCommunity",
     "addPage": "addPage",
     "renamePage": "renamePage",
     "accessPage": "accessPage"
