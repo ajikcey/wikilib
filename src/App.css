@@ -1,11 +1,10 @@
 ::-webkit-scrollbar {
     width: 5px;
-    background: inherit;
-    background: var(--field_border);
+    background: var(--background_highlighted);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--field_border);
+    background: var(--background_highlighted);
     border-radius: 5px;
 }
 
