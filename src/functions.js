@@ -40,7 +40,7 @@ export function timestampToDate(timestamp, format = 'd.m.Y H:i') {
 
     format = format.replace(/d/, ('0' + day).slice(-2));
     format = format.replace(/m/, ('0' + month).slice(-2));
-    format = format.replace(/Y/, year);
+    format = format.replace(/Y/, '' + year);
     format = format.replace(/H/, ('0' + hours).slice(-2));
     format = format.replace(/i/, ('0' + minutes).slice(-2));
     format = format.replace(/s/, ('0' + seconds).slice(-2));
@@ -94,7 +94,7 @@ export function copyToClipboard(str) {
 }
 
 /**
- * Сохраняет текст wiki-страницы
+ * Сохранение wiki-страницы
  * @param page_id
  * @param group_id
  * @param user_id
@@ -109,7 +109,6 @@ export function savePage(page_id, group_id, user_id, access_token, title, text) 
         params: {
             page_id: page_id,
             group_id: group_id,
-            user_id: user_id,
             text: text,
             title: title,
             v: "5.131",

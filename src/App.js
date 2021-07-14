@@ -74,13 +74,15 @@ const App = withAdaptivity(() => {
                     data[key] = value ? JSON.parse(value) : {};
                 });
 
-                setAccessToken(data[configData.storage_keys.access_token]);
-                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
                 setUserStatus(data[configData.storage_keys.status]);
 
                 if (data[configData.storage_keys.status].tokenReceived) {
+                    setAccessToken(data[configData.storage_keys.access_token]);
+                    setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+
                     setActivePanel(configData.routes.home);
                 } else if (data[configData.storage_keys.status].hasSeenIntro) {
+                    // todo: Warning: Can't perform a React state update on an unmounted component.
                     setActivePanel(configData.routes.token);
                 }
             } catch (e) {
