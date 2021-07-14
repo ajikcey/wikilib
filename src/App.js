@@ -82,7 +82,6 @@ const App = withAdaptivity(() => {
 
                     setActivePanel(configData.routes.home);
                 } else if (data[configData.storage_keys.status].hasSeenIntro) {
-                    // todo: Warning: Can't perform a React state update on an unmounted component.
                     setActivePanel(configData.routes.token);
                 }
             } catch (e) {
