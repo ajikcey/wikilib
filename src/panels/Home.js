@@ -96,6 +96,8 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                 if (data.response) {
                     setGroups(data.response.items);
                     setCountGroups(data.response.count);
+
+                    fetchLastGroups().then(() => {});
                 } else {
                     setGroups([]);
 
@@ -157,7 +159,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
         }
 
         fetchGroups().then(() => {});
-        fetchLastGroups().then(() => {});
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
