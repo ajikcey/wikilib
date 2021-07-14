@@ -75,11 +75,10 @@ const App = withAdaptivity(() => {
                 });
 
                 setUserStatus(data[configData.storage_keys.status]);
+                setAccessToken(data[configData.storage_keys.access_token]);
+                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status].tokenReceived) {
-                    setAccessToken(data[configData.storage_keys.access_token]);
-                    setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
-
                     setActivePanel(configData.routes.home);
                 } else if (data[configData.storage_keys.status].hasSeenIntro) {
                     setActivePanel(configData.routes.token);
