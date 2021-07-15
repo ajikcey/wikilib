@@ -13,13 +13,12 @@ import {
     HorizontalCell,
     Search,
     PanelHeaderButton,
-    Snackbar,
     Placeholder,
     PanelSpinner,
     Footer, Link, Spacing
 } from '@vkontakte/vkui';
 import {
-    Icon12Verified, Icon16Clear, Icon24ErrorCircle,
+    Icon12Verified, Icon16Clear,
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
@@ -55,8 +54,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     setGroups(data.response.items);
                     setCountGroups(data.response.count);
                 } else {
-                    console.log(data);
-
                     setGroups([]);
 
                     handleError(setSnackbar, go, {}, {
@@ -64,8 +61,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     });
                 }
             }).catch(e => {
-                console.log(e);
-
                 setGroups([]);
 
                 handleError(setSnackbar, go, e, {
@@ -92,8 +87,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     if (data.response) {
                         setLastGroups(data.response);
                     } else {
-                        console.log(data);
-
                         setLastGroups([]);
 
                         handleError(setSnackbar, go, {}, {
@@ -101,8 +94,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                         });
                     }
                 }).catch(e => {
-                    console.log(e);
-
                     setLastGroups([]);
 
                     handleError(setSnackbar, go, e, {
@@ -114,8 +105,10 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             }
         }
 
-        fetchGroups().then(() => {});
-        fetchLastGroups().then(() => {});
+        fetchGroups().then(() => {
+        });
+        fetchLastGroups().then(() => {
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -134,14 +127,9 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                 value: JSON.stringify([])
             });
         } catch (e) {
-            console.log(e);
-
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                Error with sending data to Storage
-            </Snackbar>);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error with sending data to Storage'
+            });
         }
     }
 
@@ -165,19 +153,15 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             bridge.send('VKWebAppStorageSet', {
                 key: configData.storage_keys.last_groups,
                 value: JSON.stringify(lastGroupIds)
-            }).then(() => {});
+            }).then(() => {
+            });
 
             setGroup(item);
             go(configData.routes.pages);
         } catch (e) {
-            console.log(e);
-
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                Error with sending data to Storage
-            </Snackbar>);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error with sending data to Storage'
+            });
         }
     }
 
@@ -210,16 +194,17 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                             {lastGroups.map((group) => {
                                 return (
                                     <HorizontalCell
-                                        key={group.id} header={<div style={{
-                                        WebkitBoxOrient: 'vertical',
-                                        WebkitLineClamp: 2,
-                                        display: '-webkit-box',
-                                        overflow: 'hidden',
-                                        wordBreak: 'break-word'
-                                    }}>{group.name}</div>}
+                                        key={group.id}
                                         onClick={() => {
                                             selectGroup(group)
                                         }}
+                                        header={<div style={{
+                                            WebkitBoxOrient: 'vertical',
+                                            WebkitLineClamp: 2,
+                                            display: '-webkit-box',
+                                            overflow: 'hidden',
+                                            wordBreak: 'break-word'
+                                        }}>{group.name}</div>}
                                     >
                                         <Avatar size={64} src={group.photo_200}/>
                                     </HorizontalCell>

@@ -9,7 +9,6 @@ import {
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
-    Icon24ErrorCircle,
     Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline, Icon24TextOutline,
     Icon24Write,
     Icon28CopyOutline,
@@ -19,10 +18,18 @@ import {
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {copyToClipboard, cutDeclNum, declOfNum, savePage, timestampToDate} from "../functions";
+import {
+    copyToClipboard,
+    cutDeclNum,
+    declOfNum,
+    fetchUsers,
+    fetchVersion, handleError,
+    savePage,
+    timestampToDate
+} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAccess, setHistoryItem, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setContent, user, go, setTempAccess, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -48,96 +55,38 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
                 }
             }).then(data => {
                 if (data.response) {
-                    fetchUsers([data.response.creator_id, data.response.editor_id]);
+                    fetchUsers([data.response.creator_id, data.response.editor_id], accessToken.access_token).then(data => {
+                        if (data.response) {
+                            setCreator(data.response[0]);
+
+                            if (data.response[1]) {
+                                setEditor(data.response[1]);
+                            } else {
+                                setEditor(data.response[0]); // creator_id == editor_id
+                            }
+                        } else {
+                            handleError(setSnackbar, go, {}, {
+                                data: data,
+                                default_error_msg: 'No response get users'
+                            });
+                        }
+                    }).catch(e => {
+                        handleError(setSnackbar, go, e, {
+                            default_error_msg: 'Error get users'
+                        });
+                    });
 
                     setInfoPage(data.response);
                 } else {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        No response get page
-                    </Snackbar>);
+                    handleError(setSnackbar, go, {}, {
+                        data: data,
+                        default_error_msg: 'No response get page'
+                    });
                 }
             }).catch(e => {
-                console.log(e);
-
-                let error_msg;
-
-                if (e.error_data) {
-                    switch (e.error_data.error_reason.error_msg) {
-                        default:
-                            error_msg = e.error_data.error_reason.error_msg;
-                    }
-                } else {
-                    error_msg = 'Error get page';
-                }
-
-                if (error_msg) {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        {error_msg}
-                    </Snackbar>);
-                }
-            });
-        }
-
-        /**
-         * Получение пользователей
-         * @param creator_id
-         * @param editor_id
-         * @returns {Promise<void>}
-         */
-        async function fetchUsers(creator_id, editor_id) {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "users.get",
-                params: {
-                    user_ids: [creator_id, editor_id].join(','),
-                    fields: ['photo_200'].join(','),
-                    v: "5.131",
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
-                if (data.response) {
-                    setCreator(data.response[0]);
-
-                    if (data.response[1]) {
-                        setEditor(data.response[1]);
-                    } else {
-                        setEditor(data.response[0]); // creator_id == editor_id
-                    }
-                } else {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        No response get users
-                    </Snackbar>);
-                }
-            }).catch(e => {
-                console.log(e);
-
-                let error_msg;
-
-                if (e.error_data) {
-                    switch (e.error_data.error_reason.error_msg) {
-                        default:
-                            error_msg = e.error_data.error_reason.error_msg;
-                    }
-                } else {
-                    error_msg = 'Error get users';
-                }
-
-                if (error_msg) {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        {error_msg}
-                    </Snackbar>);
-                }
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error get page'
+                });
             });
         }
 
@@ -150,7 +99,7 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
                 method: "pages.getHistory",
                 params: {
                     page_id: pageTitle.id,
-                    group_id: group.id,
+                    group_id: pageTitle.group_id,
                     v: "5.131",
                     access_token: accessToken.access_token
                 }
@@ -158,40 +107,26 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
                 if (data.response) {
                     setHistory(data.response);
                 } else {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        No response get history
-                    </Snackbar>);
+                    setHistory([]);
+
+                    handleError(setSnackbar, go, {}, {
+                        data: data,
+                        default_error_msg: 'No response get history'
+                    });
                 }
             }).catch(e => {
-                console.log(e);
+                setHistory([]);
 
-                let error_msg;
-
-                if (e.error_data) {
-                    switch (e.error_data.error_reason.error_msg) {
-                        default:
-                            error_msg = e.error_data.error_reason.error_msg;
-                    }
-                } else {
-                    error_msg = 'Error get history';
-                }
-
-                if (error_msg) {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        {error_msg}
-                    </Snackbar>);
-                }
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error get history'
+                });
             });
         }
 
-        fetchInfoPage().then(() => {});
-        fetchHistory().then(() => {});
+        fetchInfoPage().then(() => {
+        });
+        fetchHistory().then(() => {
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -284,21 +219,46 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
      * @param item
      */
     const selectVersion = function (item) {
-        console.log('infoPage', infoPage);
-
-        setPage(infoPage);
-        setHistoryItem(item);
-        go(configData.routes.wiki_version);
+        fetchVersion(item.id, infoPage.group_id, accessToken.access_token).then(data => {
+            if (data.response) {
+                setContent({
+                    version: data.response.id,
+                    group_id: infoPage.group_id,
+                    title: infoPage.title,
+                    source: data.response.source,
+                    edited: data.response.version_created,
+                    creator_id: data.response.creator_id,
+                    who_can_view: infoPage.who_can_view,
+                    who_can_edit: infoPage.who_can_edit
+                });
+                go(configData.routes.wiki_version);
+            } else {
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get version'
+                });
+            }
+        }).catch(e => {
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error get version'
+            });
+        });
     }
 
     /**
      * Редактирование wiki-страницы
      */
     const editPage = () => {
-        console.log('infoPage', infoPage);
-
-        setPage(infoPage);
-        setHistoryItem(null); // reset selected version before edit current
+        setContent({
+            version: 0,
+            group_id: infoPage.group_id,
+            title: infoPage.title,
+            source: infoPage.source,
+            edited: infoPage.edited,
+            creator_id: infoPage.creator_id,
+            who_can_view: infoPage.who_can_view,
+            who_can_edit: infoPage.who_can_edit
+        });
         go(configData.routes.wiki_version);
     }
 
@@ -342,7 +302,7 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
                         <Header mode="secondary">Меню</Header>
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/page-' + group.id + '_' + pageTitle.id + '?act=edit&section=edit'}
+                            href={'https://vk.com/page-' + pageTitle.group_id + '_' + pageTitle.id + '?act=edit&section=edit'}
                             target='_blank' rel='noreferrer'
                         >
                             Открыть редактор ВКонтакте</CellButton>
@@ -430,10 +390,13 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAcce
                         {history.map((item) => {
                             return (
                                 <SimpleCell
+                                    badge={item.length}
                                     indicator={timestampToDate(item.date)}
                                     key={item.id}
                                     description={'ver. ' + item.id}
-                                    onClick={()=>{selectVersion(item)}}
+                                    onClick={() => {
+                                        selectVersion(item)
+                                    }}
                                 >
                                     {pageTitle.editor_name}
                                 </SimpleCell>

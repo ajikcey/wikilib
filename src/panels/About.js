@@ -17,10 +17,9 @@ import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon12Verified, Icon24CheckCircleOutline,
-    Icon24ErrorCircle,
     Icon28BookmarkOutline, Icon28UsersOutline
 } from "@vkontakte/icons";
-import {cutDeclNum} from "../functions";
+import {cutDeclNum, handleError} from "../functions";
 
 const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -46,17 +45,15 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
                 if (data.response) {
                     setApp(data.response);
                 } else {
-                    console.log(data);
+                    handleError(setSnackbar, go, {}, {
+                        data: data,
+                        default_error_msg: 'No response get app'
+                    });
                 }
             }).catch(e => {
-                console.log(e);
-
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                >
-                    Error get group
-                </Snackbar>);
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error get app'
+                });
             });
         }
 
@@ -84,10 +81,15 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
                     Сохранено
                 </Snackbar>);
             } else {
-                console.log('VKWebAppAddToFavoritesResult', data);
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No result AddToFavorites'
+                });
             }
         }).catch((e) => {
-            console.log('VKWebAppAddToFavoritesFailed', e);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error AddToFavorites'
+            });
         });
     }
 
@@ -104,10 +106,15 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
 
                 setActiveModal(configData.modals.redirectToCommunity);
             } else {
-                console.log('VKWebAppAddToCommunityResult', data);
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No group_id AddToCommunity'
+                });
             }
         }).catch((e) => {
-            console.log('VKWebAppAddToCommunityFailed', e);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error AddToCommunity'
+            });
         });
     }
 

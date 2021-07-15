@@ -18,7 +18,7 @@ import {
     VKCOM, IOS, ANDROID, FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {Icon24CheckCircleOutline, Icon24ErrorCircle, Icon56CheckCircleOutline} from "@vkontakte/icons";
+import {Icon24CheckCircleOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -44,10 +44,18 @@ const App = withAdaptivity(() => {
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
     const [group, setGroup] = useState(null);
-    const [page, setPage] = useState(null);
     const [pageTitle, setPageTitle] = useState(null);
-    const [historyItem, setHistoryItem] = useState(null);
     const [tmpAccess, setTempAccess] = useState({});
+    const [content, setContent] = useState({
+        version: 0,
+        group_id: 0,
+        title: "",
+        source: "",
+        created: 0,
+        creator: 0,
+        who_can_view: 0,
+        who_can_edit: 0
+    });
 
     const params = window.location.search.slice(1);
     const paramsAsObject = qs.parse(params);
@@ -86,14 +94,9 @@ const App = withAdaptivity(() => {
                     setActivePanel(configData.routes.token);
                 }
             } catch (e) {
-                console.log(e);
-
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                >
-                    Error get data from Storage
-                </Snackbar>);
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error get data from Storage'
+                });
             }
 
             setUser(user);
@@ -139,34 +142,20 @@ const App = withAdaptivity(() => {
 
                     setActivePanel(configData.routes.home); // route after get token
                 } else {
-                    console.log(data);
-
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        Empty token
-                    </Snackbar>);
+                    handleError(setSnackbar, go, {}, {
+                        data: data,
+                        default_error_msg: 'No access_token GetAuthToken'
+                    });
                 }
             } catch (e) {
-                console.log(e);
-
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                >
-                    Error with sending data to Storage
-                </Snackbar>);
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error with sending data to Storage'
+                });
             }
         }).catch(e => {
-            console.log(e);
-
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                Error get token
-            </Snackbar>);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error get token'
+            });
         });
     };
 
@@ -205,8 +194,6 @@ const App = withAdaptivity(() => {
                 });
             }
         }).catch(e => {
-            console.log(e);
-
             handleError(setSnackbar, go, e, {
                 default_error_msg: 'Error save access'
             });
@@ -270,7 +257,7 @@ const App = withAdaptivity(() => {
                 onClose={onCloseModal}
                 header="Доступ к странице"
                 actions={
-                    <Button size="l" mode="primary" onClick={onSubmitAccess}>
+                    <Button size="l" mode="primary" onClick={()=>{onSubmitAccess()}}>
                         Сохранить
                     </Button>
                 }
@@ -341,26 +328,31 @@ const App = withAdaptivity(() => {
                     <SplitLayout popout={popout} modal={modal}>
                         <SplitCol>
                             <View activePanel={activePanel}>
-                                <Landing id={configData.routes.landing}/>
-                                <About id={configData.routes.about} go={go} snackbarError={snackbar}
-                                       accessToken={accessToken} setActiveModal={setActiveModal}/>
-                                <Intro id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
-                                       setUserStatus={setUserStatus} userStatus={userStatus}/>
-                                <Token id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
-                                <Home id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                                      snackbarError={snackbar} lastGroupIds={lastGroupIds}
-                                      setLastGroupIds={setLastGroupIds}
-                                      go={go}/>
-                                <Pages id={configData.routes.pages} group={group} accessToken={accessToken}
-                                       snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
-                                       setActiveModal={setActiveModal}/>
-                                <Page id={configData.routes.page} pageTitle={pageTitle} setPage={setPage} group={group}
-                                      user={user} setTempAccess={setTempAccess}
-                                      accessToken={accessToken} setHistoryItem={setHistoryItem}
-                                      snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
-                                <Version id={configData.routes.wiki_version} historyItem={historyItem} page={page}
-                                         accessToken={accessToken} user={user}
-                                         snackbarError={snackbar} go={go}/>
+                                <Landing
+                                    id={configData.routes.landing}/>
+                                <About
+                                    id={configData.routes.about} go={go} snackbarError={snackbar}
+                                    accessToken={accessToken} setActiveModal={setActiveModal}/>
+                                <Intro
+                                    id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                                    setUserStatus={setUserStatus} userStatus={userStatus}/>
+                                <Token
+                                    id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
+                                <Home
+                                    id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
+                                    snackbarError={snackbar} lastGroupIds={lastGroupIds}
+                                    setLastGroupIds={setLastGroupIds} go={go}/>
+                                <Pages
+                                    id={configData.routes.pages} group={group} accessToken={accessToken}
+                                    snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
+                                    setActiveModal={setActiveModal}/>
+                                <Page
+                                    id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
+                                    user={user} setTempAccess={setTempAccess} accessToken={accessToken}
+                                    snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
+                                <Version
+                                    id={configData.routes.wiki_version} content={content}
+                                    accessToken={accessToken} user={user} snackbarError={snackbar} go={go}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

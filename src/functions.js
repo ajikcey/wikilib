@@ -121,6 +121,40 @@ export function savePage(page_id, group_id, user_id, access_token, title, text) 
 }
 
 /**
+ * Получение информации о wiki-странице
+ * @returns {Promise}
+ */
+export function fetchVersion(version_id, group_id, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "pages.getVersion",
+        params: {
+            version_id: version_id,
+            group_id: group_id,
+            v: "5.131",
+            access_token: access_token
+        }
+    });
+}
+
+/**
+ * Получение данных пользователей
+ * @param user_ids
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchUsers(user_ids, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "users.get",
+        params: {
+            user_ids: user_ids.join(','),
+            fields: ['photo_200'].join(','),
+            v: "5.131",
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Вывод ошибки
  * @param setSnackbar
  * @param go
@@ -129,6 +163,14 @@ export function savePage(page_id, group_id, user_id, access_token, title, text) 
  */
 export function handleError(setSnackbar, go, e, options) {
     let error_msg = options.default_error_msg;
+
+    if (e) {
+        console.log(e);
+    }
+
+    if (options.data) {
+        console.log(options.data);
+    }
 
     if (e.error_data) {
         if (e.error_data.error_reason) {

@@ -9,17 +9,16 @@ import {
     PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Snackbar, Counter
+    Counter
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon24ErrorCircle,
     Icon28AddOutline,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, timestampToDate} from "../functions";
+import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
 const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError}) => {
@@ -46,37 +45,17 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                 } else {
                     setPages([]);
 
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        No response get pages
-                    </Snackbar>);
+                    handleError(setSnackbar, go, {}, {
+                        data: data,
+                        default_error_msg: 'No response get pages'
+                    });
                 }
             }).catch(e => {
-                console.log(e);
-
                 setPages([]);
 
-                let error_msg;
-
-                if (e.error_data) {
-                    switch (e.error_data.error_reason.error_msg) {
-                        default:
-                            error_msg = e.error_data.error_reason.error_msg;
-                    }
-                } else {
-                    error_msg = 'Error get pages';
-                }
-
-                if (error_msg) {
-                    setSnackbar(<Snackbar
-                        onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                    >
-                        {error_msg}
-                    </Snackbar>);
-                }
+                handleError(setSnackbar, go, e, {
+                    default_error_msg: 'Error get pages'
+                });
             });
         }
 
@@ -117,8 +96,6 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                     onClick={() => {
                         setActiveModal(configData.modals.addPage)
                     }}
-                    // href={'https://vk.com/pages?oid=-' + group.id + '&p=Title'}
-                    // target='_blank' rel='noreferrer'
                 >
                     Новая страница</CellButton>
 

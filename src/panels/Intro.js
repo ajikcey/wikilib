@@ -1,10 +1,10 @@
 import React, {Fragment, useState} from 'react';
 
-import {Group, Panel, PanelHeader, Avatar, Button, Placeholder, Snackbar} from '@vkontakte/vkui';
+import {Group, Panel, PanelHeader, Avatar, Button, Placeholder} from '@vkontakte/vkui';
 import bridge from "@vkontakte/vk-bridge";
-import {Icon24ErrorCircle} from "@vkontakte/icons";
 
 import configData from "../config.json";
+import {handleError} from "../functions";
 
 const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -23,14 +23,9 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
             setUserStatus({hasSeenIntro: true});
             go(configData.routes.token);
         } catch (e) {
-            console.log(e);
-
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                Error with sending data to Storage
-            </Snackbar>);
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error with sending data to Storage'
+            });
         }
     };
 
