@@ -24,7 +24,7 @@ import {
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
-import {cutDeclNum, declOfNum} from "../functions";
+import {cutDeclNum, declOfNum, handleError} from "../functions";
 
 const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -34,48 +34,6 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
     const [countGroups, setCountGroups] = useState(0);
 
     useEffect(() => {
-
-        const handleError = (e, options) => {
-            let error_msg = options.default_error_msg;
-
-            if (e.error_data) {
-                if (e.error_data.error_reason) {
-                    if (typeof e.error_data.error_reason === 'object') {
-                        if ([
-                            'User authorization failed: access_token has expired.',
-                            'User authorization failed: access_token was given to another ip address.'
-                        ].indexOf(e.error_data.error_reason.error_msg) > -1) {
-                            go(configData.routes.token); // refresh token
-                        } else if (e.error_data.error_reason.error_msg) {
-                            error_msg = e.error_data.error_reason.error_msg;
-                        }
-                    } else {
-                        error_msg = e.error_data.error_reason; // бывает строкой
-                    }
-                } else if (e.error_data.error_msg) {
-                    if ([
-                        'User authorization failed: access_token has expired.',
-                        'User authorization failed: access_token was given to another ip address.'
-                    ].indexOf(e.error_data.error_msg) > -1) {
-                        go(configData.routes.token); // refresh token
-                    } else {
-                        error_msg = e.error_data.error_msg;
-                    }
-                }
-            }
-
-            error_msg = (error_msg || JSON.stringify(e));
-
-            if (error_msg) {
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                >
-                    {error_msg}
-                </Snackbar>);
-            }
-        }
-
         /**
          * Получение сообществ пользователя
          * @returns {Promise<void>}
@@ -99,20 +57,20 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
 
                     fetchLastGroups().then(() => {});
                 } else {
-                    setGroups([]);
-
                     console.log(data);
 
-                    handleError({}, {
-                        default_error_msg: 'Error get groups'
+                    setGroups([]);
+
+                    handleError(setSnackbar, go, {}, {
+                        default_error_msg: 'No response get groups'
                     });
                 }
             }).catch(e => {
-                setGroups([]);
-
                 console.log(e);
 
-                handleError(e, {
+                setGroups([]);
+
+                handleError(setSnackbar, go, e, {
                     default_error_msg: 'Error get groups'
                 });
             });
@@ -136,20 +94,20 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     if (data.response) {
                         setLastGroups(data.response);
                     } else {
-                        setLastGroups([]);
-
                         console.log(data);
 
-                        handleError({}, {
-                            default_error_msg: 'Error get groups by id'
+                        setLastGroups([]);
+
+                        handleError(setSnackbar, go, {}, {
+                            default_error_msg: 'No response get groups by id'
                         });
                     }
                 }).catch(e => {
-                    setLastGroups([]);
-
                     console.log(e);
 
-                    handleError(e, {
+                    setLastGroups([]);
+
+                    handleError(setSnackbar, go, e, {
                         default_error_msg: 'Error get groups by id'
                     });
                 });

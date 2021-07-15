@@ -28,7 +28,7 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
 
     useEffect(() => {
         /**
-         * Получение сообществ пользователя
+         * Получение информации о приложении
          * @returns {Promise<void>}
          */
         async function fetchApp() {
@@ -73,6 +73,10 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
     const AddToFavorites = async () => {
         await bridge.send("VKWebAppAddToFavorites").then((data) => {
             if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                }
+
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
@@ -94,6 +98,10 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
     const AddToCommunity = async () => {
         await bridge.send("VKWebAppAddToCommunity").then((data) => {
             if (data.group_id) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                }
+
                 setActiveModal(configData.modals.redirectToCommunity);
             } else {
                 console.log('VKWebAppAddToCommunityResult', data);

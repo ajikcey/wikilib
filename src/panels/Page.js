@@ -22,7 +22,7 @@ import configData from "../config.json";
 import {copyToClipboard, cutDeclNum, declOfNum, savePage, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryItem, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setTempAccess, setHistoryItem, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -56,7 +56,7 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get page
+                        No response get page
                     </Snackbar>);
                 }
             }).catch(e => {
@@ -113,7 +113,7 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get users
+                        No response get users
                     </Snackbar>);
                 }
             }).catch(e => {
@@ -162,7 +162,7 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get history
+                        No response get history
                     </Snackbar>);
                 }
             }).catch(e => {
@@ -207,6 +207,10 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
      * Изменение настройки, что может просматривать страницу
      */
     const settingAccessPage = () => {
+        setTempAccess({
+            who_can_view: infoPage.who_can_view,
+            who_can_edit: infoPage.who_can_edit,
+        });
         setActiveModal(configData.modals.accessPage);
     }
 
@@ -280,6 +284,8 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
      * @param item
      */
     const selectVersion = function (item) {
+        console.log('infoPage', infoPage);
+
         setPage(infoPage);
         setHistoryItem(item);
         go(configData.routes.wiki_version);
@@ -289,6 +295,8 @@ const Page = ({id, accessToken, pageTitle, setPage, user, group, go, setHistoryI
      * Редактирование wiki-страницы
      */
     const editPage = () => {
+        console.log('infoPage', infoPage);
+
         setPage(infoPage);
         setHistoryItem(null); // reset selected version before edit current
         go(configData.routes.wiki_version);

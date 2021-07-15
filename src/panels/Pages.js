@@ -50,7 +50,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get pages
+                        No response get pages
                     </Snackbar>);
                 }
             }).catch(e => {

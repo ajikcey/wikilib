@@ -1,4 +1,7 @@
 import bridge from "@vkontakte/vk-bridge";
+import configData from "./config.json";
+import {Snackbar} from "@vkontakte/vkui";
+import {Icon24ErrorCircle} from "@vkontakte/icons";
 
 /**
  * Склонение слов в зависимости от числового значения
@@ -115,4 +118,52 @@ export function savePage(page_id, group_id, user_id, access_token, title, text) 
             access_token: access_token
         }
     });
+}
+
+/**
+ * Вывод ошибки
+ * @param setSnackbar
+ * @param go
+ * @param e
+ * @param options
+ */
+export function handleError(setSnackbar, go, e, options) {
+    let error_msg = options.default_error_msg;
+
+    if (e.error_data) {
+        if (e.error_data.error_reason) {
+            if (typeof e.error_data.error_reason === 'object') {
+                if ([
+                    'User authorization failed: access_token has expired.',
+                    'User authorization failed: access_token was given to another ip address.'
+                ].indexOf(e.error_data.error_reason.error_msg) > -1) {
+                    go(configData.routes.token); // refresh token
+                } else if (e.error_data.error_reason.error_msg) {
+                    error_msg = e.error_data.error_reason.error_msg;
+                }
+            } else {
+                error_msg = e.error_data.error_reason; // бывает строкой
+            }
+        } else if (e.error_data.error_msg) {
+            if ([
+                'User authorization failed: access_token has expired.',
+                'User authorization failed: access_token was given to another ip address.'
+            ].indexOf(e.error_data.error_msg) > -1) {
+                go(configData.routes.token); // refresh token
+            } else {
+                error_msg = e.error_data.error_msg;
+            }
+        }
+    }
+
+    error_msg = (error_msg || JSON.stringify(e));
+
+    if (error_msg) {
+        setSnackbar(<Snackbar
+            onClose={() => setSnackbar(null)}
+            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+        >
+            {error_msg}
+        </Snackbar>);
+    }
 }

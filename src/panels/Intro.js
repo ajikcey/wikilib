@@ -14,10 +14,6 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
      * @returns {Promise<void>}
      */
     const viewIntro = async function () {
-        if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
-            await bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
-        }
-
         try {
             await bridge.send('VKWebAppStorageSet', {
                 key: configData.storage_keys.status,

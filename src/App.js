@@ -32,6 +32,7 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
+import {handleError} from "./functions";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -46,6 +47,7 @@ const App = withAdaptivity(() => {
     const [page, setPage] = useState(null);
     const [pageTitle, setPageTitle] = useState(null);
     const [historyItem, setHistoryItem] = useState(null);
+    const [tmpAccess, setTempAccess] = useState({});
 
     const params = window.location.search.slice(1);
     const paramsAsObject = qs.parse(params);
@@ -166,15 +168,49 @@ const App = withAdaptivity(() => {
                 Error get token
             </Snackbar>);
         });
-    }
+    };
 
     const onCloseModal = function () {
         setActiveModal(null); // null для скрытия
-    }
+    };
 
     const onSubmitModal = function () {
         setActiveModal(null); // null для скрытия
-    }
+    };
+
+    const onSubmitAccess = function () {
+        bridge.send("VKWebAppCallAPIMethod", {
+            method: "pages.saveAccess",
+            params: {
+                page_id: pageTitle.id,
+                group_id: pageTitle.group_id,
+                view: tmpAccess.who_can_view,
+                edit: tmpAccess.who_can_edit,
+                v: "5.131",
+                access_token: accessToken.access_token
+            }
+        }).then(data => {
+            if (data.response) {
+
+
+                setActiveModal(null); // null для скрытия
+            } else {
+                handleError(setSnackbar, go, {}, {
+                    default_error_msg: 'No response save access'
+                });
+            }
+        }).catch(e => {
+            console.log(e);
+
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error save access'
+            });
+        });
+    };
+
+    const onAccessChanged = function (e) {
+        tmpAccess[e.currentTarget.name] = e.currentTarget.value
+    };
 
     const modal = (
         <ModalRoot
@@ -229,23 +265,59 @@ const App = withAdaptivity(() => {
                 onClose={onCloseModal}
                 header="Доступ к странице"
                 actions={
-                    <Button size="l" mode="primary" onClick={onSubmitModal}>
+                    <Button size="l" mode="primary" onClick={onSubmitAccess}>
                         Сохранить
                     </Button>
                 }
             >
                 <FormLayout>
                     <FormItem top="Кто может просматривать эту страницу?">
-                        <Radio name="who_can_view" value={configData.wiki_access.all} defaultChecked>Все</Radio>
-                        <Radio name="who_can_view" value={configData.wiki_access.member}>Только участники</Radio>
-                        <Radio name="who_can_view" value={configData.wiki_access.staff}>Только руководители</Radio>
+                        <Radio
+                            name="who_can_view"
+                            value={configData.wiki_access.all}
+                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.all}
+                            onChange={onAccessChanged}
+                        >
+                            Все</Radio>
+                        <Radio
+                            name="who_can_view"
+                            value={configData.wiki_access.member}
+                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.member}
+                            onChange={onAccessChanged}
+                        >
+                            Только участники</Radio>
+                        <Radio
+                            name="who_can_view"
+                            value={configData.wiki_access.staff}
+                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.staff}
+                            onChange={onAccessChanged}
+                        >
+                            Только руководители</Radio>
                     </FormItem>
                 </FormLayout>
                 <FormLayout>
                     <FormItem top="Кто может редактировать эту страницу?">
-                        <Radio name="who_can_edit" value={configData.wiki_access.all} defaultChecked>Все</Radio>
-                        <Radio name="who_can_edit" value={configData.wiki_access.member}>Только участники</Radio>
-                        <Radio name="who_can_edit" value={configData.wiki_access.staff}>Только руководители</Radio>
+                        <Radio
+                            name="who_can_edit"
+                            value={configData.wiki_access.all}
+                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.all}
+                            onChange={onAccessChanged}
+                        >
+                            Все</Radio>
+                        <Radio
+                            name="who_can_edit"
+                            value={configData.wiki_access.member}
+                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.member}
+                            onChange={onAccessChanged}
+                        >
+                            Только участники</Radio>
+                        <Radio
+                            name="who_can_edit"
+                            value={configData.wiki_access.staff}
+                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.staff}
+                            onChange={onAccessChanged}
+                        >
+                            Только руководители</Radio>
                     </FormItem>
                 </FormLayout>
             </ModalCard>
@@ -278,7 +350,7 @@ const App = withAdaptivity(() => {
                                        snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                        setActiveModal={setActiveModal}/>
                                 <Page id={configData.routes.page} pageTitle={pageTitle} setPage={setPage} group={group}
-                                      user={user}
+                                      user={user} setTempAccess={setTempAccess}
                                       accessToken={accessToken} setHistoryItem={setHistoryItem}
                                       snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version id={configData.routes.wiki_version} historyItem={historyItem} page={page}

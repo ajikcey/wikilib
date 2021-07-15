@@ -72,7 +72,7 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
                                 onClose={() => setSnackbar(null)}
                                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                             >
-                                Error get user
+                                No response get user
                             </Snackbar>);
                         }
                     }).catch(e => {
@@ -103,7 +103,7 @@ const Version = ({id, accessToken, historyItem, page, user, go, snackbarError}) 
                         onClose={() => setSnackbar(null)}
                         before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
                     >
-                        Error get version
+                        No response get version
                     </Snackbar>);
                 }
             }).catch(e => {
