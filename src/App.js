@@ -18,7 +18,7 @@ import {
     VKCOM, IOS, ANDROID, FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {Icon24ErrorCircle, Icon56CheckCircleOutline} from "@vkontakte/icons";
+import {Icon24CheckCircleOutline, Icon24ErrorCircle, Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -191,9 +191,14 @@ const App = withAdaptivity(() => {
             }
         }).then(data => {
             if (data.response) {
-
-
                 setActiveModal(null); // null для скрытия
+
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >
+                    Сохранено
+                </Snackbar>);
             } else {
                 handleError(setSnackbar, go, {}, {
                     default_error_msg: 'No response save access'
