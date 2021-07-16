@@ -76,7 +76,7 @@ const Version = ({id, accessToken, content, user, go, snackbarError}) => {
                 left={<PanelHeaderBack onClick={() => go(configData.routes.page)}/>}
             >
                 <PanelHeaderContent
-                    status={(content.version ? 'ver. ' + content.version : 'текущая версия')}
+                    status={(content.version ? 'v.' + content.version : 'текущая версия')}
                 >
                     {content.title}
                 </PanelHeaderContent>

@@ -187,7 +187,6 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setTempAccess, 
     const restorePage = () => {
         savePage(infoPage.id, infoPage.group_id, user.id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
-            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24HistoryBackwardOutline fill='var(--accent)'/>}
@@ -393,7 +392,7 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setTempAccess, 
                                     badge={item.length}
                                     indicator={timestampToDate(item.date)}
                                     key={item.id}
-                                    description={'ver. ' + item.id}
+                                    description={'v.' + item.id}
                                     onClick={() => {
                                         selectVersion(item)
                                     }}

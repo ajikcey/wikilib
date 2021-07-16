@@ -112,6 +112,7 @@ const App = withAdaptivity(() => {
      * @param panel
      */
     const go = panel => {
+        setSnackbar(false);
         setActivePanel(panel);
     };
 
@@ -167,7 +168,9 @@ const App = withAdaptivity(() => {
         setActiveModal(null); // null для скрытия
     };
 
-    const onSubmitAccess = function () {
+    const onSubmitAccess = function (e) {
+        e.preventDefault();
+
         bridge.send("VKWebAppCallAPIMethod", {
             method: "pages.saveAccess",
             params: {
@@ -256,13 +259,8 @@ const App = withAdaptivity(() => {
                 id={configData.modals.accessPage}
                 onClose={onCloseModal}
                 header="Доступ к странице"
-                actions={
-                    <Button size="l" mode="primary" onClick={()=>{onSubmitAccess()}}>
-                        Сохранить
-                    </Button>
-                }
             >
-                <FormLayout>
+                <FormLayout onSubmit={onSubmitAccess}>
                     <FormItem top="Кто может просматривать эту страницу?">
                         <Radio
                             name="who_can_view"
@@ -286,8 +284,6 @@ const App = withAdaptivity(() => {
                         >
                             Только руководители</Radio>
                     </FormItem>
-                </FormLayout>
-                <FormLayout>
                     <FormItem top="Кто может редактировать эту страницу?">
                         <Radio
                             name="who_can_edit"
@@ -311,6 +307,9 @@ const App = withAdaptivity(() => {
                         >
                             Только руководители</Radio>
                     </FormItem>
+                    <Button size="l" mode="primary" stretched type='submit'>
+                        Сохранить
+                    </Button>
                 </FormLayout>
             </ModalCard>
         </ModalRoot>
