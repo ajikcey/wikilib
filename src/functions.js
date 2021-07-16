@@ -100,23 +100,25 @@ export function copyToClipboard(str) {
  * Сохранение wiki-страницы
  * @param page_id
  * @param group_id
- * @param user_id
  * @param access_token
  * @param title
  * @param text
  * @returns {Promise}
  */
-export function savePage(page_id, group_id, user_id, access_token, title, text) {
+export function savePage(page_id, group_id, access_token, title, text) {
+    let params = {
+        group_id: group_id,
+        text: text,
+        title: title,
+        v: configData.vk_api_version,
+        access_token: access_token
+    };
+
+    if (page_id) params.page_id = page_id;
+
     return bridge.send("VKWebAppCallAPIMethod", {
         method: "pages.save",
-        params: {
-            page_id: page_id,
-            group_id: group_id,
-            text: text,
-            title: title,
-            v: "5.131",
-            access_token: access_token
-        }
+        params: params
     });
 }
 
@@ -130,7 +132,7 @@ export function fetchVersion(version_id, group_id, access_token) {
         params: {
             version_id: version_id,
             group_id: group_id,
-            v: "5.131",
+            v: configData.vk_api_version,
             access_token: access_token
         }
     });
@@ -148,14 +150,14 @@ export function fetchUsers(user_ids, access_token) {
         params: {
             user_ids: user_ids.join(','),
             fields: ['photo_200'].join(','),
-            v: "5.131",
+            v: configData.vk_api_version,
             access_token: access_token
         }
     });
 }
 
 /**
- * Вывод ошибки
+ * Обработка ошибок
  * @param setSnackbar
  * @param go
  * @param e
@@ -208,4 +210,44 @@ export function handleError(setSnackbar, go, e, options) {
             {error_msg}
         </Snackbar>);
     }
+}
+
+/**
+ * Получение информации о wiki-странице
+ * @param page_id
+ * @param group_id
+ * @param need_source
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchPage(page_id, group_id, need_source, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "pages.get",
+        params: {
+            page_id: page_id,
+            owner_id: ('-' + group_id),
+            need_source: need_source,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
+ * Получение списка версий wiki-страницы
+ * @param page_id
+ * @param group_id
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchHistory(page_id, group_id, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "pages.getHistory",
+        params: {
+            page_id: page_id,
+            group_id: group_id,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
 }

@@ -32,7 +32,7 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
-import {handleError} from "./functions";
+import {fetchPage, handleError, savePage} from "./functions";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -186,7 +186,7 @@ const App = withAdaptivity(() => {
                 group_id: pageTitle.group_id,
                 view: modalData.who_can_view,
                 edit: modalData.who_can_edit,
-                v: "5.131",
+                v: configData.vk_api_version,
                 access_token: accessToken.access_token
             }
         }).then(data => {
@@ -216,6 +216,44 @@ const App = withAdaptivity(() => {
     };
 
     /**
+     * Создание новой страницы
+     * @param e
+     */
+    const onSubmitAddPage = function (e) {
+        e.preventDefault();
+
+        savePage(0, group.id, accessToken.access_token, modalData.title, "").then(data => {
+            if (data.response) {
+
+                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data)=>{
+                    if (data.response) {
+                        setActiveModal(null); // null для скрытия
+                        setPageTitle(data.response);
+                        go(configData.routes.page);
+                    } else {
+                        handleError(modalData.setSnackbar, go, {}, {
+                            default_error_msg: 'No response get page'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(modalData.setSnackbar, go, e, {
+                        default_error_msg: 'Error get page'
+                    });
+                });
+
+            } else {
+                handleError(modalData.setSnackbar, go, {}, {
+                    default_error_msg: 'No response save page'
+                });
+            }
+        }).catch(e => {
+            handleError(modalData.setSnackbar, go, e, {
+                default_error_msg: 'Error save page'
+            });
+        });
+    };
+
+    /**
      * Изменение данных в модальном окне
      * @param e
      */
@@ -232,13 +270,23 @@ const App = withAdaptivity(() => {
                 id={configData.modals.addPage}
                 onClose={onCloseModal}
                 header="Создание страницы"
-                actions={
-                    <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
+            >
+                <FormLayout onSubmit={onSubmitAddPage}>
+                    <FormItem
+                        top="Введите название страницы"
+                        style={{paddingLeft: 0, paddingRight: 0}}
+                    >
+                        <Input
+                            name='title'
+                            autoFocus={true}
+                            placeholder=''
+                            onChange={onChangeModalData}
+                        />
+                    </FormItem>
+                    <Button size="l" mode="primary" stretched type='submit'>
                         Создать
                     </Button>
-                }
-            >
-                <Input defaultValue="" autoFocus={true} placeholder='Введите название страницы'/>
+                </FormLayout>
             </ModalCard>
 
             <ModalCard
@@ -365,14 +413,14 @@ const App = withAdaptivity(() => {
                                 <Pages
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
-                                    setActiveModal={setActiveModal}/>
+                                    setActiveModal={setActiveModal} setModalData={setModalData}/>
                                 <Page
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
-                                    user={user} setModalData={setModalData} accessToken={accessToken}
+                                    setModalData={setModalData} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version
                                     id={configData.routes.wiki_version} content={content}
-                                    accessToken={accessToken} user={user} snackbarError={snackbar} go={go}/>
+                                    accessToken={accessToken} snackbarError={snackbar} go={go}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

@@ -46,7 +46,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     filter: 'moder',
                     offset: 0,
                     count: 1000,
-                    v: "5.131",
+                    v: configData.vk_api_version,
                     access_token: accessToken.access_token
                 }
             }).then(data => {
@@ -80,7 +80,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     params: {
                         group_ids: lastGroupIds.join(','),
                         fields: ['members_count', 'verified'].join(','),
-                        v: "5.131",
+                        v: configData.vk_api_version,
                         access_token: accessToken.access_token
                     }
                 }).then(data => {

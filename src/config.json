@@ -2,18 +2,17 @@
   "name": "WikiLib",
   "app_id": 7896414,
   "app_url": "https://vk.com/app7896414",
+  "max_last_groups": 25,
+  "prefix_deleted_page": "[deleted] ",
+  "vk_api_version": "5.131",
   "community": {
     "url": "https://vk.com/wikilib"
   },
-  "max_last_groups": 25,
-  "prefix_deleted_page": "[deleted] ",
-
   "wiki_access": {
     "all": 2,
     "member": 1,
     "staff": 0
   },
-
   "routes": {
     "pages": "pages",
     "page": "page",
@@ -24,13 +23,11 @@
     "token": "token",
     "intro": "intro"
   },
-
   "storage_keys": {
     "last_groups": "last_groups",
     "status": "status",
     "access_token": "access_token"
   },
-
   "modals": {
     "redirectToCommunity": "redirectToCommunity",
     "addPage": "addPage",

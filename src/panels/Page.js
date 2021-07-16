@@ -6,7 +6,6 @@ import {
     Snackbar, Tabs, TabsItem, IconButton, SimpleCell, Header, PanelHeaderContent, Spacing
 } from '@vkontakte/vkui';
 
-import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
     Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline, Icon24TextOutline,
@@ -21,7 +20,7 @@ import configData from "../config.json";
 import {
     copyToClipboard,
     cutDeclNum,
-    declOfNum,
+    declOfNum, fetchHistory, fetchPage,
     fetchUsers,
     fetchVersion, handleError,
     savePage,
@@ -29,7 +28,7 @@ import {
 } from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -39,93 +38,59 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
 
     useEffect(() => {
 
-        /**
-         * Получение информации о wiki-странице
-         * @returns {Promise<void>}
-         */
-        async function fetchInfoPage() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "pages.get",
-                params: {
-                    page_id: pageTitle.id,
-                    owner_id: ('-' + pageTitle.group_id),
-                    need_source: 1,
-                    v: "5.131",
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
-                if (data.response) {
-                    fetchUsers([data.response.creator_id, data.response.editor_id], accessToken.access_token).then(data => {
-                        if (data.response) {
-                            setCreator(data.response[0]);
+        fetchPage(pageTitle.id, pageTitle.group_id, 1, accessToken.access_token).then(data => {
+            if (data.response) {
+                fetchUsers([data.response.creator_id, data.response.editor_id], accessToken.access_token).then(data => {
+                    if (data.response) {
+                        setCreator(data.response[0]);
 
-                            if (data.response[1]) {
-                                setEditor(data.response[1]);
-                            } else {
-                                setEditor(data.response[0]); // creator_id == editor_id
-                            }
+                        if (data.response[1]) {
+                            setEditor(data.response[1]);
                         } else {
-                            handleError(setSnackbar, go, {}, {
-                                data: data,
-                                default_error_msg: 'No response get users'
-                            });
+                            setEditor(data.response[0]); // creator_id == editor_id
                         }
-                    }).catch(e => {
-                        handleError(setSnackbar, go, e, {
-                            default_error_msg: 'Error get users'
+                    } else {
+                        handleError(setSnackbar, go, {}, {
+                            data: data,
+                            default_error_msg: 'No response get users'
                         });
+                    }
+                }).catch(e => {
+                    handleError(setSnackbar, go, e, {
+                        default_error_msg: 'Error get users'
                     });
-
-                    setInfoPage(data.response);
-                } else {
-                    handleError(setSnackbar, go, {}, {
-                        data: data,
-                        default_error_msg: 'No response get page'
-                    });
-                }
-            }).catch(e => {
-                handleError(setSnackbar, go, e, {
-                    default_error_msg: 'Error get page'
                 });
+
+                setInfoPage(data.response);
+            } else {
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get page'
+                });
+            }
+        }).catch(e => {
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error get page'
             });
-        }
+        });
 
-        /**
-         * Возвращает список всех старых версий вики-страницы.
-         * @returns {Promise<void>}
-         */
-        async function fetchHistory() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "pages.getHistory",
-                params: {
-                    page_id: pageTitle.id,
-                    group_id: pageTitle.group_id,
-                    v: "5.131",
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
-                if (data.response) {
-                    setHistory(data.response);
-                } else {
-                    setHistory([]);
-
-                    handleError(setSnackbar, go, {}, {
-                        data: data,
-                        default_error_msg: 'No response get history'
-                    });
-                }
-            }).catch(e => {
+        fetchHistory(pageTitle.id, pageTitle.group_id, accessToken.access_token).then(data => {
+            if (data.response) {
+                setHistory(data.response);
+            } else {
                 setHistory([]);
 
-                handleError(setSnackbar, go, e, {
-                    default_error_msg: 'Error get history'
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get history'
                 });
-            });
-        }
+            }
+        }).catch(e => {
+            setHistory([]);
 
-        fetchInfoPage().then(() => {
-        });
-        fetchHistory().then(() => {
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error get history'
+            });
         });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -186,7 +151,7 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
      * Восстановление wiki-страницы
      */
     const restorePage = () => {
-        savePage(infoPage.id, infoPage.group_id, user.id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
+        savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -201,7 +166,7 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
      * Удаление wiki-страницы
      */
     const delPage = () => {
-        savePage(infoPage.id, infoPage.group_id, user.id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
+        savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -400,7 +365,7 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
                                         selectVersion(item)
                                     }}
                                 >
-                                    {pageTitle.editor_name}
+                                    {item.editor_name}
                                 </SimpleCell>
                             );
                         })}

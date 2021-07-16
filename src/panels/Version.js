@@ -15,7 +15,7 @@ import {
 import configData from "../config.json";
 import {fetchUsers, handleError, savePage, timestampToDate} from "../functions";
 
-const Version = ({id, accessToken, content, user, go, snackbarError}) => {
+const Version = ({id, accessToken, content, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [formValues, setFormValues] = useState(null);
     const [creator, setCreator] = useState({});
@@ -46,7 +46,7 @@ const Version = ({id, accessToken, content, user, go, snackbarError}) => {
     const onSubmitVersion = (e) => {
         e.preventDefault();
 
-        savePage(content.id, content.group_id, user.id, accessToken.access_token, content.title, formValues.text).then(() => {
+        savePage(content.id, content.group_id, accessToken.access_token, content.title, formValues.text).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}

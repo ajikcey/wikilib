@@ -21,7 +21,7 @@ import {
 import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError}) => {
+const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setModalData, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [pages, setPages] = useState(null);
 
@@ -36,7 +36,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                 method: "pages.getTitles",
                 params: {
                     group_id: group.id,
-                    v: "5.131",
+                    v: configData.vk_api_version,
                     access_token: accessToken.access_token
                 }
             }).then(data => {
@@ -62,7 +62,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
         fetchPages().then(() => {
         });
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, []);
 
     /**
@@ -72,6 +72,16 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
     const selectPage = function (item) {
         setPageTitle(item);
         go(configData.routes.page);
+    }
+
+    /**
+     * Создание wiki-страницы
+     */
+    const addPage = function () {
+        setModalData({
+            setSnackbar: setSnackbar,
+        });
+        setActiveModal(configData.modals.addPage);
     }
 
     return (
@@ -93,9 +103,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                 <Search/>
                 <CellButton
                     before={<Icon28AddOutline/>}
-                    onClick={() => {
-                        setActiveModal(configData.modals.addPage)
-                    }}
+                    onClick={addPage}
                 >
                     Новая страница</CellButton>
 

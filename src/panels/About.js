@@ -38,7 +38,7 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
                     return_friends: 1,
                     fields: ['photo_100', 'members_count'].join(','),
                     extended: 1,
-                    v: "5.131",
+                    v: configData.vk_api_version,
                     access_token: accessToken.access_token
                 }
             }).then(data => {
