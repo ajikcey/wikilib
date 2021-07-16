@@ -29,7 +29,7 @@ import {
 } from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setContent, user, go, setTempAccess, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -142,9 +142,10 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setTempAccess, 
      * Изменение настройки, что может просматривать страницу
      */
     const settingAccessPage = () => {
-        setTempAccess({
+        setModalData({
             who_can_view: infoPage.who_can_view,
             who_can_edit: infoPage.who_can_edit,
+            setSnackbar: setSnackbar,
         });
         setActiveModal(configData.modals.accessPage);
     }

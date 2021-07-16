@@ -45,14 +45,14 @@ const App = withAdaptivity(() => {
     const [accessToken, setAccessToken] = useState(null);
     const [group, setGroup] = useState(null);
     const [pageTitle, setPageTitle] = useState(null);
-    const [tmpAccess, setTempAccess] = useState({});
+    const [modalData, setModalData] = useState({});
     const [content, setContent] = useState({
         version: 0,
         group_id: 0,
         title: "",
         source: "",
         created: 0,
-        creator: 0,
+        creator_id: 0,
         who_can_view: 0,
         who_can_edit: 0
     });
@@ -176,8 +176,8 @@ const App = withAdaptivity(() => {
             params: {
                 page_id: pageTitle.id,
                 group_id: pageTitle.group_id,
-                view: tmpAccess.who_can_view,
-                edit: tmpAccess.who_can_edit,
+                view: modalData.who_can_view,
+                edit: modalData.who_can_edit,
                 v: "5.131",
                 access_token: accessToken.access_token
             }
@@ -185,26 +185,26 @@ const App = withAdaptivity(() => {
             if (data.response) {
                 setActiveModal(null); // null для скрытия
 
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
+                modalData.setSnackbar(<Snackbar
+                    onClose={() => modalData.setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >
                     Сохранено
                 </Snackbar>);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(modalData.setSnackbar, go, {}, {
                     default_error_msg: 'No response save access'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(modalData.setSnackbar, go, e, {
                 default_error_msg: 'Error save access'
             });
         });
     };
 
-    const onAccessChanged = function (e) {
-        tmpAccess[e.currentTarget.name] = e.currentTarget.value
+    const onChangeModalData = function (e) {
+        modalData[e.currentTarget.name] = e.currentTarget.value;
     };
 
     const modal = (
@@ -233,8 +233,7 @@ const App = withAdaptivity(() => {
                 subheader="Перейдите в приложение, установленное в сообществе."
                 actions={
                     <Button
-                        href={'https://vk.com/app' + configData.app_id + '_-' + 205670119}
-                        // href={'https://vk.com/app' + configData.app_id + '_-' + group.group_id}
+                        href={'https://vk.com/app' + configData.app_id + '_-' + modalData.group_id}
                         target='_blank' size="l" mode="primary" stretched>
                         Перейти
                     </Button>
@@ -265,22 +264,22 @@ const App = withAdaptivity(() => {
                         <Radio
                             name="who_can_view"
                             value={configData.wiki_access.all}
-                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.all}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_view === configData.wiki_access.all}
+                            onChange={onChangeModalData}
                         >
                             Все</Radio>
                         <Radio
                             name="who_can_view"
                             value={configData.wiki_access.member}
-                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.member}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_view === configData.wiki_access.member}
+                            onChange={onChangeModalData}
                         >
                             Только участники</Radio>
                         <Radio
                             name="who_can_view"
                             value={configData.wiki_access.staff}
-                            defaultChecked={tmpAccess.who_can_view === configData.wiki_access.staff}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_view === configData.wiki_access.staff}
+                            onChange={onChangeModalData}
                         >
                             Только руководители</Radio>
                     </FormItem>
@@ -288,22 +287,23 @@ const App = withAdaptivity(() => {
                         <Radio
                             name="who_can_edit"
                             value={configData.wiki_access.all}
-                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.all}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_edit === configData.wiki_access.all}
+                            onChange={onChangeModalData}
+                            disabled={group && group.is_closed > 0}
                         >
                             Все</Radio>
                         <Radio
                             name="who_can_edit"
                             value={configData.wiki_access.member}
-                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.member}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_edit === configData.wiki_access.member}
+                            onChange={onChangeModalData}
                         >
                             Только участники</Radio>
                         <Radio
                             name="who_can_edit"
                             value={configData.wiki_access.staff}
-                            defaultChecked={tmpAccess.who_can_edit === configData.wiki_access.staff}
-                            onChange={onAccessChanged}
+                            defaultChecked={modalData.who_can_edit === configData.wiki_access.staff}
+                            onChange={onChangeModalData}
                         >
                             Только руководители</Radio>
                     </FormItem>
@@ -315,6 +315,10 @@ const App = withAdaptivity(() => {
         </ModalRoot>
     );
 
+    /**
+     * Определение платформы (VKCOM, IOS, ANDROID)
+     * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
+     */
     function fetchPlatform() {
         return (['desktop_web'].indexOf(paramsAsObject.vk_platform) > -1 ? VKCOM :
             (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(paramsAsObject.vk_platform) > -1 ? IOS : ANDROID));
@@ -331,6 +335,7 @@ const App = withAdaptivity(() => {
                                     id={configData.routes.landing}/>
                                 <About
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
+                                    setModalData={setModalData}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
                                 <Intro
                                     id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
@@ -347,7 +352,7 @@ const App = withAdaptivity(() => {
                                     setActiveModal={setActiveModal}/>
                                 <Page
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
-                                    user={user} setTempAccess={setTempAccess} accessToken={accessToken}
+                                    user={user} setModalData={setModalData} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version
                                     id={configData.routes.wiki_version} content={content}

@@ -21,7 +21,7 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError} from "../functions";
 
-const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
+const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [app, setApp] = useState(null);
 
@@ -104,6 +104,7 @@ const About = ({id, go, snackbarError, accessToken, setActiveModal}) => {
                     bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
                 }
 
+                setModalData({group_id: data.group_id});
                 setActiveModal(configData.modals.redirectToCommunity);
             } else {
                 handleError(setSnackbar, go, {}, {
