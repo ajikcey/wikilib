@@ -143,8 +143,8 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
      */
     const settingAccessPage = () => {
         setModalData({
-            who_can_view: infoPage.who_can_view,
-            who_can_edit: infoPage.who_can_edit,
+            who_can_view: pageTitle.who_can_view,
+            who_can_edit: pageTitle.who_can_edit,
             setSnackbar: setSnackbar,
         });
         setActiveModal(configData.modals.accessPage);
@@ -154,7 +154,7 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
      * Копирование ID wiki-страницы
      */
     const copyId = () => {
-        copyToClipboard(infoPage.id);
+        copyToClipboard(pageTitle.id);
 
         setSnackbar(<Snackbar
             onClose={() => setSnackbar(null)}
@@ -219,17 +219,17 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
      * @param item
      */
     const selectVersion = function (item) {
-        fetchVersion(item.id, infoPage.group_id, accessToken.access_token).then(data => {
+        fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
             if (data.response) {
                 setContent({
                     version: data.response.id,
-                    group_id: infoPage.group_id,
-                    title: infoPage.title,
+                    group_id: pageTitle.group_id,
+                    title: pageTitle.title,
                     source: data.response.source,
                     edited: data.response.version_created,
                     creator_id: data.response.creator_id,
-                    who_can_view: infoPage.who_can_view,
-                    who_can_edit: infoPage.who_can_edit
+                    who_can_view: pageTitle.who_can_view,
+                    who_can_edit: pageTitle.who_can_edit
                 });
                 go(configData.routes.wiki_version);
             } else {
@@ -294,7 +294,8 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
                     </HorizontalScroll>
                 </Tabs>
 
-                {(tab === 'info') && <Fragment>
+                {(tab === 'info') &&
+                <Fragment>
                     {!(infoPage && creator && editor) && <PanelSpinner/>}
                     {(infoPage && creator && editor) &&
                     <Fragment>
@@ -334,12 +335,12 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
 
                         <Header mode="secondary">Настройки</Header>
                         <SimpleCell
-                            indicator={nameAccess(infoPage.who_can_view)}
+                            indicator={nameAccess(pageTitle.who_can_view)}
                             onClick={settingAccessPage}
                         >
                             Просмотр</SimpleCell>
                         <SimpleCell
-                            indicator={nameAccess(infoPage.who_can_edit)}
+                            indicator={nameAccess(pageTitle.who_can_edit)}
                             onClick={settingAccessPage}
                         >
                             Редактирование</SimpleCell>
@@ -351,29 +352,29 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
                             after={<IconButton onClick={copyId}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header="ID страницы">
-                                {infoPage.id}
+                                {pageTitle.id}
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
                             before={<Icon28EditOutline/>}
                             after={<Link
-                                href={'https://vk.com/id' + editor.id} target='_blank'
+                                href={'https://vk.com/id' + pageTitle.editor_id} target='_blank'
                             >
                                 <Avatar size={32} src={editor.photo_200}/></Link>}
                         >
                             <InfoRow header="Последнее изменение">
-                                {timestampToDate(infoPage.edited)}
+                                {timestampToDate(pageTitle.edited)}
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
                             before={<Icon36CalendarOutline/>}
                             after={<Link
-                                href={'https://vk.com/id' + creator.id} target='_blank'
+                                href={'https://vk.com/id' + pageTitle.creator_id} target='_blank'
                             >
                                 <Avatar size={32} src={creator.photo_200}/></Link>}
                         >
                             <InfoRow header="Создано">
-                                {timestampToDate(infoPage.created)}
+                                {timestampToDate(pageTitle.created)}
                             </InfoRow>
                         </SimpleCell>
                     </Fragment>
@@ -381,7 +382,8 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
                 </Fragment>
                 }
 
-                {(tab === 'history') && <Fragment>
+                {(tab === 'history') &&
+                <Fragment>
                     {(!history) && <PanelSpinner/>}
                     {(history && history.length < 1) &&
                     <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>}
@@ -408,7 +410,6 @@ const Page = ({id, accessToken, pageTitle, setContent, user, go, setModalData, s
                 </Fragment>
                 }
             </Group>
-
             {snackbar}
         </Panel>
     )

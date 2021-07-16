@@ -168,8 +168,16 @@ const App = withAdaptivity(() => {
         setActiveModal(null); // null для скрытия
     };
 
+    /**
+     * Сохранение настроек доступа к wiki-странице
+     * @param e
+     */
     const onSubmitAccess = function (e) {
         e.preventDefault();
+
+        // str to int
+        modalData.who_can_view = +modalData.who_can_view;
+        modalData.who_can_edit = +modalData.who_can_edit;
 
         bridge.send("VKWebAppCallAPIMethod", {
             method: "pages.saveAccess",
@@ -183,8 +191,12 @@ const App = withAdaptivity(() => {
             }
         }).then(data => {
             if (data.response) {
-                setActiveModal(null); // null для скрытия
+                // hot update
+                pageTitle.who_can_view = modalData.who_can_view;
+                pageTitle.who_can_edit = modalData.who_can_edit;
 
+                setActiveModal(null); // null для скрытия
+                modalData.setSnackbar(null);
                 modalData.setSnackbar(<Snackbar
                     onClose={() => modalData.setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
@@ -203,6 +215,10 @@ const App = withAdaptivity(() => {
         });
     };
 
+    /**
+     * Изменение данных в модальном окне
+     * @param e
+     */
     const onChangeModalData = function (e) {
         modalData[e.currentTarget.name] = e.currentTarget.value;
     };
