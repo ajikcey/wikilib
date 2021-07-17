@@ -174,6 +174,11 @@ export function handleError(setSnackbar, go, e, options) {
         console.log(options.data);
     }
 
+    if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+        bridge.send('VKWebAppTapticNotificationOccurred', {type: 'error'}).then(() => {
+        });
+    }
+
     if (e.error_data) {
         if (e.error_data.error_reason) {
             if (typeof e.error_data.error_reason === 'object') {
