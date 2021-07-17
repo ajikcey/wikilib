@@ -6,19 +6,16 @@ import {
     ScreenSpinner,
     AdaptivityProvider,
     AppRoot,
-    Snackbar,
     ModalRoot,
-    Input,
     Button,
     ConfigProvider,
     withAdaptivity,
     SplitLayout,
     SplitCol,
     ModalCard,
-    FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {Icon24CheckCircleOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
+import {Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -32,7 +29,9 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
-import {definePlatform, fetchPage, handleError, savePage} from "./functions";
+import {definePlatform, handleError} from "./functions";
+import FormAddPage from "./components/FormAddPage";
+import FormEditAccess from "./components/FormEditAccess";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -46,6 +45,7 @@ const App = withAdaptivity(() => {
     const [group, setGroup] = useState(null);
     const [pageTitle, setPageTitle] = useState(null);
     const [modalData, setModalData] = useState({});
+    const [pages, setPages] = useState(null);
     const [content, setContent] = useState({
         version: 0,
         page_id: 0,
@@ -57,7 +57,6 @@ const App = withAdaptivity(() => {
         who_can_view: 0,
         who_can_edit: 0
     });
-    const [pages, setPages] = useState(null);
 
     const queryParams = qs.parse(window.location.search.slice(1));
 
@@ -72,7 +71,7 @@ const App = withAdaptivity(() => {
             }
         });
 
-        async function fetchData() {
+        async function initData() {
             const user = await bridge.send('VKWebAppGetUserInfo');
             const data = {};
 
@@ -104,7 +103,7 @@ const App = withAdaptivity(() => {
             setPopout(null);
         }
 
-        fetchData().then(() => {
+        initData().then(() => {
         });
     }, []);
 
@@ -169,116 +168,6 @@ const App = withAdaptivity(() => {
         setActiveModal(null); // null для скрытия
     };
 
-    /**
-     * Сохранение настроек доступа к wiki-странице
-     * @param e
-     */
-    const onSubmitAccess = function (e) {
-        e.preventDefault();
-
-        // str to int
-        modalData.who_can_view = +modalData.who_can_view;
-        modalData.who_can_edit = +modalData.who_can_edit;
-
-        bridge.send("VKWebAppCallAPIMethod", {
-            method: "pages.saveAccess",
-            params: {
-                page_id: pageTitle.id,
-                group_id: pageTitle.group_id,
-                view: modalData.who_can_view,
-                edit: modalData.who_can_edit,
-                v: configData.vk_api_version,
-                access_token: accessToken.access_token
-            }
-        }).then(data => {
-            if (data.response) {
-                // hot update
-                pageTitle.who_can_view = modalData.who_can_view;
-                pageTitle.who_can_edit = modalData.who_can_edit;
-
-                onCloseModal();
-                modalData.setSnackbar(null);
-                modalData.setSnackbar(<Snackbar
-                    onClose={() => modalData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >
-                    Сохранено
-                </Snackbar>);
-            } else {
-                handleError(modalData.setSnackbar, go, {}, {
-                    default_error_msg: 'No response save access'
-                });
-            }
-        }).catch(e => {
-            handleError(modalData.setSnackbar, go, e, {
-                default_error_msg: 'Error save access'
-            });
-        });
-    };
-
-    /**
-     * Создание новой wiki-страницы
-     * @param e
-     */
-    const onSubmitAddPage = function (e) {
-        e.preventDefault();
-
-        modalData.title.trim();
-
-        if (!modalData.title) {
-            console.log('Empty title'); // todo: form error
-            return;
-        }
-
-        let page_exists = false;
-        pages.forEach((value) => {
-            if (value.title === modalData.title) page_exists = true;
-        });
-
-        if (page_exists) {
-            console.log('Page exists'); // todo: form error
-            return;
-        }
-
-        savePage(0, group.id, accessToken.access_token, modalData.title, "").then(data => {
-            if (data.response) {
-
-                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data) => {
-                    if (data.response) {
-                        onCloseModal();
-                        setPageTitle(data.response);
-                        go(configData.routes.page);
-                    } else {
-                        handleError(modalData.setSnackbar, go, {}, {
-                            default_error_msg: 'No response get page'
-                        });
-                    }
-                }).catch(e => {
-                    handleError(modalData.setSnackbar, go, e, {
-                        default_error_msg: 'Error get page'
-                    });
-                });
-
-            } else {
-                handleError(modalData.setSnackbar, go, {}, {
-                    default_error_msg: 'No response save page'
-                });
-            }
-        }).catch(e => {
-            handleError(modalData.setSnackbar, go, e, {
-                default_error_msg: 'Error save page'
-            });
-        });
-    };
-
-    /**
-     * Изменение данных в модальном окне
-     * @param e
-     */
-    const onChangeModalData = function (e) {
-        modalData[e.currentTarget.name] = e.currentTarget.value;
-    };
-
     const modal = (
         <ModalRoot
             activeModal={activeModal}
@@ -289,25 +178,10 @@ const App = withAdaptivity(() => {
                 onClose={onCloseModal}
                 header="Создание страницы"
             >
-                <FormLayout onSubmit={onSubmitAddPage}>
-                    <FormItem
-                        top="Введите название страницы"
-                        style={{paddingLeft: 0, paddingRight: 0}}
-                        status={modalData.title ? 'valid' : 'error'}
-                        bottom={modalData.title ? '' : 'Пожалуйста, введите название'}
-                    >
-                        <Input
-                            name='title'
-                            autoFocus={true}
-                            placeholder=''
-                            onChange={onChangeModalData}
-                            defaultValue={modalData.title}
-                        />
-                    </FormItem>
-                    <Button size="l" mode="primary" stretched>
-                        Создать
-                    </Button>
-                </FormLayout>
+                <FormAddPage
+                    go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group} pages={pages}
+                    onCloseModal={onCloseModal}
+                />
             </ModalCard>
 
             <ModalCard
@@ -331,58 +205,10 @@ const App = withAdaptivity(() => {
                 onClose={onCloseModal}
                 header="Доступ к странице"
             >
-                <FormLayout onSubmit={onSubmitAccess}>
-                    <FormItem top="Кто может просматривать эту страницу?">
-                        <Radio
-                            name="who_can_view"
-                            value={configData.wiki_access.all}
-                            defaultChecked={modalData.who_can_view === configData.wiki_access.all}
-                            onChange={onChangeModalData}
-                        >
-                            Все</Radio>
-                        <Radio
-                            name="who_can_view"
-                            value={configData.wiki_access.member}
-                            defaultChecked={modalData.who_can_view === configData.wiki_access.member}
-                            onChange={onChangeModalData}
-                        >
-                            Только участники</Radio>
-                        <Radio
-                            name="who_can_view"
-                            value={configData.wiki_access.staff}
-                            defaultChecked={modalData.who_can_view === configData.wiki_access.staff}
-                            onChange={onChangeModalData}
-                        >
-                            Только руководители</Radio>
-                    </FormItem>
-                    <FormItem top="Кто может редактировать эту страницу?">
-                        <Radio
-                            name="who_can_edit"
-                            value={configData.wiki_access.all}
-                            defaultChecked={modalData.who_can_edit === configData.wiki_access.all}
-                            onChange={onChangeModalData}
-                            disabled={group && group.is_closed > 0}
-                        >
-                            Все</Radio>
-                        <Radio
-                            name="who_can_edit"
-                            value={configData.wiki_access.member}
-                            defaultChecked={modalData.who_can_edit === configData.wiki_access.member}
-                            onChange={onChangeModalData}
-                        >
-                            Только участники</Radio>
-                        <Radio
-                            name="who_can_edit"
-                            value={configData.wiki_access.staff}
-                            defaultChecked={modalData.who_can_edit === configData.wiki_access.staff}
-                            onChange={onChangeModalData}
-                        >
-                            Только руководители</Radio>
-                    </FormItem>
-                    <Button size="l" mode="primary" stretched>
-                        Сохранить
-                    </Button>
-                </FormLayout>
+                <FormEditAccess
+                    modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
+                    go={go} group={group} setPageTitle={setPageTitle} setSnackbar={setSnackbar}
+                />
             </ModalCard>
         </ModalRoot>
     );
@@ -412,8 +238,7 @@ const App = withAdaptivity(() => {
                                 <Pages
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
-                                    setPages={setPages} pages={pages}
-                                    setActiveModal={setActiveModal} setModalData={setModalData}/>
+                                    setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
                                     setModalData={setModalData} accessToken={accessToken} group={group}

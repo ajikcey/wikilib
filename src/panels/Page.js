@@ -96,12 +96,10 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
     }, []);
 
     /**
-     * Изменение настройки, что может просматривать страницу
+     * Изменение настройки, кто может просматривать страницу
      */
     const settingAccessPage = () => {
         setModalData({
-            who_can_view: pageTitle.who_can_view,
-            who_can_edit: pageTitle.who_can_edit,
             setSnackbar: setSnackbar,
         });
         setActiveModal(configData.modals.accessPage);
@@ -128,7 +126,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
             onClose={() => setSnackbar(null)}
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >
-            Скопировано в буфер
+            Скопировано в буфер обмена
         </Snackbar>);
     }
 
@@ -232,11 +230,15 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
         go(configData.routes.wiki_version);
     }
 
+    const back = () => {
+        go(configData.routes.pages);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => go(configData.routes.pages)}/>}
+                left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
                     status={cutDeclNum(pageTitle.views, ['просмотр', 'просмотра', 'просмотров'])}

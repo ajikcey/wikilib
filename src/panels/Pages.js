@@ -21,7 +21,7 @@ import {
 import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setModalData, snackbarError, pages, setPages}) => {
+const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError, pages, setPages}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     useEffect(() => {
@@ -77,18 +77,18 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setMod
      * Создание wiki-страницы
      */
     const addPage = function () {
-        setModalData({
-            title: "",
-            setSnackbar: setSnackbar,
-        });
         setActiveModal(configData.modals.addPage);
+    }
+
+    const back = function () {
+        go(configData.routes.home);
     }
 
     return (
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
+                left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
                     status={cutDeclNum(group.members_count, ['подписчик', 'подписчика', 'подписчиков'])}

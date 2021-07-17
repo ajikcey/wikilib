@@ -2,28 +2,23 @@ import React, {useEffect, useState} from 'react';
 
 import {
     Avatar,
-    Button, CellButton,
-    FormItem, FormLayout,
-    Group, InfoRow, Input, Link,
-    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Text, Textarea, usePlatform, VKCOM
+    CellButton,
+    Group, InfoRow, Link,
+    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline, Icon24ExternalLinkOutline,
+    Icon24ExternalLinkOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
-import {fetchUsers, handleError, savePage, timestampToDate} from "../functions";
+import {fetchUsers, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
+import FromEditPage from "../components/FormEditPage";
 
 const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [creator, setCreator] = useState({});
-    const [title, setTitle] = useState(content.title);
-    const [text, setText] = useState(content.source);
-    const [formError, setFormError] = useState({});
-
-    const platform = usePlatform();
 
     useEffect(() => {
 
@@ -45,75 +40,15 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /**
-     * Применить данную версию wiki-страницы
-     */
-    const onSubmitVersion = (e) => {
-        e.preventDefault();
-
-        if (formError.title || formError.text) {
-            return;
-        }
-
-        setTitle(title.trim());
-        setText(text.trim());
-
-        if (!title.trim()) {
-            setFormError({title: 'Введите название'});
-            return;
-        }
-
-        if (!text.trim()) {
-            setFormError({text: 'Введите текст'});
-            return;
-        }
-
-        savePage(content.page_id, group.id, accessToken.access_token, title, text).then(() => {
-
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-            >
-                Сохранено
-            </Snackbar>);
-
-            go(configData.routes.page);
-        });
-    }
-
-    /**
-     * Изменение названия
-     * @param e
-     */
-    const onChangeTitle = (e) => {
-        setTitle(e.currentTarget.value);
-
-        if (!e.currentTarget.value) {
-            setFormError({title: 'Введите название'});
-        } else {
-            setFormError({title: null});
-        }
-    }
-
-    /**
-     * Изменение текста
-     * @param e
-     */
-    const onChangeText = (e) => {
-        setText(e.currentTarget.value);
-
-        if (!e.currentTarget.value) {
-            setFormError({text: 'Введите текст'});
-        } else {
-            setFormError({text: null});
-        }
+    const back = function () {
+        go(configData.routes.page);
     }
 
     return (
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => go(configData.routes.page)}/>}
+                left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
                     status={(content.version ? 'v.' + content.version : 'текущая версия')}
@@ -143,50 +78,9 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                 >
                     Открыть редактор ВК</CellButton>
 
-                <FormLayout onSubmit={onSubmitVersion}>
-                    <FormItem
-                        top="Название"
-                        status={formError.title ? 'error' : ''}
-                        bottom={formError.title ? formError.title : ''}
-                    >
-                        <Input
-                            name='title'
-                            placeholder="Введите название"
-                            onChange={onChangeTitle}
-                            value={title}
-                            readOnly
-                        />
-                    </FormItem>
-                    <FormItem
-                        top="Текст"
-                        style={{position: 'relative'}}
-                        status={formError.text ? 'error' : ''}
-                        bottom={formError.text ? formError.text : ''}
-                    >
-                        <Textarea
-                            rows={20}
-                            name='text'
-                            placeholder="Введите текст"
-                            onChange={onChangeText}
-                            value={text}
-                        />
-                        <Text style={{
-                            position: 'absolute',
-                            right: 25,
-                            bottom: 14,
-                            zIndex: 1,
-                            color: 'var(--text_secondary)'
-                        }}>{text.length}</Text>
-                    </FormItem>
-                    <FormItem style={{textAlign: 'right'}}>
-                        <Button
-                            size="l"
-                            stretched={platform !== VKCOM}
-                        >
-                            {content.version ? 'Применить данную версию' : 'Сохранить'}
-                        </Button>
-                    </FormItem>
-                </FormLayout>
+                <FromEditPage
+                    content={content} go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group}
+                />
             </Group>
             {snackbar}
         </Panel>
