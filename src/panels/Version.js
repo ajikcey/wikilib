@@ -132,6 +132,7 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                             placeholder="Введите название"
                             onChange={onChangeField}
                             defaultValue={content.title}
+                            readonly
                         />
                     </FormItem>
                     <FormItem top="Текст">
