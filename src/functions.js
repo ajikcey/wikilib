@@ -1,6 +1,6 @@
 import bridge from "@vkontakte/vk-bridge";
 import configData from "./config.json";
-import {Snackbar} from "@vkontakte/vkui";
+import {ANDROID, IOS, Snackbar, VKCOM} from "@vkontakte/vkui";
 import {Icon24ErrorCircle} from "@vkontakte/icons";
 
 /**
@@ -250,4 +250,13 @@ export function fetchHistory(page_id, group_id, access_token) {
             access_token: access_token
         }
     });
+}
+
+/**
+ * Определение платформы (VKCOM, IOS, ANDROID)
+ * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
+ */
+export function definePlatform(params) {
+    return (['desktop_web'].indexOf(params.vk_platform) > -1 ? VKCOM :
+        (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? IOS : ANDROID));
 }

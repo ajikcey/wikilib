@@ -15,7 +15,7 @@ import {
     SplitLayout,
     SplitCol,
     ModalCard,
-    VKCOM, IOS, ANDROID, FormItem, Radio, FormLayout
+    FormItem, Radio, FormLayout
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon24CheckCircleOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -32,7 +32,7 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
-import {fetchPage, handleError, savePage} from "./functions";
+import {definePlatform, fetchPage, handleError, savePage} from "./functions";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -48,6 +48,7 @@ const App = withAdaptivity(() => {
     const [modalData, setModalData] = useState({});
     const [content, setContent] = useState({
         version: 0,
+        page_id: 0,
         group_id: 0,
         title: "",
         source: "",
@@ -56,9 +57,9 @@ const App = withAdaptivity(() => {
         who_can_view: 0,
         who_can_edit: 0
     });
+    const [pages, setPages] = useState(null);
 
-    const params = window.location.search.slice(1);
-    const paramsAsObject = qs.parse(params);
+    const queryParams = qs.parse(window.location.search.slice(1));
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
@@ -160,11 +161,11 @@ const App = withAdaptivity(() => {
         });
     };
 
+    /**
+     * Закрытие модального окна
+     */
     const onCloseModal = function () {
-        setActiveModal(null); // null для скрытия
-    };
-
-    const onSubmitModal = function () {
+        setModalData({});
         setActiveModal(null); // null для скрытия
     };
 
@@ -195,7 +196,7 @@ const App = withAdaptivity(() => {
                 pageTitle.who_can_view = modalData.who_can_view;
                 pageTitle.who_can_edit = modalData.who_can_edit;
 
-                setActiveModal(null); // null для скрытия
+                onCloseModal();
                 modalData.setSnackbar(null);
                 modalData.setSnackbar(<Snackbar
                     onClose={() => modalData.setSnackbar(null)}
@@ -216,18 +217,95 @@ const App = withAdaptivity(() => {
     };
 
     /**
-     * Создание новой страницы
+     * Создание новой wiki-страницы
      * @param e
      */
     const onSubmitAddPage = function (e) {
         e.preventDefault();
 
+        modalData.title.trim();
+
+        if (!modalData.title) {
+            console.log('Empty title'); // todo: form error
+            return;
+        }
+
+        let page_exists = false;
+        pages.forEach((value) => {
+            if (value.title === modalData.title) page_exists = true;
+        });
+
+        if (page_exists) {
+            console.log('Page exists'); // todo: form error
+            return;
+        }
+
         savePage(0, group.id, accessToken.access_token, modalData.title, "").then(data => {
             if (data.response) {
 
-                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data)=>{
+                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data) => {
                     if (data.response) {
-                        setActiveModal(null); // null для скрытия
+                        onCloseModal();
+                        setPageTitle(data.response);
+                        go(configData.routes.page);
+                    } else {
+                        handleError(modalData.setSnackbar, go, {}, {
+                            default_error_msg: 'No response get page'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(modalData.setSnackbar, go, e, {
+                        default_error_msg: 'Error get page'
+                    });
+                });
+
+            } else {
+                handleError(modalData.setSnackbar, go, {}, {
+                    default_error_msg: 'No response save page'
+                });
+            }
+        }).catch(e => {
+            handleError(modalData.setSnackbar, go, e, {
+                default_error_msg: 'Error save page'
+            });
+        });
+    };
+
+    /**
+     * Переименование wiki-страницы
+     * @param e
+     */
+    const onSubmitRenamePage = function (e) {
+        e.preventDefault();
+
+        modalData.title.trim();
+
+        if (!modalData.title) {
+            console.log('Empty title'); // todo: form error
+            return;
+        }
+
+        if (modalData.title === pageTitle.title) {
+            onCloseModal();
+            return; // Title no change
+        }
+
+        let page_exists = false;
+        pages.forEach((value) => {
+            if (value.title === modalData.title && value.id !== pageTitle.id) page_exists = true;
+        });
+
+        if (page_exists) {
+            console.log('Page exists'); // todo: form error
+            return;
+        }
+
+        savePage(pageTitle.id, group.id, accessToken.access_token, modalData.title, "").then(data => {
+            if (data.response) {
+
+                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data) => {
+                    if (data.response) {
+                        onCloseModal();
                         setPageTitle(data.response);
                         go(configData.routes.page);
                     } else {
@@ -275,15 +353,18 @@ const App = withAdaptivity(() => {
                     <FormItem
                         top="Введите название страницы"
                         style={{paddingLeft: 0, paddingRight: 0}}
+                        status={modalData.title ? 'valid' : 'error'}
+                        bottom={modalData.title ? '' : 'Пожалуйста, введите название'}
                     >
                         <Input
                             name='title'
                             autoFocus={true}
                             placeholder=''
                             onChange={onChangeModalData}
+                            defaultValue={modalData.title}
                         />
                     </FormItem>
-                    <Button size="l" mode="primary" stretched type='submit'>
+                    <Button size="l" mode="primary" stretched>
                         Создать
                     </Button>
                 </FormLayout>
@@ -309,13 +390,26 @@ const App = withAdaptivity(() => {
                 id={configData.modals.renamePage}
                 onClose={onCloseModal}
                 header="Название страницы"
-                actions={
-                    <Button size="l" mode="primary" stretched onClick={onSubmitModal}>
-                        Сохранить
-                    </Button>
-                }
             >
-                <Input defaultValue="" autoFocus={true} placeholder='Введите название страницы'/>
+                <FormLayout onSubmit={onSubmitRenamePage}>
+                    <FormItem
+                        top="Введите название страницы"
+                        style={{paddingLeft: 0, paddingRight: 0}}
+                        status={modalData.title ? 'valid' : 'error'}
+                        bottom={modalData.title ? '' : 'Пожалуйста, введите название'}
+                    >
+                        <Input
+                            name='title'
+                            autoFocus={true}
+                            placeholder=''
+                            onChange={onChangeModalData}
+                            defaultValue={modalData.title}
+                        />
+                    </FormItem>
+                    <Button size="l" mode="primary" stretched>
+                        Переименовать
+                    </Button>
+                </FormLayout>
             </ModalCard>
 
             <ModalCard
@@ -371,7 +465,7 @@ const App = withAdaptivity(() => {
                         >
                             Только руководители</Radio>
                     </FormItem>
-                    <Button size="l" mode="primary" stretched type='submit'>
+                    <Button size="l" mode="primary" stretched>
                         Сохранить
                     </Button>
                 </FormLayout>
@@ -379,17 +473,8 @@ const App = withAdaptivity(() => {
         </ModalRoot>
     );
 
-    /**
-     * Определение платформы (VKCOM, IOS, ANDROID)
-     * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
-     */
-    function fetchPlatform() {
-        return (['desktop_web'].indexOf(paramsAsObject.vk_platform) > -1 ? VKCOM :
-            (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(paramsAsObject.vk_platform) > -1 ? IOS : ANDROID));
-    }
-
     return (
-        <ConfigProvider platform={fetchPlatform()}>
+        <ConfigProvider platform={definePlatform(queryParams)}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
@@ -413,6 +498,7 @@ const App = withAdaptivity(() => {
                                 <Pages
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
+                                    setPages={setPages} pages={pages}
                                     setActiveModal={setActiveModal} setModalData={setModalData}/>
                                 <Page
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}

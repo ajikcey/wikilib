@@ -21,9 +21,8 @@ import {
 import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setModalData, snackbarError}) => {
+const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setModalData, snackbarError, pages, setPages}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [pages, setPages] = useState(null);
 
     useEffect(() => {
 
@@ -79,6 +78,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, setMod
      */
     const addPage = function () {
         setModalData({
+            title: "",
             setSnackbar: setSnackbar,
         });
         setActiveModal(configData.modals.addPage);

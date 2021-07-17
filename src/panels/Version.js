@@ -2,23 +2,27 @@ import React, {useEffect, useState} from 'react';
 
 import {
     Avatar,
-    Button,
+    Button, CellButton,
     FormItem, FormLayout,
     Group, InfoRow, Link,
-    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Textarea
+    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Textarea, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline,
+    Icon24CheckCircleOutline, Icon24ExternalLinkOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {fetchUsers, handleError, savePage, timestampToDate} from "../functions";
+import IconPage from "../components/IconPage";
 
 const Version = ({id, accessToken, content, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [formValues, setFormValues] = useState(null);
     const [creator, setCreator] = useState({});
+
+    const platform = usePlatform();
+
+    let formValues = {};
 
     useEffect(() => {
 
@@ -46,7 +50,14 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
     const onSubmitVersion = (e) => {
         e.preventDefault();
 
-        savePage(content.id, content.group_id, accessToken.access_token, content.title, formValues.text).then(() => {
+        formValues.text.trim();
+
+        if (!formValues.text) {
+            console.log('Empty text'); // todo: form error
+            return;
+        }
+
+        savePage(content.page_id, content.group_id, accessToken.access_token, content.title, formValues.text).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -64,9 +75,7 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
      * @param e
      */
     const onChangeField = (e) => {
-        setFormValues({
-            [e.target.name]: e.target.value
-        })
+        formValues[e.currentTarget.name] = e.currentTarget.value;
     }
 
     return (
@@ -77,6 +86,7 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
             >
                 <PanelHeaderContent
                     status={(content.version ? 'v.' + content.version : 'текущая версия')}
+                    before={<IconPage page={content}/>}
                 >
                     {content.title}
                 </PanelHeaderContent>
@@ -95,6 +105,13 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
                     </InfoRow>
                 </SimpleCell>
 
+                <CellButton
+                    before={<Icon24ExternalLinkOutline/>}
+                    href={'https://vk.com/page-' + content.group_id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
+                    target='_blank' rel='noreferrer'
+                >
+                    Перейти в редактор ВКонтакте</CellButton>
+
                 <FormLayout onSubmit={onSubmitVersion}>
                     <FormItem top="Текст">
                         <Textarea
@@ -102,14 +119,16 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
                             name='text'
                             placeholder="Введите текст"
                             onChange={onChangeField}
-                            value={content.source}/>
+                            defaultValue={content.source}
+                        />
                     </FormItem>
-                    <FormItem>
+                    <FormItem style={{textAlign: 'right'}}>
                         <Button
-                            size="l" stretched
-                            type=""
+                            size="l"
+                            stretched={platform !== VKCOM}
                         >
-                            {content.version ? 'Применить данную версию' : 'Сохранить'}</Button>
+                            {content.version ? 'Применить данную версию' : 'Сохранить'}
+                        </Button>
                     </FormItem>
                 </FormLayout>
             </Group>

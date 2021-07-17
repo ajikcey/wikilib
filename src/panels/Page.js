@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {
     Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, Header, PanelHeaderContent, Spacing
+    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing
 } from '@vkontakte/vkui';
 
 import {
@@ -100,6 +100,10 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
      * Переименование wiki-страницы
      */
     const renamePage = () => {
+        setModalData({
+            title: pageTitle.title,
+            setSnackbar: setSnackbar,
+        });
         setActiveModal(configData.modals.renamePage);
     }
 
@@ -153,6 +157,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
     const restorePage = () => {
         savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24HistoryBackwardOutline fill='var(--accent)'/>}
@@ -168,6 +173,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
     const delPage = () => {
         savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
 
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 action="Восстановить"
@@ -187,6 +193,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
         fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
             if (data.response) {
                 setContent({
+                    page_id: pageTitle.id,
                     version: data.response.id,
                     group_id: pageTitle.group_id,
                     title: pageTitle.title,
@@ -216,6 +223,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
     const editPage = () => {
         setContent({
             version: 0,
+            page_id: infoPage.id,
             group_id: infoPage.group_id,
             title: infoPage.title,
             source: infoPage.source,
@@ -265,13 +273,12 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                     {(infoPage && creator && editor) &&
                     <Fragment>
 
-                        <Header mode="secondary">Меню</Header>
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/page-' + pageTitle.group_id + '_' + pageTitle.id + '?act=edit&section=edit'}
+                            href={'https://vk.com/page-' + pageTitle.group_id + '_' + pageTitle.id}
                             target='_blank' rel='noreferrer'
                         >
-                            Открыть редактор ВКонтакте</CellButton>
+                            Открыть wiki-страницу</CellButton>
 
                         <CellButton
                             before={<Icon24Write/>}
@@ -298,7 +305,6 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
 
                         <Spacing separator size={16}/>
 
-                        <Header mode="secondary">Настройки</Header>
                         <SimpleCell
                             indicator={nameAccess(pageTitle.who_can_view)}
                             onClick={settingAccessPage}
