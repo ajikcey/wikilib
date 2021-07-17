@@ -272,66 +272,6 @@ const App = withAdaptivity(() => {
     };
 
     /**
-     * Переименование wiki-страницы
-     * @param e
-     */
-    const onSubmitRenamePage = function (e) {
-        e.preventDefault();
-
-        modalData.title.trim();
-
-        if (!modalData.title) {
-            console.log('Empty title'); // todo: form error
-            return;
-        }
-
-        if (modalData.title === pageTitle.title) {
-            onCloseModal();
-            return; // Title no change
-        }
-
-        let page_exists = false;
-        pages.forEach((value) => {
-            if (value.title === modalData.title && value.id !== pageTitle.id) page_exists = true;
-        });
-
-        if (page_exists) {
-            console.log('Page exists'); // todo: form error
-            return;
-        }
-
-        savePage(pageTitle.id, group.id, accessToken.access_token, modalData.title, "").then(data => {
-            if (data.response) {
-
-                fetchPage(data.response, group.id, 0, accessToken.access_token).then((data) => {
-                    if (data.response) {
-                        onCloseModal();
-                        setPageTitle(data.response);
-                        go(configData.routes.page);
-                    } else {
-                        handleError(modalData.setSnackbar, go, {}, {
-                            default_error_msg: 'No response get page'
-                        });
-                    }
-                }).catch(e => {
-                    handleError(modalData.setSnackbar, go, e, {
-                        default_error_msg: 'Error get page'
-                    });
-                });
-
-            } else {
-                handleError(modalData.setSnackbar, go, {}, {
-                    default_error_msg: 'No response save page'
-                });
-            }
-        }).catch(e => {
-            handleError(modalData.setSnackbar, go, e, {
-                default_error_msg: 'Error save page'
-            });
-        });
-    };
-
-    /**
      * Изменение данных в модальном окне
      * @param e
      */
@@ -384,32 +324,6 @@ const App = withAdaptivity(() => {
                     </Button>
                 }
             >
-            </ModalCard>
-
-            <ModalCard
-                id={configData.modals.renamePage}
-                onClose={onCloseModal}
-                header="Название страницы"
-            >
-                <FormLayout onSubmit={onSubmitRenamePage}>
-                    <FormItem
-                        top="Введите название страницы"
-                        style={{paddingLeft: 0, paddingRight: 0}}
-                        status={modalData.title ? 'valid' : 'error'}
-                        bottom={modalData.title ? '' : 'Пожалуйста, введите название'}
-                    >
-                        <Input
-                            name='title'
-                            autoFocus={true}
-                            placeholder=''
-                            onChange={onChangeModalData}
-                            defaultValue={modalData.title}
-                        />
-                    </FormItem>
-                    <Button size="l" mode="primary" stretched>
-                        Переименовать
-                    </Button>
-                </FormLayout>
             </ModalCard>
 
             <ModalCard
@@ -505,7 +419,7 @@ const App = withAdaptivity(() => {
                                     setModalData={setModalData} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version
-                                    id={configData.routes.wiki_version} content={content}
+                                    id={configData.routes.wiki_version} content={content} group={group}
                                     accessToken={accessToken} snackbarError={snackbar} go={go}/>
                             </View>
                         </SplitCol>

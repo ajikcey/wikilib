@@ -23,7 +23,7 @@ const Landing = ({id}) => {
                             </Button>
                         </Div>
                         <Div>
-                            <Button href={configData.community.url} mode='tertiary' size='l'>
+                            <Button href={configData.community_url} mode='tertiary' size='l'>
                                 Перейти в сообщество
                             </Button>
                         </Div>

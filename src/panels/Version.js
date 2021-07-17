@@ -4,7 +4,7 @@ import {
     Avatar,
     Button, CellButton,
     FormItem, FormLayout,
-    Group, InfoRow, Link,
+    Group, InfoRow, Input, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Textarea, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
@@ -16,7 +16,7 @@ import configData from "../config.json";
 import {fetchUsers, handleError, savePage, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Version = ({id, accessToken, content, go, snackbarError}) => {
+const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [creator, setCreator] = useState({});
 
@@ -51,13 +51,19 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
         e.preventDefault();
 
         formValues.text.trim();
+        formValues.title.trim();
+
+        if (!formValues.title) {
+            console.log('Empty title'); // todo: form error
+            return;
+        }
 
         if (!formValues.text) {
             console.log('Empty text'); // todo: form error
             return;
         }
 
-        savePage(content.page_id, content.group_id, accessToken.access_token, content.title, formValues.text).then(() => {
+        savePage(content.page_id, group.id, accessToken.access_token, content.title, formValues.text).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -107,12 +113,27 @@ const Version = ({id, accessToken, content, go, snackbarError}) => {
 
                 <CellButton
                     before={<Icon24ExternalLinkOutline/>}
-                    href={'https://vk.com/page-' + content.group_id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
+                    href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
                 >
-                    Перейти в редактор ВКонтакте</CellButton>
+                    Открыть редактор ВК</CellButton>
+
+                <CellButton
+                    before={<Icon24ExternalLinkOutline/>}
+                    href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + content.page_id + '/market'}
+                    target='_blank' rel='noreferrer'
+                >
+                    Открыть редактор ВК 2</CellButton>
 
                 <FormLayout onSubmit={onSubmitVersion}>
+                    <FormItem top="Название">
+                        <Input
+                            name='title'
+                            placeholder="Введите название"
+                            onChange={onChangeField}
+                            defaultValue={content.title}
+                        />
+                    </FormItem>
                     <FormItem top="Текст">
                         <Textarea
                             rows={20}

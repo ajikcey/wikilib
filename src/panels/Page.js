@@ -8,7 +8,7 @@ import {
 
 import {
     Icon24CheckCircleOutline, Icon24DeleteOutline,
-    Icon24ExternalLinkOutline, Icon24HistoryBackwardOutline, Icon24TextOutline,
+    Icon24HistoryBackwardOutline,
     Icon24Write,
     Icon28CopyOutline,
     Icon28EditOutline,
@@ -97,17 +97,6 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
     }, []);
 
     /**
-     * Переименование wiki-страницы
-     */
-    const renamePage = () => {
-        setModalData({
-            title: pageTitle.title,
-            setSnackbar: setSnackbar,
-        });
-        setActiveModal(configData.modals.renamePage);
-    }
-
-    /**
      * Изменение настройки, что может просматривать страницу
      */
     const settingAccessPage = () => {
@@ -120,10 +109,21 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
     }
 
     /**
-     * Копирование ID wiki-страницы
+     * Получение ссылки на wiki-страницу
+     * @param page_id
+     * @param group_id
+     * @param protocol
+     * @returns {string}
      */
-    const copyId = () => {
-        copyToClipboard(pageTitle.id);
+    const calcLink = (page_id, group_id, protocol = false) => {
+        return (protocol ? 'https://' : '') + 'vk.com/page-' + group_id + '_' + page_id;
+    }
+
+    /**
+     * Копирование ссылку на wiki-страницу
+     */
+    const copy = () => {
+        copyToClipboard(calcLink(pageTitle.id, pageTitle.group_id));
 
         setSnackbar(<Snackbar
             onClose={() => setSnackbar(null)}
@@ -195,8 +195,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                 setContent({
                     page_id: pageTitle.id,
                     version: data.response.id,
-                    group_id: pageTitle.group_id,
-                    title: pageTitle.title,
+                    title: data.response.title,
                     source: data.response.source,
                     edited: data.response.version_created,
                     creator_id: data.response.creator_id,
@@ -224,7 +223,6 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
         setContent({
             version: 0,
             page_id: infoPage.id,
-            group_id: infoPage.group_id,
             title: infoPage.title,
             source: infoPage.source,
             edited: infoPage.edited,
@@ -267,63 +265,24 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                     </HorizontalScroll>
                 </Tabs>
 
+                <Spacing size={16}/>
+
                 {(tab === 'info') &&
                 <Fragment>
                     {!(infoPage && creator && editor) && <PanelSpinner/>}
                     {(infoPage && creator && editor) &&
                     <Fragment>
 
-                        <CellButton
-                            before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/page-' + pageTitle.group_id + '_' + pageTitle.id}
-                            target='_blank' rel='noreferrer'
-                        >
-                            Открыть wiki-страницу</CellButton>
-
-                        <CellButton
-                            before={<Icon24Write/>}
-                            onClick={() => {
-                                editPage();
-                            }}
-                        >
-                            Редактировать</CellButton>
-
-                        <CellButton
-                            before={<Icon24TextOutline/>}
-                            onClick={() => {
-                                renamePage();
-                            }}
-                        >
-                            Переименовать</CellButton>
-
-                        <CellButton
-                            before={<Icon24DeleteOutline/>}
-                            mode="danger"
-                            onClick={delPage}
-                        >
-                            Удалить</CellButton>
-
-                        <Spacing separator size={16}/>
-
-                        <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_view)}
-                            onClick={settingAccessPage}
-                        >
-                            Просмотр</SimpleCell>
-                        <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_edit)}
-                            onClick={settingAccessPage}
-                        >
-                            Редактирование</SimpleCell>
-
-                        <Spacing separator size={16}/>
-
                         <SimpleCell
                             before={<Icon28HashtagOutline/>}
-                            after={<IconButton onClick={copyId}><Icon28CopyOutline/></IconButton>}
+                            after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
-                            <InfoRow header="ID страницы">
-                                {pageTitle.id}
+                            <InfoRow header="Ссылка на страницу">
+                                <Link
+                                    href={calcLink(pageTitle.id, pageTitle.group_id, true)}
+                                    target='_blank'
+                                >
+                                    {calcLink(pageTitle.id, pageTitle.group_id)}</Link>
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
@@ -348,6 +307,36 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                                 {timestampToDate(pageTitle.created)}
                             </InfoRow>
                         </SimpleCell>
+
+                        <Spacing separator size={16}/>
+
+                        <SimpleCell
+                            indicator={nameAccess(pageTitle.who_can_view)}
+                            onClick={settingAccessPage}
+                        >
+                            Просмотр</SimpleCell>
+                        <SimpleCell
+                            indicator={nameAccess(pageTitle.who_can_edit)}
+                            onClick={settingAccessPage}
+                        >
+                            Редактирование</SimpleCell>
+
+                        <Spacing separator size={16}/>
+
+                        <CellButton
+                            before={<Icon24Write/>}
+                            onClick={() => {
+                                editPage();
+                            }}
+                        >
+                            Редактировать</CellButton>
+
+                        <CellButton
+                            before={<Icon24DeleteOutline/>}
+                            mode="danger"
+                            onClick={delPage}
+                        >
+                            Удалить</CellButton>
                     </Fragment>
                     }
                 </Fragment>
