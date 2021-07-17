@@ -5,7 +5,7 @@ import {
     Button, CellButton,
     FormItem, FormLayout,
     Group, InfoRow, Input, Link,
-    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Textarea, usePlatform, VKCOM
+    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, Snackbar, Text, Textarea, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
@@ -19,13 +19,11 @@ import IconPage from "../components/IconPage";
 const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [creator, setCreator] = useState({});
+    const [title, setTitle] = useState(content.title);
+    const [text, setText] = useState(content.source);
+    const [formError, setFormError] = useState({});
 
     const platform = usePlatform();
-
-    let formValues = {
-        title: content.title,
-        text: content.source
-    };
 
     useEffect(() => {
 
@@ -53,20 +51,24 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const onSubmitVersion = (e) => {
         e.preventDefault();
 
-        formValues.title.trim();
-        formValues.text.trim();
-
-        if (!formValues.title) {
-            console.log('Empty title'); // todo: form error
+        if (formError.title || formError.text) {
             return;
         }
 
-        if (!formValues.text) {
-            console.log('Empty text'); // todo: form error
+        setTitle(title.trim());
+        setText(text.trim());
+
+        if (!title.trim()) {
+            setFormError({title: 'Введите название'});
             return;
         }
 
-        savePage(content.page_id, group.id, accessToken.access_token, content.title, formValues.text).then(() => {
+        if (!text.trim()) {
+            setFormError({text: 'Введите текст'});
+            return;
+        }
+
+        savePage(content.page_id, group.id, accessToken.access_token, title, text).then(() => {
 
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -80,13 +82,31 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     }
 
     /**
-     * Изменение данных в форме
+     * Изменение названия
      * @param e
      */
-    const onChangeField = (e) => {
-        formValues[e.currentTarget.name] = e.currentTarget.value;
+    const onChangeTitle = (e) => {
+        setTitle(e.currentTarget.value);
 
-        console.log(formValues);
+        if (!e.currentTarget.value) {
+            setFormError({title: 'Введите название'});
+        } else {
+            setFormError({title: null});
+        }
+    }
+
+    /**
+     * Изменение текста
+     * @param e
+     */
+    const onChangeText = (e) => {
+        setText(e.currentTarget.value);
+
+        if (!e.currentTarget.value) {
+            setFormError({text: 'Введите текст'});
+        } else {
+            setFormError({text: null});
+        }
     }
 
     return (
@@ -126,29 +146,37 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                 <FormLayout onSubmit={onSubmitVersion}>
                     <FormItem
                         top="Название"
-                        status={formValues.title ? 'valid' : 'error'}
-                        bottom={formValues.title ? '' : 'Пожалуйста, введите название'}
+                        status={formError.title ? 'error' : ''}
+                        bottom={formError.title ? formError.title : ''}
                     >
                         <Input
                             name='title'
                             placeholder="Введите название"
-                            onChange={onChangeField}
-                            defaultValue={formValues.title}
+                            onChange={onChangeTitle}
+                            value={title}
                             readOnly
                         />
                     </FormItem>
                     <FormItem
                         top="Текст"
-                        status={formValues.text ? 'valid' : 'error'}
-                        bottom={formValues.text ? '' : 'Пожалуйста, введите текст'}
+                        style={{position: 'relative'}}
+                        status={formError.text ? 'error' : ''}
+                        bottom={formError.text ? formError.text : ''}
                     >
                         <Textarea
                             rows={20}
                             name='text'
                             placeholder="Введите текст"
-                            onChange={onChangeField}
-                            defaultValue={formValues.text}
+                            onChange={onChangeText}
+                            value={text}
                         />
+                        <Text style={{
+                            position: 'absolute',
+                            right: 25,
+                            bottom: 14,
+                            zIndex: 1,
+                            color: 'var(--text_secondary)'
+                        }}>{text.length}</Text>
                     </FormItem>
                     <FormItem style={{textAlign: 'right'}}>
                         <Button
