@@ -106,16 +106,7 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
 
                 setModalData({group_id: data.group_id});
                 setActiveModal(configData.modals.redirectToCommunity);
-            } else {
-                handleError(setSnackbar, go, {}, {
-                    data: data,
-                    default_error_msg: 'No group_id AddToCommunity'
-                });
             }
-        }).catch((e) => {
-            handleError(setSnackbar, go, e, {
-                default_error_msg: 'Error AddToCommunity'
-            });
         });
     }
 
