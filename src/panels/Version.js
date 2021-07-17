@@ -22,7 +22,10 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
 
     const platform = usePlatform();
 
-    let formValues = {};
+    let formValues = {
+        title: content.title,
+        text: content.source
+    };
 
     useEffect(() => {
 
@@ -50,8 +53,8 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const onSubmitVersion = (e) => {
         e.preventDefault();
 
-        formValues.text.trim();
         formValues.title.trim();
+        formValues.text.trim();
 
         if (!formValues.title) {
             console.log('Empty title'); // todo: form error
@@ -82,6 +85,8 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
      */
     const onChangeField = (e) => {
         formValues[e.currentTarget.name] = e.currentTarget.value;
+
+        console.log(formValues);
     }
 
     return (
@@ -118,30 +123,31 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                 >
                     Открыть редактор ВК</CellButton>
 
-                <CellButton
-                    before={<Icon24ExternalLinkOutline/>}
-                    href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + content.page_id + '/market'}
-                    target='_blank' rel='noreferrer'
-                >
-                    Открыть редактор ВК 2</CellButton>
-
                 <FormLayout onSubmit={onSubmitVersion}>
-                    <FormItem top="Название">
+                    <FormItem
+                        top="Название"
+                        status={formValues.title ? 'valid' : 'error'}
+                        bottom={formValues.title ? '' : 'Пожалуйста, введите название'}
+                    >
                         <Input
                             name='title'
                             placeholder="Введите название"
                             onChange={onChangeField}
-                            defaultValue={content.title}
+                            defaultValue={formValues.title}
                             readOnly
                         />
                     </FormItem>
-                    <FormItem top="Текст">
+                    <FormItem
+                        top="Текст"
+                        status={formValues.text ? 'valid' : 'error'}
+                        bottom={formValues.text ? '' : 'Пожалуйста, введите текст'}
+                    >
                         <Textarea
                             rows={20}
                             name='text'
                             placeholder="Введите текст"
                             onChange={onChangeField}
-                            defaultValue={content.source}
+                            defaultValue={formValues.text}
                         />
                     </FormItem>
                     <FormItem style={{textAlign: 'right'}}>

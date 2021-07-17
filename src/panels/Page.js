@@ -7,12 +7,11 @@ import {
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline, Icon24DeleteOutline,
-    Icon24HistoryBackwardOutline,
+    Icon24CheckCircleOutline, Icon24DeleteOutline, Icon24ExternalLinkOutline,
+    Icon24HistoryBackwardOutline, Icon24Linked,
     Icon24Write,
     Icon28CopyOutline,
     Icon28EditOutline,
-    Icon28HashtagOutline,
     Icon32SearchOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
@@ -28,7 +27,7 @@ import {
 } from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActiveModal, snackbarError}) => {
+const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, setActiveModal, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -274,7 +273,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                     <Fragment>
 
                         <SimpleCell
-                            before={<Icon28HashtagOutline/>}
+                            before={<Icon24Linked width={28} height={28}/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header="Ссылка на страницу">
@@ -330,6 +329,13 @@ const Page = ({id, accessToken, pageTitle, setContent, go, setModalData, setActi
                             }}
                         >
                             Редактировать</CellButton>
+
+                        <CellButton
+                            before={<Icon24ExternalLinkOutline/>}
+                            href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
+                            target='_blank' rel='noreferrer'
+                        >
+                            Открыть редактор ВК</CellButton>
 
                         <CellButton
                             before={<Icon24DeleteOutline/>}

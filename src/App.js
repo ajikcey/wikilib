@@ -416,7 +416,7 @@ const App = withAdaptivity(() => {
                                     setActiveModal={setActiveModal} setModalData={setModalData}/>
                                 <Page
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
-                                    setModalData={setModalData} accessToken={accessToken}
+                                    setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version
                                     id={configData.routes.wiki_version} content={content} group={group}
