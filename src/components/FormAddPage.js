@@ -29,7 +29,7 @@ const FormAddPage = (props) => {
         setTitle(result.title);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: 'Введите название страницы'});
             return;
         }
 
@@ -65,7 +65,7 @@ const FormAddPage = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: 'Введите название страницы'});
         } else {
             setTitleError(null);
         }
@@ -74,7 +74,7 @@ const FormAddPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                top="Введите название страницы"
+                top="Название"
                 style={{paddingLeft: 0, paddingRight: 0}}
                 status={titleError ? 'error' : ''}
                 bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}

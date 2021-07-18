@@ -36,7 +36,7 @@ const FromEditPage = (props) => {
         setText(result.text);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: 'Введите название страницы'});
             return;
         }
 
@@ -66,7 +66,7 @@ const FromEditPage = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: 'Введите название страницы'});
         } else {
             setTitleError(null);
         }
@@ -91,11 +91,11 @@ const FromEditPage = (props) => {
             <FormItem
                 top="Название"
                 status={titleError ? 'error' : ''}
-                bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
+                bottom={titleError && titleError.error_msg ? titleError.error_msg : 'ВКонтакте пока не поддерживает изменение названия страницы'}
             >
                 <Input
                     name='title'
-                    placeholder="Введите название"
+                    placeholder=""
                     onChange={onChangeTitle}
                     value={title}
                     readOnly

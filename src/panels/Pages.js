@@ -108,7 +108,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
             <Group header={<Header mode="primary" indicator={pages ? pages.length : 0}
             >
                 Wiki-страницы</Header>}>
-                <Search onChange={onChangeSearch}/>
+                <Search placeholder='Поиск страниц' onChange={onChangeSearch}/>
                 <CellButton
                     before={<Icon28AddOutline/>}
                     onClick={addPage}

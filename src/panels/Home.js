@@ -224,7 +224,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                 }
 
                 <Header mode="primary" indicator={allGroups}>Все сообщества</Header>
-                <Search onChange={onChangeSearch}/>
+                <Search placeholder='Поиск сообществ' onChange={onChangeSearch}/>
 
                 {(!groups) && <PanelSpinner/>}
 
