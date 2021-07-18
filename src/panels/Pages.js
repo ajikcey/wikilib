@@ -23,6 +23,9 @@ import IconPage from "../components/IconPage";
 
 const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError, pages, setPages}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
+    const [search, setSearch] = useState('');
+
+    let pageCount = 0;
 
     useEffect(() => {
 
@@ -85,6 +88,10 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
         go(configData.routes.home);
     }
 
+    const onChangeSearch = (e) => {
+        setSearch(e.currentTarget.value);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -101,7 +108,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
             <Group header={<Header mode="primary" indicator={pages ? pages.length : 0}
             >
                 Wiki-страницы</Header>}>
-                <Search/>
+                <Search onChange={onChangeSearch}/>
                 <CellButton
                     before={<Icon28AddOutline/>}
                     onClick={addPage}
@@ -118,6 +125,9 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                 <Fragment>
                     <List>
                         {pages.map((page) => {
+                            if (search && !page.title.match(new RegExp(search, "i"))) return null;
+
+                            ++pageCount;
                             return (
                                 <Cell
                                     key={page.id} before={<IconPage page={page}/>}
@@ -132,7 +142,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                             );
                         })}
                     </List>
-                    <Footer>{pages.length} {declOfNum(pages.length, ['страница', 'страницы', 'страниц'])}</Footer>
+                    <Footer>{pageCount} {declOfNum(pageCount, ['wiki-страница', 'wiki-страницы', 'wiki-страниц'])}</Footer>
                 </Fragment>
                 }
             </Group>

@@ -28,9 +28,11 @@ import {cutDeclNum, declOfNum, handleError} from "../functions";
 const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [groups, setGroups] = useState(null);
-
+    const [search, setSearch] = useState('');
     const [lastGroups, setLastGroups] = useState([]);
-    const [countGroups, setCountGroups] = useState(0);
+    const [allGroups, setAllGroups] = useState(0);
+
+    let groupCount = 0;
 
     useEffect(() => {
         /**
@@ -52,7 +54,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             }).then(data => {
                 if (data.response) {
                     setGroups(data.response.items);
-                    setCountGroups(data.response.count);
+                    setAllGroups(data.response.count);
                 } else {
                     setGroups([]);
 
@@ -165,6 +167,10 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
         }
     }
 
+    const onChangeSearch = (e) => {
+        setSearch(e.currentTarget.value);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -217,8 +223,8 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                 </Fragment>
                 }
 
-                <Header mode="primary" indicator={countGroups}>Все сообщества</Header>
-                <Search/>
+                <Header mode="primary" indicator={allGroups}>Все сообщества</Header>
+                <Search onChange={onChangeSearch}/>
 
                 {(!groups) && <PanelSpinner/>}
 
@@ -233,6 +239,9 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
 
                     <List>
                         {groups.map((group) => {
+                            if (search && !group.name.match(new RegExp(search, "i"))) return null;
+
+                            ++groupCount;
                             return (
                                 <Cell
                                     key={group.id} before={<Avatar size={48} src={group.photo_200}/>}
@@ -247,7 +256,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                             );
                         })}
                     </List>
-                    <Footer>{countGroups} {declOfNum(countGroups, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
+                    <Footer>{groupCount} {declOfNum(groupCount, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
                 </Fragment>
                 }
             </Group>
