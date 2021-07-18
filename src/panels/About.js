@@ -110,11 +110,15 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
         });
     }
 
+    const back = function () {
+        go(configData.routes.home);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => go(configData.routes.home)}/>}
+                left={<PanelHeaderBack onClick={back}/>}
             >
             </PanelHeader>
 

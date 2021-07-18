@@ -81,6 +81,7 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
     }
 
     const back = function () {
+        setPages(null);
         go(configData.routes.home);
     }
 
