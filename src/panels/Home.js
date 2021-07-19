@@ -25,11 +25,21 @@ import {
 import configData from "../config.json";
 import {cutDeclNum, declOfNum, handleError} from "../functions";
 
-const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, snackbarError}) => {
+const Home = ({
+                  id,
+                  accessToken,
+                  go,
+                  setGroup,
+                  lastGroupIds,
+                  groups,
+                  setGroups,
+                  setLastGroupIds,
+                  snackbarError,
+                  lastGroups,
+                  setLastGroups
+              }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [groups, setGroups] = useState(null);
     const [search, setSearch] = useState('');
-    const [lastGroups, setLastGroups] = useState([]);
     const [allGroups, setAllGroups] = useState(0);
 
     let groupCount = 0;
@@ -56,15 +66,11 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
                     setGroups(data.response.items);
                     setAllGroups(data.response.count);
                 } else {
-                    setGroups([]);
-
                     handleError(setSnackbar, go, {}, {
                         default_error_msg: 'No response get groups'
                     });
                 }
             }).catch(e => {
-                setGroups([]);
-
                 handleError(setSnackbar, go, e, {
                     default_error_msg: 'Error get groups'
                 });
@@ -107,8 +113,11 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             }
         }
 
-        fetchGroups().then(() => {
-        });
+        if (!groups) {
+            fetchGroups().then(() => {
+            });
+        }
+        
         fetchLastGroups().then(() => {
         });
 
@@ -183,7 +192,7 @@ const Home = ({id, accessToken, go, setGroup, lastGroupIds, setLastGroupIds, sna
             </PanelHeader>
 
             <Group>
-                {(lastGroups.length > 0) &&
+                {(lastGroups && lastGroups.length > 0) &&
                 <Fragment>
                     <Header
                         aside={<Link

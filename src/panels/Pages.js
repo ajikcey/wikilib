@@ -15,6 +15,7 @@ import {
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
+    Icon24Filter,
     Icon28AddOutline,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
@@ -24,6 +25,7 @@ import IconPage from "../components/IconPage";
 const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError, pages, setPages}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
+    const [sort, setSort] = useState({});
 
     let pageCount = 0;
 
@@ -92,6 +94,10 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
         setSearch(e.currentTarget.value);
     }
 
+    const onFiltersClick = () => {
+        setActiveModal(configData.modals.sortPage);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -105,10 +111,19 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
                     {group.name}
                 </PanelHeaderContent>
             </PanelHeader>
-            <Group header={<Header mode="primary" indicator={pages ? pages.length : 0}
-            >
-                Wiki-страницы</Header>}>
-                <Search placeholder='Поиск страниц' onChange={onChangeSearch}/>
+            <Group>
+                <Header
+                    mode="primary"
+                    indicator={pages ? pages.length : 0}
+                >
+                    Wiki-страницы</Header>
+
+                <Search
+                    placeholder='Поиск страниц'
+                    onChange={onChangeSearch}
+                    icon={<Icon24Filter/>}
+                    onIconClick={onFiltersClick}
+                />
                 <CellButton
                     before={<Icon28AddOutline/>}
                     onClick={addPage}

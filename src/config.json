@@ -29,6 +29,7 @@
   "modals": {
     "redirectToCommunity": "redirectToCommunity",
     "addPage": "addPage",
+    "sortPage": "sortPage",
     "accessPage": "accessPage"
   }
 }
