@@ -25,7 +25,7 @@ import IconPage from "../components/IconPage";
 const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError, pages, setPages}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
-    const [sort, setSort] = useState({});
+    // const [sort, setSort] = useState({});
 
     let pageCount = 0;
 

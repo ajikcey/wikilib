@@ -12,7 +12,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, FormItem, NativeSelect, SliderSwitch,
+    ModalCard, ModalPage, FormItem, NativeSelect, SliderSwitch, FormLayout,
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -171,7 +171,9 @@ const App = withAdaptivity(() => {
         setActiveModal(null); // null для скрытия
     };
 
-    const onSubmitSortPage = function () {
+    const onSubmitSortPage = function (e) {
+        e.preventDefault();
+
         setModalData({});
         setActiveModal(null); // null для скрытия
     };
@@ -228,28 +230,28 @@ const App = withAdaptivity(() => {
                 >
                     Сортировка</AppModalPageHeader>}
             >
-                <FormItem top="Сортировать">
-                    <NativeSelect name='field'>
-                        <option value={0}>По дате создания</option>
-                        <option value={1}>По дате редактирования</option>
-                        <option value={2}>По просмотрам</option>
-                    </NativeSelect>
-                </FormItem>
-                <FormItem top="Направление">
-                    <SliderSwitch
-                        name='direction'
-                        activeValue={0}
-                        options={[
-                            {value: 0, name: 'По убыванию'},
-                            {value: 1, name: 'По возрастанию'},
-                        ]}
-                    />
-                </FormItem>
-                <FormItem>
-                    <Button size="l" mode="primary" stretched>
-                        Применить
-                    </Button>
-                </FormItem>
+                <FormLayout onSubmit={onSubmitSortPage}>
+                    <FormItem top="Сортировать">
+                        <NativeSelect name='field'>
+                            <option value={0}>По дате создания</option>
+                            <option value={1}>По дате редактирования</option>
+                            <option value={2}>По просмотрам</option>
+                        </NativeSelect>
+                    </FormItem>
+                    <FormItem top="Направление">
+                        <SliderSwitch
+                            name='direction'
+                            activeValue={0}
+                            options={[
+                                {value: 0, name: 'По убыванию'},
+                                {value: 1, name: 'По возрастанию'},
+                            ]}
+                        />
+                    </FormItem>
+                    <FormItem>
+                        <Button size="l" mode="primary" stretched>Применить</Button>
+                    </FormItem>
+                </FormLayout>
             </ModalPage>
         </ModalRoot>
     );
