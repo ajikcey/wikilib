@@ -15,7 +15,7 @@ import {
     PanelHeaderButton,
     Placeholder,
     PanelSpinner,
-    Footer, Link, Spacing
+    Footer, Link
 } from '@vkontakte/vkui';
 import {
     Icon12Verified, Icon16Clear,
@@ -117,7 +117,7 @@ const Home = ({
             fetchGroups().then(() => {
             });
         }
-        
+
         fetchLastGroups().then(() => {
         });
 
@@ -191,9 +191,9 @@ const Home = ({
                 {configData.name}
             </PanelHeader>
 
-            <Group>
-                {(lastGroups && lastGroups.length > 0) &&
-                <Fragment>
+            {(lastGroups && lastGroups.length > 0) &&
+            <Fragment>
+                <Group>
                     <Header
                         aside={<Link
                             style={{color: 'var(--icon_secondary)'}} mode="tertiary"
@@ -228,10 +228,11 @@ const Home = ({
                         </div>
                     </HorizontalScroll>
 
-                    <Spacing separator size={16}/>
-                </Fragment>
-                }
+                </Group>
+            </Fragment>
+            }
 
+            <Group>
                 <Header mode="primary" indicator={allGroups}>Все сообщества</Header>
                 <Search placeholder='Поиск сообществ' onChange={onChangeSearch}/>
 
