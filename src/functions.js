@@ -239,6 +239,24 @@ export function fetchGroups(offset, access_token) {
 }
 
 /**
+ * Получение определенных сообществ
+ * @param group_ids
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchGroupsById(group_ids, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "groups.getById",
+        params: {
+            group_ids: group_ids.join(','),
+            fields: ['members_count', 'verified'].join(','),
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Получение информации о wiki-странице
  * @param page_id
  * @param group_id

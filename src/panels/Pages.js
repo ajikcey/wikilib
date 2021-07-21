@@ -9,20 +9,31 @@ import {
     PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Counter
+    Counter, PanelHeaderButton
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24Filter,
-    Icon28AddOutline,
+    Icon28AddOutline, Icon28InfoOutline,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
 import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
-const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackbarError, pages, setPages}) => {
+const Pages = ({
+                   id,
+                   accessToken,
+                   queryParams,
+                   group,
+                   go,
+                   setPageTitle,
+                   setActiveModal,
+                   snackbarError,
+                   pages,
+                   setPages
+               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
     // const [sort, setSort] = useState({});
@@ -102,14 +113,21 @@ const Pages = ({id, accessToken, group, go, setPageTitle, setActiveModal, snackb
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
+                left={(queryParams.vk_group_id ?
+                    <PanelHeaderButton><Icon28InfoOutline onClick={() => {
+                        go(configData.routes.about)
+                    }}/></PanelHeaderButton> : <PanelHeaderBack onClick={back}/>)}
             >
-                <PanelHeaderContent
+                {(!queryParams.vk_group_id) && <PanelHeaderContent
                     status={cutDeclNum(group.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
                     before={<Avatar size={36} src={group.photo_200}/>}
                 >
                     {group.name}
                 </PanelHeaderContent>
+                }
+
+                {(!!queryParams.vk_group_id) && <Fragment>{configData.name}</Fragment>
+                }
             </PanelHeader>
             <Group>
                 <Header

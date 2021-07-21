@@ -29,7 +29,7 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
-import {definePlatform, handleError} from "./functions";
+import {definePlatform, fetchGroupsById, handleError} from "./functions";
 import FormAddPage from "./components/FormAddPage";
 import FormEditAccess from "./components/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
@@ -94,7 +94,26 @@ const App = withAdaptivity(() => {
                 setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status].tokenReceived) {
-                    setActivePanel(configData.routes.home);
+                    if (queryParams.vk_group_id) {
+                        fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
+                            if (data.response) {
+                                setGroup(data.response[0]);
+                                setActivePanel(configData.routes.pages);
+                            } else {
+                                handleError(setSnackbar, go, {}, {
+                                    default_error_msg: 'No response get groups by id'
+                                });
+                            }
+                        }).catch(e => {
+                            handleError(setSnackbar, go, e, {
+                                default_error_msg: 'Error get groups by id'
+                            });
+                        });
+
+
+                    } else {
+                        setActivePanel(configData.routes.home);
+                    }
                 } else if (data[configData.storage_keys.status].hasSeenIntro) {
                     setActivePanel(configData.routes.token);
                 }
@@ -110,6 +129,8 @@ const App = withAdaptivity(() => {
 
         initData().then(() => {
         });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**
@@ -268,6 +289,7 @@ const App = withAdaptivity(() => {
                                 <Landing
                                     id={configData.routes.landing}/>
                                 <About
+                                    queryParams={queryParams}
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
                                     setModalData={setModalData} app={app} setApp={setApp}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
@@ -284,6 +306,7 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} lastGroupIds={lastGroupIds}
                                     setLastGroupIds={setLastGroupIds} go={go}/>
                                 <Pages
+                                    queryParams={queryParams}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>

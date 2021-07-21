@@ -21,7 +21,7 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp} from "../functions";
 
-const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal, app, setApp}) => {
+const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal, app, setApp, queryParams}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     useEffect(() => {
@@ -94,7 +94,11 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
     }
 
     const back = function () {
-        go(configData.routes.home);
+        if (queryParams.vk_group_id) {
+            go(configData.routes.pages);
+        } else {
+            go(configData.routes.home);
+        }
     }
 
     return (

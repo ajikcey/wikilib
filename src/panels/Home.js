@@ -23,7 +23,7 @@ import {
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
-import {cutDeclNum, declOfNum, fetchGroups, handleError} from "../functions";
+import {cutDeclNum, declOfNum, fetchGroups, fetchGroupsById, handleError} from "../functions";
 
 const Home = ({
                   id,
@@ -53,15 +53,7 @@ const Home = ({
          */
         async function fetchLastGroups() {
             if (lastGroupIds.length > 0) {
-                await bridge.send("VKWebAppCallAPIMethod", {
-                    method: "groups.getById",
-                    params: {
-                        group_ids: lastGroupIds.join(','),
-                        fields: ['members_count', 'verified'].join(','),
-                        v: configData.vk_api_version,
-                        access_token: accessToken.access_token
-                    }
-                }).then(data => {
+                fetchGroupsById(lastGroupIds, accessToken.access_token).then(data => {
                     if (data.response) {
                         setLastGroups(data.response);
                     } else {
