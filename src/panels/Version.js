@@ -79,7 +79,11 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                     Открыть редактор ВК</CellButton>
 
                 <FromEditPage
-                    content={content} go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group}
+                    content={content}
+                    go={go}
+                    accessToken={accessToken}
+                    setSnackbar={setSnackbar}
+                    group={group}
                 />
             </Group>
             {snackbar}

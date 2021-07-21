@@ -91,7 +91,7 @@ const FromEditPage = (props) => {
             <FormItem
                 top="Название"
                 status={titleError ? 'error' : ''}
-                bottom={titleError && titleError.error_msg ? titleError.error_msg : 'ВКонтакте пока не поддерживает изменение названия страницы'}
+                bottom={titleError && titleError.error_msg ? titleError.error_msg : 'Пока не поддерживает изменение названия'}
             >
                 <Input
                     name='title'
