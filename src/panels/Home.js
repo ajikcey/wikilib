@@ -15,7 +15,7 @@ import {
     PanelHeaderButton,
     Placeholder,
     PanelSpinner,
-    Footer, Link
+    Div, Footer, Link, Button
 } from '@vkontakte/vkui';
 import {
     Icon12Verified, Icon16Clear,
@@ -23,7 +23,7 @@ import {
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
-import {cutDeclNum, declOfNum, handleError} from "../functions";
+import {cutDeclNum, declOfNum, fetchGroups, handleError} from "../functions";
 
 const Home = ({
                   id,
@@ -36,47 +36,17 @@ const Home = ({
                   setLastGroupIds,
                   snackbarError,
                   lastGroups,
-                  setLastGroups
+                  setLastGroups,
+                  offset, setOffset
               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
+    const [end, setEnd] = useState(false);
     const [allGroups, setAllGroups] = useState(0);
 
     let groupCount = 0;
 
     useEffect(() => {
-        /**
-         * Получение сообществ пользователя
-         * @returns {Promise<void>}
-         */
-        async function fetchGroups() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "groups.get",
-                params: {
-                    extended: 1,
-                    fields: ['members_count', 'verified'].join(','),
-                    filter: 'moder',
-                    offset: 0,
-                    count: 1000,
-                    v: configData.vk_api_version,
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
-                if (data.response) {
-                    setGroups(data.response.items);
-                    setAllGroups(data.response.count);
-                } else {
-                    handleError(setSnackbar, go, {}, {
-                        default_error_msg: 'No response get groups'
-                    });
-                }
-            }).catch(e => {
-                handleError(setSnackbar, go, e, {
-                    default_error_msg: 'Error get groups'
-                });
-            });
-        }
-
         /**
          * Получение посещенных недавно сообществ
          * @returns {Promise<void>}
@@ -95,15 +65,11 @@ const Home = ({
                     if (data.response) {
                         setLastGroups(data.response);
                     } else {
-                        setLastGroups([]);
-
                         handleError(setSnackbar, go, {}, {
                             default_error_msg: 'No response get groups by id'
                         });
                     }
                 }).catch(e => {
-                    setLastGroups([]);
-
                     handleError(setSnackbar, go, e, {
                         default_error_msg: 'Error get groups by id'
                     });
@@ -114,7 +80,7 @@ const Home = ({
         }
 
         if (!groups) {
-            fetchGroups().then(() => {
+            moreGroups().then(() => {
             });
         }
 
@@ -123,6 +89,35 @@ const Home = ({
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    /**
+     * Показать еще сообщества
+     * @returns {Promise<void>}
+     */
+    const moreGroups = async function () {
+        fetchGroups(offset, accessToken.access_token).then(data => {
+            if (data.response) {
+                groups = (groups || []).concat(data.response.items);
+                setGroups(groups);
+                setAllGroups(data.response.count);
+
+                offset += data.response.items.length;
+                setOffset(offset);
+
+                if (offset >= data.response.count) {
+                    setEnd(true);
+                }
+            } else {
+                handleError(setSnackbar, go, {}, {
+                    default_error_msg: 'No response get groups'
+                });
+            }
+        }).catch(e => {
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error get groups'
+            });
+        });
+    }
 
     /**
      * Очистка недавно просмотренных сообществ
@@ -246,7 +241,6 @@ const Home = ({
 
                 {(groups && groups.length > 0) &&
                 <Fragment>
-
                     <List>
                         {groups.map((group) => {
                             if (search && !group.name.match(new RegExp(search, "i"))) return null;
@@ -266,7 +260,21 @@ const Home = ({
                             );
                         })}
                     </List>
+                    {(!!end) &&
                     <Footer>{groupCount} {declOfNum(groupCount, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
+                    }
+                    {(!end) &&
+                    <Div>
+                        <Button
+                            stretched
+                            mode="secondary"
+                            size='l'
+                            onClick={moreGroups}
+                        >
+                            Показать еще</Button>
+                    </Div>
+                    }
+
                 </Fragment>
                 }
             </Group>

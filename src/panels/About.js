@@ -19,29 +19,15 @@ import {
     Icon12Verified, Icon24CheckCircleOutline,
     Icon28BookmarkOutline, Icon28UsersOutline
 } from "@vkontakte/icons";
-import {cutDeclNum, handleError} from "../functions";
+import {cutDeclNum, handleError, fetchApp} from "../functions";
 
-const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal}) => {
+const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal, app, setApp}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [app, setApp] = useState(null);
 
     useEffect(() => {
-        /**
-         * Получение информации о приложении
-         * @returns {Promise<void>}
-         */
-        async function fetchApp() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "apps.get",
-                params: {
-                    app_id: configData.app_id,
-                    return_friends: 1,
-                    fields: ['photo_100', 'members_count'].join(','),
-                    extended: 1,
-                    v: configData.vk_api_version,
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
+
+        if (!app) {
+            fetchApp(accessToken.access_token).then(data => {
                 if (data.response) {
                     setApp(data.response);
                 } else {
@@ -56,9 +42,6 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
                 });
             });
         }
-
-        fetchApp().then(() => {
-        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

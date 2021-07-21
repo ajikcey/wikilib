@@ -49,6 +49,8 @@ const App = withAdaptivity(() => {
     const [pageTitle, setPageTitle] = useState(null);
     const [modalData, setModalData] = useState({});
     const [pages, setPages] = useState(null);
+    const [app, setApp] = useState(null);
+    const [offset, setOffset] = useState(0);
     const [content, setContent] = useState({
         version: 0,
         page_id: 0,
@@ -267,7 +269,7 @@ const App = withAdaptivity(() => {
                                     id={configData.routes.landing}/>
                                 <About
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
-                                    setModalData={setModalData}
+                                    setModalData={setModalData} app={app} setApp={setApp}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
                                 <Intro
                                     id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
@@ -275,6 +277,7 @@ const App = withAdaptivity(() => {
                                 <Token
                                     id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
                                 <Home
+                                    offset={offset} setOffset={setOffset}
                                     groups={groups} setGroups={setGroups}
                                     lastGroups={lastGroups} setLastGroups={setLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}

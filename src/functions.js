@@ -218,6 +218,27 @@ export function handleError(setSnackbar, go, e, options) {
 }
 
 /**
+ * Получение сообществ пользователя
+ * @param offset
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchGroups(offset, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "groups.get",
+        params: {
+            extended: 1,
+            fields: ['members_count', 'verified'].join(','),
+            filter: 'moder',
+            offset: offset,
+            count: 1000,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Получение информации о wiki-странице
  * @param page_id
  * @param group_id
@@ -251,6 +272,25 @@ export function fetchHistory(page_id, group_id, access_token) {
         params: {
             page_id: page_id,
             group_id: group_id,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
+ * Получение информации о приложении
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchApp(access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "apps.get",
+        params: {
+            app_id: configData.app_id,
+            return_friends: 1,
+            fields: ['photo_100', 'members_count'].join(','),
+            extended: 1,
             v: configData.vk_api_version,
             access_token: access_token
         }
