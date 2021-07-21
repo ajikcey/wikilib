@@ -252,7 +252,7 @@ const Home = ({
                             );
                         })}
                     </List>
-                    {(!!end) &&
+                    {(end) &&
                     <Footer>{groupCount} {declOfNum(groupCount, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
                     }
                     {(!end) &&
