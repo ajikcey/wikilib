@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import configData from "./config.json";
-import {handleError} from "./functions";
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit").then(() => {
