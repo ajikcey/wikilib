@@ -41,7 +41,7 @@ const Home = ({
               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
-    const [end, setEnd] = useState(false);
+    const [end, setEnd] = useState(true);
     const [allGroups, setAllGroups] = useState(0);
 
     let groupCount = 0;
@@ -96,8 +96,9 @@ const Home = ({
                 offset += data.response.items.length;
                 setOffset(offset);
 
-                if (offset >= data.response.count) {
-                    setEnd(true);
+                if (offset < data.response.count) {
+                    setEnd(false);
+                    console.log(1);
                 }
             } else {
                 handleError(setSnackbar, go, {}, {
