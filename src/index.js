@@ -4,9 +4,11 @@ import React from "react";
 import ReactDOM from "react-dom";
 import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
+import configData from "./config.json";
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit").then(() => {
+    bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then();
 });
 bridge.subscribe(({detail: {type, data}}) => {
     const schemeAttribute = document.createAttribute('scheme');
