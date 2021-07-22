@@ -4,15 +4,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
-import configData from "./config.json";
 
 // Init VK  Mini App
-bridge.send("VKWebAppInit").then(() => {
-    bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then(data => {
-        console.log(data);
-    }).catch(e => {
-        console.log(e);
-    });
+bridge.send("VKWebAppInit").then((data) => {
 });
 bridge.subscribe(({detail: {type, data}}) => {
     const schemeAttribute = document.createAttribute('scheme');
@@ -24,7 +18,7 @@ bridge.subscribe(({detail: {type, data}}) => {
     } else if (type === 'vk-connect') {
         if (typeof data === 'undefined') {
             // определение цветовой схемы вне приложения
-            schemeAttribute.value = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "space_gray" :"bright_light");
+            schemeAttribute.value = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "space_gray" : "bright_light");
             document.body.attributes.setNamedItem(schemeAttribute);
         }
     }

@@ -130,6 +130,7 @@ const App = withAdaptivity(() => {
         }
 
         initData().then(() => {
+            bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then();
         });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
