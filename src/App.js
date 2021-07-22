@@ -76,6 +76,8 @@ const App = withAdaptivity(() => {
                     setActivePanel(configData.routes.landing);
                 }
             }
+
+            console.log(type, data);
         });
 
         async function initData() {
@@ -127,11 +129,15 @@ const App = withAdaptivity(() => {
 
             setUser(user);
             setPopout(null);
+
+            bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then((data) => {
+                console.log(data);
+            }).catch((e) => {
+                console.log(e);
+            });
         }
 
-        initData().then(() => {
-            bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then();
-        });
+        initData().then();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
