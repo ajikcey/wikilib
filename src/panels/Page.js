@@ -7,8 +7,8 @@ import {
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline, Icon24DeleteOutline, Icon24ExternalLinkOutline,
-    Icon24HistoryBackwardOutline, Icon24Linked,
+    Icon24CheckCircleOutline, Icon24ExternalLinkOutline,
+    Icon24Linked,
     Icon24Write,
     Icon28CopyOutline,
     Icon28EditOutline,
@@ -22,7 +22,6 @@ import {
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
     fetchVersion, handleError,
-    savePage,
     timestampToDate
 } from "../functions";
 import IconPage from "../components/IconPage";
@@ -146,40 +145,6 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
             default:
                 return "";
         }
-    }
-
-    /**
-     * Восстановление wiki-страницы
-     */
-    const restorePage = () => {
-        savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
-
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24HistoryBackwardOutline fill='var(--accent)'/>}
-            >
-                Страница восстановлена
-            </Snackbar>);
-        });
-    }
-
-    /**
-     * Удаление wiki-страницы
-     */
-    const delPage = () => {
-        savePage(infoPage.id, infoPage.group_id, accessToken.access_token, infoPage.title, infoPage.source).then(() => {
-
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                action="Восстановить"
-                onActionClick={restorePage}
-                before={<Icon24DeleteOutline fill='var(--dynamic_red)'/>}
-            >
-                Страница удалена
-            </Snackbar>);
-        });
     }
 
     /**
@@ -331,20 +296,13 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                             }}
                         >
                             Редактировать</CellButton>
-
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
+                            description="Можно переименовать страницу"
                         >
                             Открыть редактор ВК</CellButton>
-
-                        <CellButton
-                            before={<Icon24DeleteOutline/>}
-                            mode="danger"
-                            onClick={delPage}
-                        >
-                            Удалить</CellButton>
                     </Fragment>
                     }
                 </Fragment>
