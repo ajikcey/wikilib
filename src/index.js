@@ -5,10 +5,15 @@ import ReactDOM from "react-dom";
 import bridge from "@vkontakte/vk-bridge";
 import App from "./App";
 import configData from "./config.json";
+import {handleError} from "./functions";
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit").then(() => {
-    bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then();
+    bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then(data => {
+        console.log(data);
+    }).catch(e => {
+        console.log(e);
+    });
 });
 bridge.subscribe(({detail: {type, data}}) => {
     const schemeAttribute = document.createAttribute('scheme');
