@@ -29,12 +29,12 @@ const AppModalPageHeader = (props) => {
             left={(
                 <Fragment>
                     {(platform === ANDROID) && <PanelHeaderClose onClick={props.onClose}/>}
-                    {(platform === IOS) && <PanelHeaderSubmit onClick={props.onSubmit}/>}
+                    {(platform === IOS) && <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
                 </Fragment>
             )}
             right={(
                 <Fragment>
-                    {(platform === ANDROID || platform === VKCOM) && <PanelHeaderSubmit onClick={props.onSubmit}/>}
+                    {(platform === ANDROID || platform === VKCOM) && <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
                     {(platform === IOS) && <PanelHeaderClose onClick={props.onClose}/>}
                 </Fragment>
             )}

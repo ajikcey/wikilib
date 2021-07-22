@@ -24,6 +24,7 @@
   "storage_keys": {
     "last_groups": "last_groups",
     "status": "status",
+    "page_sort": "page_sort",
     "access_token": "access_token"
   },
   "modals": {

@@ -27,6 +27,8 @@ const Pages = ({
                    accessToken,
                    queryParams,
                    group,
+                   setModalData,
+                   pageSort,
                    go,
                    setPageTitle,
                    setActiveModal,
@@ -36,7 +38,6 @@ const Pages = ({
                }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
-    // const [sort, setSort] = useState({});
 
     let pageCount = 0;
 
@@ -56,7 +57,28 @@ const Pages = ({
                 }
             }).then(data => {
                 if (data.response) {
-                    setPages(data.response.reverse()); // переворот массива, чтобы свежие изменения были вверху
+
+                    let f = '';
+
+                    if (pageSort.field === 1) {
+                        f = 'edited';
+                    } else if (pageSort.field === 2) {
+                        f = 'views';
+                    } else {
+                        f = 'created';
+                    }
+
+                    data.response.sort((a, b) => {
+                        if (a[f] > b[f]) {
+                            return (pageSort.direction ? 1 : -1);
+                        }
+                        if (a[f] < b[f]) {
+                            return (pageSort.direction ? -1 : 1);
+                        }
+                        return 0;
+                    });
+
+                    setPages(data.response);
                 } else {
                     setPages([]);
 
@@ -125,7 +147,6 @@ const Pages = ({
                     {group.name}
                 </PanelHeaderContent>
                 }
-
                 {(!!queryParams.vk_group_id) && <Fragment>{configData.name}</Fragment>
                 }
             </PanelHeader>

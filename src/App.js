@@ -12,7 +12,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, FormItem, NativeSelect, SliderSwitch, FormLayout,
+    ModalCard, ModalPage
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -33,6 +33,7 @@ import {definePlatform, fetchGroupsById, handleError} from "./functions";
 import FormAddPage from "./components/FormAddPage";
 import FormEditAccess from "./components/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
+import FormSortPage from "./components/FormSortPage";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -50,6 +51,7 @@ const App = withAdaptivity(() => {
     const [modalData, setModalData] = useState({});
     const [pages, setPages] = useState(null);
     const [app, setApp] = useState(null);
+    const [pageSort, setPageSort] = useState({field: 0, direction: 0});
     const [offset, setOffset] = useState(0);
     const [content, setContent] = useState({
         version: 0,
@@ -194,13 +196,6 @@ const App = withAdaptivity(() => {
         setActiveModal(null); // null для скрытия
     };
 
-    const onSubmitSortPage = function (e) {
-        e.preventDefault();
-
-        setModalData({});
-        setActiveModal(null); // null для скрытия
-    };
-
     const modal = (
         <ModalRoot
             activeModal={activeModal}
@@ -249,32 +244,14 @@ const App = withAdaptivity(() => {
                 onClose={onCloseModal}
                 header={<AppModalPageHeader
                     onClose={onCloseModal}
-                    onSubmit={onSubmitSortPage}
+                    onSubmitFormId='formSortPage'
                 >
                     Сортировка</AppModalPageHeader>}
             >
-                <FormLayout onSubmit={onSubmitSortPage}>
-                    <FormItem top="Сортировать">
-                        <NativeSelect name='field'>
-                            <option value={0}>По дате создания</option>
-                            <option value={1}>По дате редактирования</option>
-                            <option value={2}>По просмотрам</option>
-                        </NativeSelect>
-                    </FormItem>
-                    <FormItem top="Направление">
-                        <SliderSwitch
-                            name='direction'
-                            activeValue={0}
-                            options={[
-                                {value: 0, name: 'По убыванию'},
-                                {value: 1, name: 'По возрастанию'},
-                            ]}
-                        />
-                    </FormItem>
-                    <FormItem>
-                        <Button size="l" mode="primary" stretched>Применить</Button>
-                    </FormItem>
-                </FormLayout>
+                <FormSortPage
+                    modalData={modalData} pageSort={pageSort} setPageSort={setPageSort}
+                    onCloseModal={onCloseModal} setSnackbar={setSnackbar} pages={pages} setPages={setPages}
+                />
             </ModalPage>
         </ModalRoot>
     );
@@ -306,7 +283,8 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} lastGroupIds={lastGroupIds}
                                     setLastGroupIds={setLastGroupIds} go={go}/>
                                 <Pages
-                                    queryParams={queryParams}
+                                    pageSort={pageSort}
+                                    queryParams={queryParams} setModalData={setModalData}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
