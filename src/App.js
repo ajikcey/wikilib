@@ -76,8 +76,6 @@ const App = withAdaptivity(() => {
                     setActivePanel(configData.routes.landing);
                 }
             }
-
-            console.log(type, data);
         });
 
         async function initData() {
