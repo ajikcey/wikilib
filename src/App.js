@@ -52,7 +52,7 @@ const App = withAdaptivity(() => {
     const [pages, setPages] = useState(null);
     const [app, setApp] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 0});
-    const [offset, setOffset] = useState(0);
+    const [groupOffset, setGroupOffset] = useState(0);
     const [content, setContent] = useState({
         version: 0,
         page_id: 0,
@@ -281,7 +281,7 @@ const App = withAdaptivity(() => {
                                 <Token
                                     id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
                                 <Home
-                                    offset={offset} setOffset={setOffset}
+                                    groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                                     groups={groups} setGroups={setGroups}
                                     lastGroups={lastGroups} setLastGroups={setLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}

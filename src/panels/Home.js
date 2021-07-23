@@ -37,7 +37,7 @@ const Home = ({
                   snackbarError,
                   lastGroups,
                   setLastGroups,
-                  offset, setOffset
+                  groupOffset, setGroupOffset
               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
@@ -86,7 +86,7 @@ const Home = ({
      * @returns {Promise<void>}
      */
     const moreGroups = async function () {
-        fetchGroups(offset, accessToken.access_token).then(data => {
+        fetchGroups(groupOffset, accessToken.access_token).then(data => {
             if (data.response) {
                 if (!groups) groups = {};
                 groups.count = data.response.count;
@@ -94,10 +94,10 @@ const Home = ({
 
                 setGroups(groups);
 
-                offset += data.response.items.length;
-                setOffset(offset);
+                groupOffset += data.response.items.length;
+                setGroupOffset(groupOffset);
 
-                if (offset < data.response.count) {
+                if (groupOffset < data.response.count) {
                     setEnd(false);
                 } else {
                     setEnd(true);
