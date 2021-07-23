@@ -42,7 +42,6 @@ const Home = ({
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
     const [end, setEnd] = useState(true);
-    const [allGroups, setAllGroups] = useState(0);
 
     let groupCount = 0;
 
@@ -89,16 +88,19 @@ const Home = ({
     const moreGroups = async function () {
         fetchGroups(offset, accessToken.access_token).then(data => {
             if (data.response) {
-                groups = (groups || []).concat(data.response.items);
+                if (!groups) groups = {};
+                groups.count = data.response.count;
+                groups.items = (groups.items || []).concat(data.response.items);
+
                 setGroups(groups);
-                setAllGroups(data.response.count);
 
                 offset += data.response.items.length;
                 setOffset(offset);
 
                 if (offset < data.response.count) {
                     setEnd(false);
-                    console.log(1);
+                } else {
+                    setEnd(true);
                 }
             } else {
                 handleError(setSnackbar, go, {}, {
@@ -221,21 +223,21 @@ const Home = ({
             }
 
             <Group>
-                <Header mode="primary" indicator={allGroups}>Все сообщества</Header>
+                <Header mode="primary" indicator={groups ? groups.count : 0}>Все сообщества</Header>
                 <Search placeholder='Поиск сообществ' onChange={onChangeSearch}/>
 
                 {(!groups) && <PanelSpinner/>}
 
-                {(groups && groups.length < 1) &&
+                {(groups && groups.items && groups.items.length < 1) &&
                 <Fragment>
                     <Placeholder icon={<Icon36Users/>}>Сообществ не найдено</Placeholder>
                 </Fragment>
                 }
 
-                {(groups && groups.length > 0) &&
+                {(groups && groups.items && groups.items.length > 0) &&
                 <Fragment>
                     <List>
-                        {groups.map((group) => {
+                        {groups.items.map((group) => {
                             if (search && !group.name.match(new RegExp(search, "i"))) return null;
 
                             ++groupCount;
