@@ -4,7 +4,7 @@ import {
     Avatar,
     CellButton,
     Group, InfoRow, Link,
-    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell
+    Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
@@ -19,6 +19,8 @@ import FromEditPage from "../components/FormEditPage";
 const Version = ({id, accessToken, content, group, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [creator, setCreator] = useState({});
+
+    const platform = usePlatform();
 
     useEffect(() => {
 
@@ -71,12 +73,14 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                     </InfoRow>
                 </SimpleCell>
 
+                {(platform === VKCOM) &&
                 <CellButton
                     before={<Icon24ExternalLinkOutline/>}
                     href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
                 >
                     Открыть редактор ВК</CellButton>
+                }
 
                 <FromEditPage
                     content={content}

@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {
     Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing
+    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
@@ -33,6 +33,8 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
     const [editor, setEditor] = useState(null);
     const [history, setHistory] = useState(null);
     const [tab, setTab] = useState('info');
+
+    const platform = usePlatform();
 
     useEffect(() => {
 
@@ -296,13 +298,16 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                             }}
                         >
                             Редактировать</CellButton>
+
+                        {(platform === VKCOM) &&
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
-                            description="Можно переименовать страницу"
+                            description="+переименовать страницу"
                         >
                             Открыть редактор ВК</CellButton>
+                        }
                     </Fragment>
                     }
                 </Fragment>
