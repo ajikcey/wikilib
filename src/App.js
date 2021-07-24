@@ -252,7 +252,9 @@ const App = withAdaptivity(() => {
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} groups={groups} setPageTitle={setPageTitle} setGroup={setGroup}
+                    go={go} setPageTitle={setPageTitle}
+                    groups={groups} setGroups={setGroups}
+                    groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                 />
             </ModalCard>
 

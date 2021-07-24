@@ -4,11 +4,11 @@ import {
     FormItem,
     FormLayout,
     Input,
-    NativeSelect,
+    NativeSelect, PanelSpinner,
     Snackbar, Spacing
 } from "@vkontakte/vkui";
-import React, {useState} from "react";
-import {fetchPages, handleError, savePage} from "../functions";
+import React, {useEffect, useState} from "react";
+import {fetchGroups, fetchPages, handleError, savePage} from "../functions";
 
 /**
  * Форма редактирования настроек доступа wiki-страницы
@@ -19,6 +19,43 @@ const FormEditAccess = (props) => {
     const [groupId, setGroupId] = useState(props.modalData.group_id);
     const [title, setTitle] = useState(props.modalData.title);
     const [titleError, setTitleError] = useState(null);
+
+    let groups = props.groups;
+
+    useEffect(() => {
+
+        if (!groups) {
+            moreGroups().then(() => {
+            });
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /**
+     * Показать еще сообщества
+     * @returns {Promise<void>}
+     */
+    const moreGroups = async function () {
+        fetchGroups(props.groupOffset, props.accessToken.access_token).then(data => {
+            if (data.response) {
+                if (!groups) groups = {};
+                groups.count = data.response.count;
+                groups.items = (groups.items || []).concat(data.response.items);
+
+                props.setGroups(groups);
+                props.setGroupOffset(props.groupOffset);
+            } else {
+                handleError(props.modalData.setSnackbar, props.go, {}, {
+                    default_error_msg: 'No response get groups'
+                });
+            }
+        }).catch(e => {
+            handleError(props.modalData.setSnackbar, props.go, e, {
+                default_error_msg: 'Error get groups'
+            });
+        });
+    }
 
     /**
      * Копирование wiki-страницы
@@ -101,7 +138,8 @@ const FormEditAccess = (props) => {
                     onChange={onChangeGroup}
                     defaultValue={groupId}
                 >
-                    {props.groups.items.map((group) => {
+                    {!groups && <PanelSpinner/>}
+                    {groups && groups.items && groups.items.map((group) => {
                         return (
                             <option
                                 value={group.id}
