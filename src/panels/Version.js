@@ -8,8 +8,7 @@ import {
 } from '@vkontakte/vkui';
 
 import {
-    Icon24ExternalLinkOutline,
-    Icon36CalendarOutline,
+    Icon36CalendarOutline, Icon36LinkOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {fetchUsers, handleError, timestampToDate} from "../functions";
@@ -75,7 +74,8 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
 
                 {(platform === VKCOM) &&
                 <CellButton
-                    before={<Icon24ExternalLinkOutline/>}
+                    description="только на пк"
+                    before={<Icon36LinkOutline/>}
                     href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
                 >

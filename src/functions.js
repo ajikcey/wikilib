@@ -257,6 +257,23 @@ export function fetchGroupsById(group_ids, access_token) {
 }
 
 /**
+ * Получение wiki-страниц сообщества
+ * @param group_id
+ * @param access_token
+ * @returns {Promise}
+ */
+export function fetchPages(group_id, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "pages.getTitles",
+        params: {
+            group_id: group_id,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Получение информации о wiki-странице
  * @param page_id
  * @param group_id

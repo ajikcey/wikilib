@@ -1,0 +1,136 @@
+import {Icon24CheckCircleOutline} from "@vkontakte/icons";
+import {
+    Button,
+    FormItem,
+    FormLayout,
+    Input,
+    NativeSelect,
+    Snackbar, Spacing
+} from "@vkontakte/vkui";
+import React, {useState} from "react";
+import {fetchPages, handleError, savePage} from "../functions";
+
+/**
+ * Форма редактирования настроек доступа wiki-страницы
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const FormEditAccess = (props) => {
+    const [groupId, setGroupId] = useState(props.modalData.group_id);
+    const [title, setTitle] = useState(props.modalData.title);
+    const [titleError, setTitleError] = useState(null);
+
+    /**
+     * Копирование wiki-страницы
+     * @param e
+     */
+    const onSubmit = async function (e) {
+        e.preventDefault();
+
+        if (titleError) {
+            return;
+        }
+
+        const result = {
+            title: title.trim()
+        };
+        setTitle(result.title);
+
+        if (!result.title) {
+            setTitleError({error_msg: 'Введите название страницы'});
+            return;
+        }
+
+        let page_exists = false;
+        await fetchPages(groupId, props.accessToken.access_token).then(data => {
+            if (data.response) {
+                data.response.forEach((value) => {
+                    if (value.title === result.title) page_exists = true;
+                });
+            }
+        });
+
+        if (page_exists) {
+            setTitleError({error_msg: 'Страница с таким названием уже существует'});
+            return;
+        }
+
+        savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(data => {
+            if (data.response) {
+
+                props.onCloseModal();
+                props.modalData.setSnackbar(null);
+                props.modalData.setSnackbar(<Snackbar
+                    onClose={() => props.modalData.setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >
+                    Сохранено
+                </Snackbar>);
+            } else {
+                handleError(props.modalData.setSnackbar, props.go, {}, {
+                    default_error_msg: 'No response save access'
+                });
+            }
+        }).catch(e => {
+            handleError(props.modalData.setSnackbar, props.go, e, {
+                default_error_msg: 'Error save access'
+            });
+        });
+    };
+
+    const onChangeTitle = (e) => {
+        setTitle(e.currentTarget.value);
+
+        if (!e.currentTarget.value) {
+            setTitleError({error_msg: 'Введите название страницы'});
+        } else {
+            setTitleError(null);
+        }
+    };
+
+    const onChangeGroup = (e) => {
+        setGroupId(+e.target.value);
+    };
+
+    return (
+        <FormLayout onSubmit={onSubmit}>
+            <FormItem
+                top="Сообщество"
+                style={{paddingLeft: 0, paddingRight: 0}}>
+                <NativeSelect
+                    onChange={onChangeGroup}
+                    defaultValue={groupId}
+                >
+                    {props.groups.items.map((group) => {
+                        return (
+                            <option
+                                value={group.id}
+                            >
+                                {group.name}
+                            </option>
+                        );
+                    })}
+                </NativeSelect>
+            </FormItem>
+            <FormItem
+                top="Название"
+                status={titleError ? 'error' : ''}
+                bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
+                style={{paddingLeft: 0, paddingRight: 0}}
+            >
+                <Input
+                    onChange={onChangeTitle}
+                    value={title}
+                />
+            </FormItem>
+
+            <Spacing size={16}/>
+
+            <Button size="l" mode="primary" stretched>
+                Копировать
+            </Button>
+        </FormLayout>
+    );
+}
+
+export default FormEditAccess;

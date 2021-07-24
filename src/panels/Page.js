@@ -7,7 +7,7 @@ import {
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline, Icon24ExternalLinkOutline,
+    Icon24CheckCircleOutline, Icon24Copy, Icon24ExternalLinkOutline,
     Icon24Linked,
     Icon24Write,
     Icon28CopyOutline,
@@ -197,6 +197,19 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
         go(configData.routes.wiki_version);
     }
 
+    /**
+     * Копирование wiki-страницы
+     */
+    const copyPage = () => {
+        setModalData({
+            group_id: infoPage.group_id,
+            title: infoPage.title,
+            text: infoPage.source,
+            setSnackbar: setSnackbar,
+        });
+        setActiveModal(configData.modals.copyPage);
+    }
+
     const back = () => {
         go(configData.routes.pages);
     }
@@ -291,14 +304,6 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
 
                         <Spacing separator size={16}/>
 
-                        <CellButton
-                            before={<Icon24Write/>}
-                            onClick={() => {
-                                editPage();
-                            }}
-                        >
-                            Редактировать</CellButton>
-
                         {(platform === VKCOM) &&
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
@@ -307,6 +312,20 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                             description="+переименовать страницу"
                         >
                             Открыть редактор ВК</CellButton>
+                        }
+
+                        <CellButton
+                            before={<Icon24Write/>}
+                            onClick={editPage}
+                        >
+                            Редактировать</CellButton>
+
+                        {(!!infoPage) &&
+                        <CellButton
+                            before={<Icon24Copy/>}
+                            onClick={copyPage}
+                        >
+                            Копировать</CellButton>
                         }
                     </Fragment>
                     }

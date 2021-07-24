@@ -34,6 +34,7 @@ import FormAddPage from "./components/FormAddPage";
 import FormEditAccess from "./components/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
 import FormSortPage from "./components/FormSortPage";
+import FormCopyPage from "./components/FormCopyPage";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -240,7 +241,18 @@ const App = withAdaptivity(() => {
             >
                 <FormEditAccess
                     modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group} setPageTitle={setPageTitle} setSnackbar={setSnackbar}
+                    go={go} group={group} setPageTitle={setPageTitle}
+                />
+            </ModalCard>
+
+            <ModalCard
+                id={configData.modals.copyPage}
+                onClose={onCloseModal}
+                header="Копирование станицы"
+            >
+                <FormCopyPage
+                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    go={go} groups={groups} setPageTitle={setPageTitle} setGroup={setGroup}
                 />
             </ModalCard>
 

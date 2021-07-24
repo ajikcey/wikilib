@@ -32,6 +32,7 @@
     "redirectToCommunity": "redirectToCommunity",
     "addPage": "addPage",
     "sortPage": "sortPage",
+    "copyPage": "copyPage",
     "accessPage": "accessPage"
   }
 }

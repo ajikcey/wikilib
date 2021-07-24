@@ -13,13 +13,12 @@ import {
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
-import bridge from "@vkontakte/vk-bridge";
 import {
     Icon24Filter,
     Icon28AddOutline, Icon28InfoOutline,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, handleError, timestampToDate} from "../functions";
+import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
 const Pages = ({
@@ -27,7 +26,6 @@ const Pages = ({
                    accessToken,
                    queryParams,
                    group,
-                   setModalData,
                    pageSort,
                    go,
                    setPageTitle,
@@ -47,15 +45,8 @@ const Pages = ({
          * Получение wiki-страниц сообщества
          * @returns {Promise<void>}
          */
-        async function fetchPages() {
-            await bridge.send("VKWebAppCallAPIMethod", {
-                method: "pages.getTitles",
-                params: {
-                    group_id: group.id,
-                    v: configData.vk_api_version,
-                    access_token: accessToken.access_token
-                }
-            }).then(data => {
+        async function fetchGroupPages() {
+            fetchPages(group.id, accessToken.access_token).then(data => {
                 if (data.response) {
 
                     let f = '';
@@ -96,7 +87,7 @@ const Pages = ({
             });
         }
 
-        fetchPages().then(() => {
+        fetchGroupPages().then(() => {
         });
 
         // eslint-disable-next-line
@@ -155,7 +146,7 @@ const Pages = ({
                     mode="primary"
                     indicator={pages ? pages.length : 0}
                 >
-                    Wiki-страницы</Header>
+                    Страницы</Header>
 
                 <Search
                     placeholder='Поиск страниц'
@@ -196,7 +187,7 @@ const Pages = ({
                             );
                         })}
                     </List>
-                    <Footer>{pageCount} {declOfNum(pageCount, ['wiki-страница', 'wiki-страницы', 'wiki-страниц'])}</Footer>
+                    <Footer>{pageCount} {declOfNum(pageCount, ['страница', 'страницы', 'страниц'])}</Footer>
                 </Fragment>
                 }
             </Group>
