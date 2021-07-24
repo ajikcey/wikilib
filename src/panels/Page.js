@@ -320,13 +320,11 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                         >
                             Редактировать</CellButton>
 
-                        {(!!infoPage) &&
                         <CellButton
                             before={<Icon24Copy/>}
                             onClick={copyPage}
                         >
                             Копировать</CellButton>
-                        }
                     </Fragment>
                     }
                 </Fragment>
