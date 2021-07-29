@@ -89,14 +89,14 @@ const App = withAdaptivity(() => {
                 });
 
                 await storageData.keys.forEach(({key, value}) => {
-                    data[key] = value ? JSON.parse(value) : {};
+                    // data[key] = value ? JSON.parse(value) : {};
                 });
 
-                setUserStatus(data[configData.storage_keys.status]);
-                setAccessToken(data[configData.storage_keys.access_token]);
-                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+                // setUserStatus(data[configData.storage_keys.status]);
+                // setAccessToken(data[configData.storage_keys.access_token]);
+                // setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
-                if (data[configData.storage_keys.status].tokenReceived) {
+                if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
                     if (queryParams.vk_group_id) {
                         fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
                             if (data.response) {
@@ -112,12 +112,10 @@ const App = withAdaptivity(() => {
                                 default_error_msg: 'Error get groups by id'
                             });
                         });
-
-
                     } else {
                         setActivePanel(configData.routes.home);
                     }
-                } else if (data[configData.storage_keys.status].hasSeenIntro) {
+                } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     setActivePanel(configData.routes.token);
                 }
             } catch (e) {
