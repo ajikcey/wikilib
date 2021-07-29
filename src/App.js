@@ -69,10 +69,12 @@ const App = withAdaptivity(() => {
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
 
-    if (queryParams.vk_language === 'ru') {
-        strings.setLanguage('ru');
-    } else {
-        strings.setLanguage('en');
+    if (queryParams && Object.keys(queryParams).length > 0) {
+        if (queryParams.vk_language === 'ru') {
+            strings.setLanguage('ru');
+        } else {
+            strings.setLanguage('en');
+        }
     }
 
     useEffect(() => {
@@ -91,17 +93,17 @@ const App = withAdaptivity(() => {
             const data = {};
 
             try {
-                const storageData = await bridge.send('VKWebAppStorageGet', {
-                    keys: Object.values(configData.storage_keys)
-                });
+                // const storageData = await bridge.send('VKWebAppStorageGet', {
+                //     keys: Object.values(configData.storage_keys)
+                // });
 
-                await storageData.keys.forEach(({key, value}) => {
-                    data[key] = value ? JSON.parse(value) : {};
-                });
-
-                setUserStatus(data[configData.storage_keys.status]);
-                setAccessToken(data[configData.storage_keys.access_token]);
-                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+                // await storageData.keys.forEach(({key, value}) => {
+                //     data[key] = value ? JSON.parse(value) : {};
+                // });
+                //
+                // setUserStatus(data[configData.storage_keys.status]);
+                // setAccessToken(data[configData.storage_keys.access_token]);
+                // setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
                     if (queryParams.vk_group_id) {
