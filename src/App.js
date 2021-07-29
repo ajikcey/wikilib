@@ -29,7 +29,7 @@ import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
 import Version from "./panels/Version";
-import {definePlatform, fetchGroupsById, handleError} from "./functions";
+import {definePlatform, fetchGroupsById, getStrings, handleError} from "./functions";
 import FormAddPage from "./components/FormAddPage";
 import FormEditAccess from "./components/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
@@ -67,6 +67,13 @@ const App = withAdaptivity(() => {
     });
 
     const queryParams = qs.parse(window.location.search.slice(1));
+    let strings = getStrings();
+
+    if (queryParams.vk_language === 'ru') {
+        strings.setLanguage('ru');
+    } else {
+        strings.setLanguage('en');
+    }
 
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
@@ -281,35 +288,38 @@ const App = withAdaptivity(() => {
                         <SplitCol>
                             <View activePanel={activePanel}>
                                 <Landing
-                                    id={configData.routes.landing}/>
+                                    id={configData.routes.landing} strings={strings}/>
                                 <About
-                                    queryParams={queryParams}
+                                    queryParams={queryParams} strings={strings}
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
                                     setModalData={setModalData} app={app} setApp={setApp}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
                                 <Intro
                                     id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
-                                    setUserStatus={setUserStatus} userStatus={userStatus}/>
+                                    setUserStatus={setUserStatus} userStatus={userStatus} strings={strings}/>
                                 <Token
-                                    id={configData.routes.token} fetchToken={fetchToken} snackbarError={snackbar}/>
+                                    id={configData.routes.token} strings={strings}
+                                    fetchToken={fetchToken} snackbarError={snackbar}/>
                                 <Home
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
-                                    groups={groups} setGroups={setGroups}
+                                    groups={groups} setGroups={setGroups} strings={strings}
                                     lastGroups={lastGroups} setLastGroups={setLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
                                     snackbarError={snackbar} lastGroupIds={lastGroupIds}
                                     setLastGroupIds={setLastGroupIds} go={go}/>
                                 <Pages
-                                    pageSort={pageSort}
+                                    pageSort={pageSort} strings={strings}
                                     queryParams={queryParams} setModalData={setModalData}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
+                                    strings={strings}
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
                                 <Version
+                                    strings={strings}
                                     id={configData.routes.wiki_version} content={content} group={group}
                                     accessToken={accessToken} snackbarError={snackbar} go={go}/>
                             </View>

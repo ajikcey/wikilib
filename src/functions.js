@@ -2,6 +2,9 @@ import bridge from "@vkontakte/vk-bridge";
 import configData from "./config.json";
 import {ANDROID, IOS, Snackbar, VKCOM} from "@vkontakte/vkui";
 import {Icon24ErrorCircle} from "@vkontakte/icons";
+import LocalizedStrings from "react-localization";
+import en from "./languages/en.json";
+import ru from "./languages/ru.json";
 
 /**
  * Склонение слов в зависимости от числового значения
@@ -339,4 +342,11 @@ export function fetchApp(access_token) {
 export function definePlatform(params) {
     return (['desktop_web'].indexOf(params.vk_platform) > -1 ? VKCOM :
         (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? IOS : ANDROID));
+}
+
+export function getStrings() {
+    return new LocalizedStrings({
+        en: en,
+        ru: ru,
+    })
 }

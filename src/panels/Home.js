@@ -29,6 +29,7 @@ const Home = ({
                   id,
                   accessToken,
                   go,
+                  strings,
                   setGroup,
                   lastGroupIds,
                   groups,
@@ -191,7 +192,7 @@ const Home = ({
                         >
                             <Icon16Clear/>
                         </Link>}>
-                        Недавно просмотренные
+                        {strings.recently_watched}
                     </Header>
 
                     <HorizontalScroll showArrows getScrollToLeft={i => i - 320} getScrollToRight={i => i + 320}>
@@ -217,20 +218,19 @@ const Home = ({
                             })}
                         </div>
                     </HorizontalScroll>
-
                 </Group>
             </Fragment>
             }
 
             <Group>
-                <Header mode="primary" indicator={groups ? groups.count : 0}>Все сообщества</Header>
-                <Search placeholder='Поиск сообществ' onChange={onChangeSearch}/>
+                <Header mode="primary" indicator={groups ? groups.count : 0}>{strings.all_communities}</Header>
+                <Search placeholder={strings.community_search} onChange={onChangeSearch}/>
 
                 {(!groups) && <PanelSpinner/>}
 
                 {(groups && groups.items && groups.items.length < 1) &&
                 <Fragment>
-                    <Placeholder icon={<Icon36Users/>}>Сообществ не найдено</Placeholder>
+                    <Placeholder icon={<Icon36Users/>}>{strings.no_communities_found}</Placeholder>
                 </Fragment>
                 }
 
@@ -266,7 +266,7 @@ const Home = ({
                             size='l'
                             onClick={moreGroups}
                         >
-                            Показать еще</Button>
+                            {strings.show_more}</Button>
                     </Div>
                     }
 

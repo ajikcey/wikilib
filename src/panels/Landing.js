@@ -4,7 +4,7 @@ import {Icon48Services} from "@vkontakte/icons";
 
 import configData from "../config.json";
 
-const Landing = ({id}) => {
+const Landing = ({id, strings}) => {
     return (
         <Panel id={id} centered={true}>
             <Fragment>
@@ -15,16 +15,16 @@ const Landing = ({id}) => {
                         </div>
 
                         <h2>{configData.name}</h2>
-                        <h3>Приложение для работы с wiki-страницам ВКонтакте.</h3>
+                        <h3>{strings.app_desc}</h3>
 
                         <Div>
                             <Button href={configData.app_url} mode='commerce' size='l'>
-                                Открыть приложение
+                                {strings.open_app}
                             </Button>
                         </Div>
                         <Div>
                             <Button href={configData.community_url} mode='tertiary' size='l'>
-                                Перейти в сообщество
+                                {strings.open_community}
                             </Button>
                         </Div>
                     </Div>

@@ -21,7 +21,18 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp} from "../functions";
 
-const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal, app, setApp, queryParams}) => {
+const About = ({
+                   id,
+                   go,
+                   snackbarError,
+                   accessToken,
+                   setModalData,
+                   setActiveModal,
+                   app,
+                   strings,
+                   setApp,
+                   queryParams
+               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     useEffect(() => {
@@ -61,7 +72,7 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >
-                    Сохранено
+                    {strings.saved}
                 </Snackbar>);
             } else {
                 handleError(setSnackbar, go, {}, {
@@ -153,23 +164,23 @@ const About = ({id, go, snackbarError, accessToken, setModalData, setActiveModal
                     </Div>
                 </Group>
                 <Group>
-                    <Header mode='secondary'>О приложении</Header>
+                    <Header mode='secondary'>{strings.about_the_app}</Header>
                     <Div>
-                        {app.items[0].description}
+                        {strings.app_desc}
                     </Div>
                     <CellButton
                         before={<Icon28BookmarkOutline/>}
                         onClick={AddToFavorites}
                     >
-                        Сохранить в закладки</CellButton>
+                        {strings.save_to_bookmarks}</CellButton>
                     <CellButton
                         before={<Icon28UsersOutline/>}
                         onClick={AddToCommunity}
                     >
-                        Добавить в сообщество</CellButton>
+                        {strings.add_to_community}</CellButton>
                 </Group>
                 <Group>
-                    <Header mode='secondary'>Разработчик</Header>
+                    <Header mode='secondary'>{strings.developer}</Header>
                     <CellButton
                         before={<Avatar size={48} src={app.groups[0].photo_100}/>}
                         badge={app.groups[0].verified ? <Icon12Verified/> : null}

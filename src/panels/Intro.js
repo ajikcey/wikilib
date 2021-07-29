@@ -6,7 +6,7 @@ import bridge from "@vkontakte/vk-bridge";
 import configData from "../config.json";
 import {handleError} from "../functions";
 
-const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
+const Intro = ({id, snackbarError, user, strings, userStatus, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     /**
@@ -43,11 +43,10 @@ const Intro = ({id, snackbarError, user, userStatus, setUserStatus, go}) => {
                     <Placeholder
                         style={{maxWidth: 620}}
                         icon={user.photo_200 && <Avatar src={user.photo_200}/>}
-                        header={`Привет, ${user.first_name}!`}
-                        action={<Button mode='commerce' size='l' onClick={viewIntro}>Открыть приложение</Button>}
+                        header={`${strings.hello}, ${user.first_name}!`}
+                        action={<Button mode='commerce' size='l' onClick={viewIntro}>{strings.open_app}</Button>}
                     >
-                        Это приложение, с помощью которого можно посмотреть wiki-страницы во всех своих сообществах
-                        ВКонтакте.
+                        {strings.app_desc}
                     </Placeholder>
                 </Group>
             </Fragment>
