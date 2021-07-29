@@ -89,12 +89,12 @@ const App = withAdaptivity(() => {
                 });
 
                 await storageData.keys.forEach(({key, value}) => {
-                    // data[key] = value ? JSON.parse(value) : {};
+                    data[key] = value ? JSON.parse(value) : {};
                 });
 
-                // setUserStatus(data[configData.storage_keys.status]);
-                // setAccessToken(data[configData.storage_keys.access_token]);
-                // setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+                setUserStatus(data[configData.storage_keys.status]);
+                setAccessToken(data[configData.storage_keys.access_token]);
+                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
                     if (queryParams.vk_group_id) {
