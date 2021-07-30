@@ -98,8 +98,7 @@ const App = withAdaptivity(() => {
                 });
 
                 await storageData.keys.forEach(({key, value}) => {
-                    data[key] = {};
-                    // data[key] = value ? JSON.parse(value) : {};
+                    data[key] = value ? JSON.parse(value) : {};
                 });
 
                 setUserStatus(data[configData.storage_keys.status]);
