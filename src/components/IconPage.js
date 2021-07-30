@@ -1,5 +1,6 @@
 import configData from "../config.json";
-import {Icon28Document} from "@vkontakte/icons";
+import {Icon24Article} from "@vkontakte/icons";
+import {Avatar} from "@vkontakte/vkui";
 
 /**
  * Выбор иконки для wiki-страницы в зависимости от настроек доступа
@@ -22,7 +23,11 @@ const IconPage = (props) => {
         color = '--dynamic_blue';
     }
 
-    return <Icon28Document style={{color: 'var(' + color + ')'}}/>;
+    return (
+        <Avatar mode="app" shadow={false} size={38} style={{backgroundColor: 'var(' + color + ')'}}>
+            <Icon24Article style={{color: '#fff'}}/>
+        </Avatar>
+    );
 }
 
 export default IconPage;

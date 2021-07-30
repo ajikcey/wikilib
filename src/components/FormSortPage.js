@@ -27,6 +27,8 @@ const FormEditAccess = (props) => {
             f = 'edited';
         } else if (field === 2) {
             f = 'views';
+        } else if (field === 3) {
+            f = 'title';
         } else {
             f = 'created';
         }
@@ -60,6 +62,7 @@ const FormEditAccess = (props) => {
                     <option value={0}>По дате создания</option>
                     <option value={1}>По дате редактирования</option>
                     <option value={2}>По просмотрам</option>
+                    <option value={3}>По алфавиту</option>
                 </NativeSelect>
             </FormItem>
             <FormItem top="Направление">

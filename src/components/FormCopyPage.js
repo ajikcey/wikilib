@@ -74,7 +74,7 @@ const FormEditAccess = (props) => {
         setTitle(result.title);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название страницы'});
+            setTitleError({error_msg: 'Введите название'});
             return;
         }
 
@@ -119,7 +119,7 @@ const FormEditAccess = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название страницы'});
+            setTitleError({error_msg: 'Введите название'});
         } else {
             setTitleError(null);
         }

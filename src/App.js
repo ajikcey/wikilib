@@ -155,8 +155,6 @@ const App = withAdaptivity(() => {
      * @param panel
      */
     const go = panel => {
-        console.log(panel);
-
         setSnackbar(false);
         setActivePanel(panel);
     };

@@ -34,9 +34,11 @@ const FormEditAccess = (props) => {
         }).then(data => {
             if (data.response) {
                 // hot update
-                props.pageTitle.who_can_view = who_can_view;
-                props.pageTitle.who_can_edit = who_can_edit;
-                props.setPageTitle(props.pageTitle);
+                let pageTitle = props.pageTitle;
+
+                pageTitle.who_can_view = who_can_view;
+                pageTitle.who_can_edit = who_can_edit;
+                props.setPageTitle(pageTitle);
 
                 props.onCloseModal();
                 props.modalData.setSnackbar(null);

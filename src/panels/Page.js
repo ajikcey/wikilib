@@ -309,7 +309,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                             before={<Icon24ExternalLinkOutline/>}
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
-                            description="+переименовать страницу"
+                            description="+возможность переименовать"
                         >
                             Открыть редактор ВК</CellButton>
                         }

@@ -155,7 +155,7 @@ const Pages = ({
                     onIconClick={onFiltersClick}
                 />
                 <CellButton
-                    before={<Icon28AddOutline/>}
+                    before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
                     onClick={addPage}
                 >
                     Новая страница</CellButton>

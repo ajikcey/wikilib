@@ -29,7 +29,7 @@ const FormAddPage = (props) => {
         setTitle(result.title);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название страницы'});
+            setTitleError({error_msg: 'Введите название'});
             return;
         }
 
@@ -49,7 +49,7 @@ const FormAddPage = (props) => {
                 onClose={() => props.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
             >
-                Страница создана
+                Сохранено
             </Snackbar>);
 
             props.onCloseModal();
@@ -65,7 +65,7 @@ const FormAddPage = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название страницы'});
+            setTitleError({error_msg: 'Введите название'});
         } else {
             setTitleError(null);
         }
