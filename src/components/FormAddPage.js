@@ -29,7 +29,7 @@ const FormAddPage = (props) => {
         setTitle(result.title);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: props.strings.enter_title});
             return;
         }
 
@@ -39,7 +39,7 @@ const FormAddPage = (props) => {
         });
 
         if (page_exists) {
-            setTitleError({error_msg: 'Страница с таким названием уже существует'});
+            setTitleError({error_msg: props.strings.page_exists});
             return;
         }
 
@@ -65,7 +65,7 @@ const FormAddPage = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: props.strings.enter_title});
         } else {
             setTitleError(null);
         }
@@ -74,7 +74,7 @@ const FormAddPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                top="Название"
+                top={props.strings.page_title}
                 style={{paddingLeft: 0, paddingRight: 0}}
                 status={titleError ? 'error' : ''}
                 bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
@@ -88,7 +88,7 @@ const FormAddPage = (props) => {
                 />
             </FormItem>
             <Button size="l" mode="primary" stretched>
-                Создать
+                {props.strings.create}
             </Button>
         </FormLayout>
     );

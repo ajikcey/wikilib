@@ -26,7 +26,18 @@ import {
 } from "../functions";
 import IconPage from "../components/IconPage";
 
-const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, setActiveModal, snackbarError}) => {
+const Page = ({
+                  id,
+                  accessToken,
+                  pageTitle,
+                  setContent,
+                  go,
+                  group,
+                  strings,
+                  setModalData,
+                  setActiveModal,
+                  snackbarError
+              }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -221,7 +232,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                 left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
-                    status={cutDeclNum(pageTitle.views, ['просмотр', 'просмотра', 'просмотров'])}
+                    status={cutDeclNum(pageTitle.views, [strings.view.toLowerCase(), strings.two_views.toLowerCase(), strings.some_views.toLowerCase()])}
                     before={<IconPage page={pageTitle}/>}
                 >
                     {pageTitle.title}
@@ -309,7 +320,7 @@ const Page = ({id, accessToken, pageTitle, setContent, go, group, setModalData, 
                             before={<Icon24ExternalLinkOutline/>}
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
-                            description="+возможность переименовать"
+                            description="+ переименовать"
                         >
                             Открыть редактор ВК</CellButton>
                         }

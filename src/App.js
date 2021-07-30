@@ -219,11 +219,11 @@ const App = withAdaptivity(() => {
             <ModalCard
                 id={configData.modals.addPage}
                 onClose={onCloseModal}
-                header="Создание страницы"
+                header={strings.create_page}
             >
                 <FormAddPage
                     go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group} pages={pages}
-                    onCloseModal={onCloseModal}
+                    onCloseModal={onCloseModal} strings={strings}
                 />
             </ModalCard>
 
@@ -250,20 +250,20 @@ const App = withAdaptivity(() => {
             >
                 <FormEditAccess
                     modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group} setPageTitle={setPageTitle}
+                    go={go} group={group} setPageTitle={setPageTitle} strings={strings}
                 />
             </ModalCard>
 
             <ModalCard
                 id={configData.modals.copyPage}
                 onClose={onCloseModal}
-                header="Копирование станицы"
+                header="Копирование страницы"
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} setPageTitle={setPageTitle}
                     groups={groups} setGroups={setGroups}
-                    groupOffset={groupOffset} setGroupOffset={setGroupOffset}
+                    groupOffset={groupOffset} setGroupOffset={setGroupOffset} strings={strings}
                 />
             </ModalCard>
 
@@ -277,7 +277,7 @@ const App = withAdaptivity(() => {
                     Сортировка</AppModalPageHeader>}
             >
                 <FormSortPage
-                    modalData={modalData} pageSort={pageSort} setPageSort={setPageSort}
+                    modalData={modalData} pageSort={pageSort} setPageSort={setPageSort} strings={strings}
                     onCloseModal={onCloseModal} setSnackbar={setSnackbar} pages={pages} setPages={setPages}
                 />
             </ModalPage>

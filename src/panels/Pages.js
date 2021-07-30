@@ -27,6 +27,7 @@ const Pages = ({
                    queryParams,
                    group,
                    pageSort,
+                   strings,
                    go,
                    setPageTitle,
                    setActiveModal,
@@ -132,7 +133,7 @@ const Pages = ({
                     }}/></PanelHeaderButton> : <PanelHeaderBack onClick={back}/>)}
             >
                 {(!queryParams.vk_group_id) && <PanelHeaderContent
-                    status={cutDeclNum(group.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                    status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                     before={<Avatar size={36} src={group.photo_200}/>}
                 >
                     {group.name}
@@ -146,10 +147,10 @@ const Pages = ({
                     mode="primary"
                     indicator={pages ? pages.length : 0}
                 >
-                    Страницы</Header>
+                    {strings.wiki_pages}</Header>
 
                 <Search
-                    placeholder='Поиск страниц'
+                    placeholder={strings.search_pages}
                     onChange={onChangeSearch}
                     icon={<Icon24Filter/>}
                     onIconClick={onFiltersClick}
@@ -158,12 +159,12 @@ const Pages = ({
                     before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
                     onClick={addPage}
                 >
-                    Новая страница</CellButton>
+                    {strings.new_page}</CellButton>
 
                 {(!pages) && <PanelSpinner/>}
                 {(pages && pages.length < 1) &&
                 <Fragment>
-                    <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>
+                    <Placeholder icon={<Icon32SearchOutline/>}>{strings.no_pages_found}</Placeholder>
                 </Fragment>
                 }
                 {(pages && pages.length > 0) &&
@@ -187,7 +188,7 @@ const Pages = ({
                             );
                         })}
                     </List>
-                    <Footer>{pageCount} {declOfNum(pageCount, ['страница', 'страницы', 'страниц'])}</Footer>
+                    <Footer>{pageCount} {declOfNum(pageCount, [strings.page.toLowerCase(), strings.two_pages.toLowerCase(), strings.some_pages.toLowerCase()])}</Footer>
                 </Fragment>
                 }
             </Group>

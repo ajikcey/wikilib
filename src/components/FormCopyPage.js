@@ -74,7 +74,7 @@ const FormEditAccess = (props) => {
         setTitle(result.title);
 
         if (!result.title) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: props.strings.enter_title});
             return;
         }
 
@@ -88,7 +88,7 @@ const FormEditAccess = (props) => {
         });
 
         if (page_exists) {
-            setTitleError({error_msg: 'Страница с таким названием уже существует'});
+            setTitleError({error_msg: props.strings.page_exists});
             return;
         }
 
@@ -119,7 +119,7 @@ const FormEditAccess = (props) => {
         setTitle(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTitleError({error_msg: 'Введите название'});
+            setTitleError({error_msg: props.strings.enter_title});
         } else {
             setTitleError(null);
         }
@@ -151,7 +151,7 @@ const FormEditAccess = (props) => {
                 </NativeSelect>
             </FormItem>
             <FormItem
-                top="Название"
+                top={props.strings.page_title}
                 status={titleError ? 'error' : ''}
                 bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
                 style={{paddingLeft: 0, paddingRight: 0}}
@@ -165,7 +165,7 @@ const FormEditAccess = (props) => {
             <Spacing size={16}/>
 
             <Button size="l" mode="primary" stretched>
-                Копировать
+                {props.strings.copy}
             </Button>
         </FormLayout>
     );

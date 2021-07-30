@@ -247,7 +247,7 @@ const Home = ({
                                 <Cell
                                     key={group.id} before={<Avatar size={48} src={group.photo_200}/>}
                                     badge={group.verified ? <Icon12Verified/> : null}
-                                    description={cutDeclNum(group.members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                                    description={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                                     onClick={() => {
                                         selectGroup(group)
                                     }}

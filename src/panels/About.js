@@ -143,7 +143,7 @@ const About = ({
                                 color: 'var(--text_secondary)'
                             }}
                         >
-                            {cutDeclNum(app.items[0].members_count, ['участник', 'участника', 'участников'])}
+                            {cutDeclNum(app.items[0].members_count, [strings.app_user.toLowerCase(), strings.two_app_users.toLowerCase(), strings.some_app_users.toLowerCase()])}
                         </Text>
                         {(app.profiles.length > 0) &&
                         <Fragment>
@@ -157,7 +157,7 @@ const About = ({
                                 size="m"
                                 layout="vertical"
                             >
-                                {cutDeclNum(app.profiles.length, ['друг', 'друга', 'друзей'])}
+                                {cutDeclNum(app.profiles.length, [strings.friend.toLowerCase(), strings.two_friends.toLowerCase(), strings.some_friends.toLowerCase()])}
                             </UsersStack>
                         </Fragment>
                         }
@@ -185,7 +185,7 @@ const About = ({
                         before={<Avatar size={48} src={app.groups[0].photo_100}/>}
                         badge={app.groups[0].verified ? <Icon12Verified/> : null}
                         href={'https://vk.com/' + app.groups[0].screen_name} target='_blank'
-                        description={cutDeclNum(app.groups[0].members_count, ['подписчик', 'подписчика', 'подписчиков'])}
+                        description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                     >
                         {app.groups[0].name}
                     </CellButton>

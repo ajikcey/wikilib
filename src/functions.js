@@ -344,6 +344,10 @@ export function definePlatform(params) {
         (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? IOS : ANDROID));
 }
 
+/**
+ * Localized Strings
+ * @returns {LocalizedStrings}
+ */
 export function getStrings() {
     return new LocalizedStrings({
         en: en,
