@@ -1,5 +1,6 @@
 {
   "app_desc": "Application for working with wiki-pages in VKontakte.",
+  "acquaintance": "This is an application for working with wiki-pages in VKontakte.",
   "open_app": "Open the app",
   "open_community": "Go to community",
   "hello": "Hello",
@@ -12,5 +13,9 @@
   "about_the_app": "About the app",
   "save_to_bookmarks": "Save to bookmarks",
   "add_to_community": "Add to community",
-  "developer": "Developer"
+  "developer": "Developer",
+  "continue": "Continue",
+  "need_token": "For the application to work, you need to give access to communities and wiki-pages.",
+  "access_rights": "Access rights",
+  "grant_access": "Grant access"
 }

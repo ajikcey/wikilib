@@ -31,7 +31,7 @@ const Intro = ({id, snackbarError, user, strings, userStatus, setUserStatus, go}
 
     return (
         <Panel id={id} centered={true}>
-            {(!userStatus && user) &&
+            {(user && (!userStatus || !userStatus.hasSeenIntro)) &&
             <Fragment>
                 <PanelHeader
                     mode="secondary"
@@ -46,7 +46,7 @@ const Intro = ({id, snackbarError, user, strings, userStatus, setUserStatus, go}
                         header={`${strings.hello}, ${user.first_name}!`}
                         action={<Button mode='commerce' size='l' onClick={viewIntro}>{strings.open_app}</Button>}
                     >
-                        {strings.app_desc}
+                        {strings.acquaintance}
                     </Placeholder>
                 </Group>
             </Fragment>

@@ -83,7 +83,7 @@ const App = withAdaptivity(() => {
                 if (typeof data === 'undefined') {
                     // outside VkMiniApp
                     setPopout(null);
-                    setActivePanel(configData.routes.landing);
+                    go(configData.routes.landing);
                 }
             }
         });
@@ -98,7 +98,8 @@ const App = withAdaptivity(() => {
                 });
 
                 await storageData.keys.forEach(({key, value}) => {
-                    data[key] = value ? JSON.parse(value) : {};
+                    data[key] = {};
+                    // data[key] = value ? JSON.parse(value) : {};
                 });
 
                 setUserStatus(data[configData.storage_keys.status]);
@@ -107,25 +108,27 @@ const App = withAdaptivity(() => {
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
                     if (queryParams.vk_group_id) {
-                        fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
-                            if (data.response) {
-                                setGroup(data.response[0]);
-                                setActivePanel(configData.routes.pages);
-                            } else {
-                                handleError(setSnackbar, go, {}, {
-                                    default_error_msg: 'No response get groups by id'
+                        if (data[configData.storage_keys.access_token]) {
+                            fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
+                                if (data.response) {
+                                    setGroup(data.response[0]);
+                                    go(configData.routes.pages);
+                                } else {
+                                    handleError(setSnackbar, go, {}, {
+                                        default_error_msg: 'No response get groups by id'
+                                    });
+                                }
+                            }).catch(e => {
+                                handleError(setSnackbar, go, e, {
+                                    default_error_msg: 'Error get groups by id'
                                 });
-                            }
-                        }).catch(e => {
-                            handleError(setSnackbar, go, e, {
-                                default_error_msg: 'Error get groups by id'
                             });
-                        });
+                        }
                     } else {
-                        setActivePanel(configData.routes.home);
+                        go(configData.routes.home);
                     }
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
-                    setActivePanel(configData.routes.token);
+                    go(configData.routes.token);
                 }
             } catch (e) {
                 handleError(setSnackbar, go, e, {
@@ -153,6 +156,8 @@ const App = withAdaptivity(() => {
      * @param panel
      */
     const go = panel => {
+        console.log(panel);
+
         setSnackbar(false);
         setActivePanel(panel);
     };
@@ -182,7 +187,7 @@ const App = withAdaptivity(() => {
                         value: JSON.stringify(userStatus)
                     });
 
-                    setActivePanel(configData.routes.home); // route after get token
+                    go(configData.routes.home); // route after get token
                 } else {
                     handleError(setSnackbar, go, {}, {
                         data: data,

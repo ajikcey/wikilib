@@ -52,31 +52,33 @@ const Home = ({
          * @returns {Promise<void>}
          */
         async function fetchLastGroups() {
-            if (lastGroupIds.length > 0) {
-                fetchGroupsById(lastGroupIds, accessToken.access_token).then(data => {
-                    if (data.response) {
-                        setLastGroups(data.response);
-                    } else {
-                        handleError(setSnackbar, go, {}, {
-                            default_error_msg: 'No response get groups by id'
+            return new Promise((resolve) => {
+                if (lastGroupIds.length > 0) {
+                    fetchGroupsById(lastGroupIds, accessToken.access_token).then(data => {
+                        if (data.response) {
+                            setLastGroups(data.response);
+                            resolve();
+                        } else {
+                            handleError(setSnackbar, go, {}, {
+                                default_error_msg: 'No response get groups by id'
+                            });
+                        }
+                    }).catch(e => {
+                        handleError(setSnackbar, go, e, {
+                            default_error_msg: 'Error get groups by id'
                         });
-                    }
-                }).catch(e => {
-                    handleError(setSnackbar, go, e, {
-                        default_error_msg: 'Error get groups by id'
                     });
-                });
-            } else {
-                setLastGroups([]);
-            }
-        }
-
-        if (!groups) {
-            moreGroups().then(() => {
+                } else {
+                    setLastGroups([]);
+                    resolve();
+                }
             });
         }
 
-        fetchLastGroups().then(() => {
+        fetchLastGroups().then(()=>{
+            if (!groups) {
+                moreGroups().then();
+            }
         });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
