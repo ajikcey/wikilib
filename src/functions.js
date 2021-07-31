@@ -186,6 +186,7 @@ export function handleError(setSnackbar, go, e, options) {
         if (e.error_data.error_reason) {
             if (typeof e.error_data.error_reason === 'object') {
                 if ([
+                    'User authorization failed: invalid session.',
                     'User authorization failed: access_token has expired.',
                     'User authorization failed: access_token was given to another ip address.'
                 ].indexOf(e.error_data.error_reason.error_msg) > -1) {
@@ -198,6 +199,7 @@ export function handleError(setSnackbar, go, e, options) {
             }
         } else if (e.error_data.error_msg) {
             if ([
+                'User authorization failed: invalid session.',
                 'User authorization failed: access_token has expired.',
                 'User authorization failed: access_token was given to another ip address.'
             ].indexOf(e.error_data.error_msg) > -1) {
