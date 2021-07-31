@@ -21,7 +21,7 @@ import {
     cutDeclNum,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
-    fetchVersion, handleError,
+    fetchVersion, handleError, nameAccess,
     timestampToDate
 } from "../functions";
 import IconPage from "../components/IconPage";
@@ -137,27 +137,7 @@ const Page = ({
         setSnackbar(<Snackbar
             onClose={() => setSnackbar(null)}
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-        >
-            Скопировано в буфер обмена
-        </Snackbar>);
-    }
-
-    /**
-     * Название уровня доступа
-     * @param key
-     * @returns {string}
-     */
-    const nameAccess = (key) => {
-        switch (key) {
-            case configData.wiki_access.staff:
-                return "Только руководители";
-            case configData.wiki_access.member:
-                return "Только участники";
-            case configData.wiki_access.all:
-                return "Все";
-            default:
-                return "";
-        }
+        >{strings.copied_to_clipboard}</Snackbar>);
     }
 
     /**
@@ -245,15 +225,12 @@ const Page = ({
                         <TabsItem
                             onClick={() => setTab('info')}
                             selected={tab === 'info'}
-                        >
-                            Информация
-                        </TabsItem>
+                        >{strings.info}</TabsItem>
+
                         <TabsItem
                             onClick={() => setTab('history')}
                             selected={tab === 'history'}
-                        >
-                            История
-                        </TabsItem>
+                        >{strings.change_history}</TabsItem>
                     </HorizontalScroll>
                 </Tabs>
 
@@ -269,7 +246,7 @@ const Page = ({
                             before={<Icon24Linked width={28} height={28}/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
-                            <InfoRow header="Ссылка на страницу">
+                            <InfoRow header={strings.wiki_link}>
                                 <Link
                                     href={calcLink(pageTitle.id, pageTitle.group_id, true)}
                                     target='_blank'
@@ -284,7 +261,7 @@ const Page = ({
                             >
                                 <Avatar size={32} src={editor.photo_200}/></Link>}
                         >
-                            <InfoRow header="Последнее изменение">
+                            <InfoRow header={strings.last_modified}>
                                 {timestampToDate(pageTitle.edited)}
                             </InfoRow>
                         </SimpleCell>
@@ -295,7 +272,7 @@ const Page = ({
                             >
                                 <Avatar size={32} src={creator.photo_200}/></Link>}
                         >
-                            <InfoRow header="Создано">
+                            <InfoRow header={strings.date_created}>
                                 {timestampToDate(pageTitle.created)}
                             </InfoRow>
                         </SimpleCell>
@@ -303,15 +280,14 @@ const Page = ({
                         <Spacing separator size={16}/>
 
                         <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_view)}
+                            indicator={nameAccess(pageTitle.who_can_view, strings)}
                             onClick={settingAccessPage}
-                        >
-                            Просмотр</SimpleCell>
+                        >{strings.view}</SimpleCell>
+
                         <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_edit)}
+                            indicator={nameAccess(pageTitle.who_can_edit, strings)}
                             onClick={settingAccessPage}
-                        >
-                            Редактирование</SimpleCell>
+                        >{strings.editing}</SimpleCell>
 
                         <Spacing separator size={16}/>
 
@@ -320,22 +296,19 @@ const Page = ({
                             before={<Icon24ExternalLinkOutline/>}
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
-                            description="+ переименовать"
-                        >
-                            Открыть редактор ВК</CellButton>
+                            description={'+ ' + strings.rename}
+                        >{strings.open_vk_editor}</CellButton>
                         }
 
                         <CellButton
                             before={<Icon24Write/>}
                             onClick={editPage}
-                        >
-                            Редактировать</CellButton>
+                        >{strings.edit}</CellButton>
 
                         <CellButton
                             before={<Icon24Copy/>}
                             onClick={copyPage}
-                        >
-                            Копировать</CellButton>
+                        >{strings.copy}</CellButton>
                     </Fragment>
                     }
                 </Fragment>
@@ -345,7 +318,7 @@ const Page = ({
                 <Fragment>
                     {(!history) && <PanelSpinner/>}
                     {(history && history.length < 1) &&
-                    <Placeholder icon={<Icon32SearchOutline/>}>Не найдено</Placeholder>}
+                    <Placeholder icon={<Icon32SearchOutline/>}>{strings.no_records_found}</Placeholder>}
                     {(history && history.length > 0) &&
                     <Fragment>
                         {history.map((item) => {
@@ -363,7 +336,7 @@ const Page = ({
                                 </SimpleCell>
                             );
                         })}
-                        <Footer>{history.length} {declOfNum(history.length, ['изменение', 'изменения', 'изменений'])}</Footer>
+                        <Footer>{history.length} {declOfNum(history.length, [strings.record.toLowerCase(), strings.two_records.toLowerCase(), strings.some_records.toLowerCase()])}</Footer>
                     </Fragment>
                     }
                 </Fragment>

@@ -258,7 +258,7 @@ const Home = ({
                         })}
                     </List>
                     {(end) &&
-                    <Footer>{groupCount} {declOfNum(groupCount, ['сообщество', 'сообщества', 'сообществ'])}</Footer>
+                    <Footer>{groupCount} {declOfNum(groupCount, [strings.community.toLowerCase(), strings.two_communities.toLowerCase(), strings.some_communities.toLowerCase()])}</Footer>
                     }
                     {(!end) &&
                     <Div>

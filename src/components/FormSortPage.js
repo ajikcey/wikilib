@@ -57,27 +57,27 @@ const FormEditAccess = (props) => {
 
     return (
         <FormLayout id='formSortPage' onSubmit={onSubmit}>
-            <FormItem top="Сортировать">
+            <FormItem top={props.strings.sorting_field}>
                 <NativeSelect name='field' onChange={onChangeField} defaultValue={field}>
-                    <option value={0}>По дате создания</option>
-                    <option value={1}>По дате редактирования</option>
-                    <option value={2}>По просмотрам</option>
-                    <option value={3}>По алфавиту</option>
+                    <option value={0}>{props.strings.sort_by_creation_date}</option>
+                    <option value={1}>{props.strings.sort_by_editing_date}</option>
+                    <option value={2}>{props.strings.sort_by_views}</option>
+                    <option value={3}>{props.strings.sort_by_title}</option>
                 </NativeSelect>
             </FormItem>
-            <FormItem top="Направление">
+            <FormItem top={props.strings.sorting_direction}>
                 <SliderSwitch
                     onSwitch={onSwitchDirection}
                     name='direction'
                     activeValue={direction ? direction : 0}
                     options={[
-                        {value: 0, name: 'По убыванию'},
-                        {value: 1, name: 'По возрастанию'},
+                        {value: 0, name: props.strings.descending},
+                        {value: 1, name: props.strings.ascending},
                     ]}
                 />
             </FormItem>
             <FormItem>
-                <Button size="l" mode="primary" stretched>Применить</Button>
+                <Button size="l" mode="primary" stretched>{props.strings.apply}</Button>
             </FormItem>
         </FormLayout>
     );

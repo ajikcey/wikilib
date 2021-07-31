@@ -231,13 +231,13 @@ const App = withAdaptivity(() => {
                 id={configData.modals.redirectToCommunity}
                 onClose={onCloseModal}
                 icon={<Icon56CheckCircleOutline fill='var(--dynamic_green)'/>}
-                header="Приложение установлено"
-                subheader="Перейдите в приложение, установленное в сообществе."
+                header={strings.app_installed}
+                subheader={strings.app_installed_subheader}
                 actions={
                     <Button
                         href={'https://vk.com/app' + configData.app_id + '_-' + modalData.group_id}
                         target='_blank' size="l" mode="primary" stretched>
-                        Перейти
+                        {strings.open_app}
                     </Button>
                 }
             >
@@ -246,7 +246,7 @@ const App = withAdaptivity(() => {
             <ModalCard
                 id={configData.modals.accessPage}
                 onClose={onCloseModal}
-                header="Доступ к странице"
+                header={strings.accessing_page}
             >
                 <FormEditAccess
                     modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
@@ -257,7 +257,7 @@ const App = withAdaptivity(() => {
             <ModalCard
                 id={configData.modals.copyPage}
                 onClose={onCloseModal}
-                header="Копирование страницы"
+                header={strings.copy_page}
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
@@ -274,7 +274,7 @@ const App = withAdaptivity(() => {
                     onClose={onCloseModal}
                     onSubmitFormId='formSortPage'
                 >
-                    Сортировка</AppModalPageHeader>}
+                    {strings.sorting}</AppModalPageHeader>}
             >
                 <FormSortPage
                     modalData={modalData} pageSort={pageSort} setPageSort={setPageSort} strings={strings}

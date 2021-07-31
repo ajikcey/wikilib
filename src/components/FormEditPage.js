@@ -40,9 +40,7 @@ const FromEditPage = (props) => {
             props.setSnackbar(<Snackbar
                 onClose={() => props.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-            >
-                Сохранено
-            </Snackbar>);
+            >{props.strings.saved}</Snackbar>);
 
             props.go(configData.routes.page);
         });
@@ -82,7 +80,7 @@ const FromEditPage = (props) => {
                     size="l"
                     stretched={platform !== VKCOM}
                 >
-                    {props.content.version ? 'Применить данную версию' : 'Сохранить'}
+                    {props.content.version ? 'Применить данную версию' : props.strings.save}
                 </Button>
             </FormItem>
         </FormLayout>

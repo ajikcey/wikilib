@@ -15,7 +15,7 @@ import {fetchUsers, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 import FromEditPage from "../components/FormEditPage";
 
-const Version = ({id, accessToken, content, group, go, snackbarError}) => {
+const Version = ({id, accessToken, content, group, strings, go, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [creator, setCreator] = useState({});
 
@@ -52,7 +52,7 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                 left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
-                    status={(content.version ? 'v.' + content.version : 'текущая версия')}
+                    status={(content.version ? 'v.' + content.version : strings.current_version.toLowerCase())}
                     before={<IconPage page={content}/>}
                 >
                     {content.title}
@@ -67,24 +67,24 @@ const Version = ({id, accessToken, content, group, go, snackbarError}) => {
                     >
                         <Avatar size={32} src={creator.photo_200}/></Link>}
                 >
-                    <InfoRow header="Версия сохранена">
+                    <InfoRow header={strings.version_saved}>
                         {timestampToDate(content.edited)}
                     </InfoRow>
                 </SimpleCell>
 
                 {(platform === VKCOM) &&
                 <CellButton
-                    description="только на пк"
+                    description={strings.only_on_pc}
                     before={<Icon36LinkOutline/>}
                     href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
-                >
-                    Открыть редактор ВК</CellButton>
+                >{strings.open_vk_editor}</CellButton>
                 }
 
                 <FromEditPage
                     content={content}
                     go={go}
+                    strings={strings}
                     accessToken={accessToken}
                     setSnackbar={setSnackbar}
                     group={group}

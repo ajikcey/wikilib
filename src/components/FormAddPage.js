@@ -48,9 +48,7 @@ const FormAddPage = (props) => {
             props.setSnackbar(<Snackbar
                 onClose={() => props.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-            >
-                Сохранено
-            </Snackbar>);
+            >{props.strings.saved}</Snackbar>);
 
             props.onCloseModal();
             props.go(configData.routes.page);

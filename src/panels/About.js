@@ -71,9 +71,7 @@ const About = ({
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >
-                    {strings.saved}
-                </Snackbar>);
+                >{strings.saved}</Snackbar>);
             } else {
                 handleError(setSnackbar, go, {}, {
                     data: data,
@@ -164,7 +162,7 @@ const About = ({
                     </Div>
                 </Group>
                 <Group>
-                    <Header mode='secondary'>{strings.about_the_app}</Header>
+                    <Header mode='secondary'>{strings.about_app}</Header>
                     <Div>
                         {strings.app_desc}
                     </Div>

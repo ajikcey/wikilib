@@ -2,7 +2,7 @@ import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
 import {Button, FormItem, FormLayout, Radio, Snackbar} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {handleError} from "../functions";
+import {handleError, nameAccess} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
 
 /**
@@ -45,9 +45,7 @@ const FormEditAccess = (props) => {
                 props.modalData.setSnackbar(<Snackbar
                     onClose={() => props.modalData.setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >
-                    Сохранено
-                </Snackbar>);
+                >{props.strings.saved}</Snackbar>);
             } else {
                 handleError(props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save access'
@@ -70,55 +68,49 @@ const FormEditAccess = (props) => {
 
     return (
         <FormLayout onSubmit={onSubmit}>
-            <FormItem top="Кто может просматривать эту страницу?">
+            <FormItem top={props.strings.who_can_view}>
                 <Radio
                     name="who_can_view"
                     value={configData.wiki_access.all}
                     checked={who_can_view === configData.wiki_access.all}
                     onChange={onChangeWho_can_view}
-                >
-                    Все</Radio>
+                >{nameAccess(configData.wiki_access.all, props.strings)}</Radio>
                 <Radio
                     name="who_can_view"
                     value={configData.wiki_access.member}
                     checked={who_can_view === configData.wiki_access.member}
                     onChange={onChangeWho_can_view}
-                >
-                    Только участники</Radio>
+                >{nameAccess(configData.wiki_access.member, props.strings)}</Radio>
                 <Radio
                     name="who_can_view"
                     value={configData.wiki_access.staff}
                     checked={who_can_view === configData.wiki_access.staff}
                     onChange={onChangeWho_can_view}
-                >
-                    Только руководители</Radio>
+                >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
-            <FormItem top="Кто может редактировать эту страницу?">
+            <FormItem top={props.strings.who_can_edit}>
                 <Radio
                     name="who_can_edit"
                     value={configData.wiki_access.all}
                     checked={who_can_edit === configData.wiki_access.all}
                     onChange={onChangeWho_can_edit}
                     disabled={props.group && props.group.is_closed > 0}
-                >
-                    Все</Radio>
+                >{nameAccess(configData.wiki_access.all, props.strings)}</Radio>
                 <Radio
                     name="who_can_edit"
                     value={configData.wiki_access.member}
                     checked={who_can_edit === configData.wiki_access.member}
                     onChange={onChangeWho_can_edit}
-                >
-                    Только участники</Radio>
+                >{nameAccess(configData.wiki_access.member, props.strings)}</Radio>
                 <Radio
                     name="who_can_edit"
                     value={configData.wiki_access.staff}
                     checked={who_can_edit === configData.wiki_access.staff}
                     onChange={onChangeWho_can_edit}
-                >
-                    Только руководители</Radio>
+                >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
             <Button size="l" mode="primary" stretched>
-                Сохранить
+                {props.strings.save}
             </Button>
         </FormLayout>
     );
