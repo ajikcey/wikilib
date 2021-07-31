@@ -130,7 +130,7 @@ const FormEditAccess = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                top="Сообщество"
+                top={props.strings.community}
                 style={{paddingLeft: 0, paddingRight: 0}}>
                 <NativeSelect
                     onChange={onChangeGroup}
