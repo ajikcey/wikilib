@@ -85,7 +85,7 @@ const FormAddPage = (props) => {
                     value={title}
                 />
             </FormItem>
-            <Button size="l" mode="primary" stretched>
+            <Button type='submit' size="l" mode="primary" stretched>
                 {props.strings.create}
             </Button>
         </FormLayout>

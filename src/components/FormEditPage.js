@@ -77,6 +77,7 @@ const FromEditPage = (props) => {
             </FormItem>
             <FormItem style={{textAlign: 'right'}}>
                 <Button
+                    type='submit'
                     size="l"
                     stretched={platform !== VKCOM}
                 >

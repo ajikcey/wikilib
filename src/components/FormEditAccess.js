@@ -109,7 +109,7 @@ const FormEditAccess = (props) => {
                     onChange={onChangeWho_can_edit}
                 >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
-            <Button size="l" mode="primary" stretched>
+            <Button type='submit' size="l" mode="primary" stretched>
                 {props.strings.save}
             </Button>
         </FormLayout>

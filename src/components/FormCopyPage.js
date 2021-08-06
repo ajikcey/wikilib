@@ -162,7 +162,7 @@ const FormEditAccess = (props) => {
 
             <Spacing size={16}/>
 
-            <Button size="l" mode="primary" stretched>
+            <Button type='submit' size="l" mode="primary" stretched>
                 {props.strings.copy}
             </Button>
         </FormLayout>
