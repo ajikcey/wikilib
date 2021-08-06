@@ -17,7 +17,6 @@ import {
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {
-    copyToClipboard,
     cutDeclNum,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
@@ -25,6 +24,7 @@ import {
     timestampToDate
 } from "../functions";
 import IconPage from "../components/IconPage";
+import bridge from "@vkontakte/vk-bridge";
 
 const Page = ({
                   id,
@@ -132,12 +132,27 @@ const Page = ({
      * Копирование ссылку на wiki-страницу
      */
     const copy = () => {
-        copyToClipboard(calcLink(pageTitle.id, pageTitle.group_id));
+        bridge.send("VKWebAppCopyText", {text: calcLink(pageTitle.id, pageTitle.group_id)}).then((data) => {
+            if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'}).then();
+                }
 
-        setSnackbar(<Snackbar
-            onClose={() => setSnackbar(null)}
-            before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-        >{strings.copied_to_clipboard}</Snackbar>);
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >{strings.copied_to_clipboard}</Snackbar>);
+            } else {
+                handleError(setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No result VKWebAppCopyText'
+                });
+            }
+        }).catch((e) => {
+            handleError(setSnackbar, go, e, {
+                default_error_msg: 'Error VKWebAppCopyText'
+            });
+        });
     }
 
     /**
