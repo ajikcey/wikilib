@@ -61,26 +61,26 @@ const Page = ({
                             setEditor(data.response[0]); // creator_id == editor_id
                         }
                     } else {
-                        handleError(setSnackbar, go, {}, {
+                        handleError(strings, setSnackbar, go, {}, {
                             data: data,
                             default_error_msg: 'No response get users'
                         });
                     }
                 }).catch(e => {
-                    handleError(setSnackbar, go, e, {
+                    handleError(strings, setSnackbar, go, e, {
                         default_error_msg: 'Error get users'
                     });
                 });
 
                 setInfoPage(data.response);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No response get page'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get page'
             });
         });
@@ -91,7 +91,7 @@ const Page = ({
             } else {
                 setHistory([]);
 
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No response get history'
                 });
@@ -99,7 +99,7 @@ const Page = ({
         }).catch(e => {
             setHistory([]);
 
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get history'
             });
         });
@@ -143,13 +143,13 @@ const Page = ({
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >{strings.copied_to_clipboard}</Snackbar>);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No result VKWebAppCopyText'
                 });
             }
         }).catch((e) => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error VKWebAppCopyText'
             });
         });
@@ -174,13 +174,13 @@ const Page = ({
                 });
                 go(configData.routes.wiki_version);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No response get version'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get version'
             });
         });

@@ -145,12 +145,13 @@ export function fetchUsers(user_ids, access_token) {
 
 /**
  * Обработка ошибок
+ * @param strings
  * @param setSnackbar
  * @param go
  * @param e
  * @param options
  */
-export function handleError(setSnackbar, go, e, options) {
+export function handleError(strings, setSnackbar, go, e, options) {
     let error_msg = options.default_error_msg;
 
     if (e) {
@@ -162,19 +163,22 @@ export function handleError(setSnackbar, go, e, options) {
     }
 
     if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
-        bridge.send('VKWebAppTapticNotificationOccurred', {type: 'error'}).then(() => {
-        });
+        bridge.send('VKWebAppTapticNotificationOccurred', {type: 'error'}).then();
     }
 
     if (e.error_data) {
         if (e.error_data.error_reason) {
             if (typeof e.error_data.error_reason === 'object') {
-                if ([
-                    'User authorization failed: invalid session.',
-                    'User authorization failed: access_token has expired.',
-                    'User authorization failed: access_token was given to another ip address.'
-                ].indexOf(e.error_data.error_reason.error_msg) > -1) {
-                    go(configData.routes.token); // refresh token
+                if (e.error_data.error_reason.error_code === 5) {
+                    go(configData.routes.token);
+                } else if (e.error_data.error_reason.error_code === 6) {
+                    error_msg = strings.too_many_requests_per_second;
+                } else if (e.error_data.error_reason.error_code === 119) {
+                    error_msg = strings.invalid_title;
+                } else if (e.error_data.error_reason.error_code === 140) {
+                    error_msg = strings.page_not_found;
+                } else if (e.error_data.error_reason.error_code === 141) {
+                    error_msg = strings.no_access_to_page;
                 } else if (e.error_data.error_reason.error_msg) {
                     error_msg = e.error_data.error_reason.error_msg;
                 }
@@ -182,14 +186,18 @@ export function handleError(setSnackbar, go, e, options) {
                 error_msg = e.error_data.error_reason; // бывает строкой
             }
         } else if (e.error_data.error_msg) {
-            if ([
-                'User authorization failed: invalid session.',
-                'User authorization failed: access_token has expired.',
-                'User authorization failed: access_token was given to another ip address.'
-            ].indexOf(e.error_data.error_msg) > -1) {
-                go(configData.routes.token); // refresh token
+            if (e.error_data.error_reason.error_code === 5) {
+                go(configData.routes.token);
+            } else if (e.error_data.error_reason.error_code === 6) {
+                error_msg = strings.too_many_requests_per_second;
+            } else if (e.error_data.error_reason.error_code === 119) {
+                error_msg = strings.invalid_title;
+            } else if (e.error_data.error_reason.error_code === 140) {
+                error_msg = strings.page_not_found;
+            } else if (e.error_data.error_reason.error_code === 141) {
+                error_msg = strings.no_access_to_page;
             } else {
-                error_msg = e.error_data.error_msg;
+                error_msg = e.error_data.error_msg; // бывает строкой
             }
         }
     }
@@ -323,6 +331,7 @@ export function fetchApp(access_token) {
 
 /**
  * Определение платформы (VKCOM, IOS, ANDROID)
+ * @param params
  * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
  */
 export function definePlatform(params) {

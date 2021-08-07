@@ -59,12 +59,12 @@ const Home = ({
                             setLastGroups(data.response);
                             resolve();
                         } else {
-                            handleError(setSnackbar, go, {}, {
+                            handleError(strings, setSnackbar, go, {}, {
                                 default_error_msg: 'No response get groups by id'
                             });
                         }
                     }).catch(e => {
-                        handleError(setSnackbar, go, e, {
+                        handleError(strings, setSnackbar, go, e, {
                             default_error_msg: 'Error get groups by id'
                         });
                     });
@@ -106,12 +106,12 @@ const Home = ({
                     setEnd(true);
                 }
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     default_error_msg: 'No response get groups'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get groups'
             });
         });
@@ -131,7 +131,7 @@ const Home = ({
                 value: JSON.stringify([])
             });
         } catch (e) {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error with sending data to Storage'
             });
         }
@@ -163,7 +163,7 @@ const Home = ({
             setGroup(item);
             go(configData.routes.pages);
         } catch (e) {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error with sending data to Storage'
             });
         }

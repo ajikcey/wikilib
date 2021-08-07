@@ -47,12 +47,12 @@ const FormEditAccess = (props) => {
                 props.setGroups(groups);
                 props.setGroupOffset(props.groupOffset);
             } else {
-                handleError(props.modalData.setSnackbar, props.go, {}, {
+                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response get groups'
                 });
             }
         }).catch(e => {
-            handleError(props.modalData.setSnackbar, props.go, e, {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error get groups'
             });
         });
@@ -108,12 +108,12 @@ const FormEditAccess = (props) => {
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >{props.strings.saved}</Snackbar>);
             } else {
-                handleError(props.modalData.setSnackbar, props.go, {}, {
+                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save access'
                 });
             }
         }).catch(e => {
-            handleError(props.modalData.setSnackbar, props.go, e, {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error save access'
             });
         });

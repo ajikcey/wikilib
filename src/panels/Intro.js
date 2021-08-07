@@ -23,7 +23,7 @@ const Intro = ({id, snackbarError, user, strings, userStatus, setUserStatus, go}
             setUserStatus({hasSeenIntro: true});
             go(configData.routes.token);
         } catch (e) {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error with sending data to Storage'
             });
         }

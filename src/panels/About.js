@@ -42,13 +42,13 @@ const About = ({
                 if (data.response) {
                     setApp(data.response);
                 } else {
-                    handleError(setSnackbar, go, {}, {
+                    handleError(strings, setSnackbar, go, {}, {
                         data: data,
                         default_error_msg: 'No response get app'
                     });
                 }
             }).catch(e => {
-                handleError(setSnackbar, go, e, {
+                handleError(strings, setSnackbar, go, e, {
                     default_error_msg: 'Error get app'
                 });
             });
@@ -73,13 +73,13 @@ const About = ({
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >{strings.saved}</Snackbar>);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No result AddToFavorites'
                 });
             }
         }).catch((e) => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error AddToFavorites'
             });
         });

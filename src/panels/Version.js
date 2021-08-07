@@ -27,13 +27,13 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
             if (data.response) {
                 setCreator(data.response[0]);
             } else {
-                handleError(setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No response get users'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get users'
             });
         });

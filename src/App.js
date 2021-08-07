@@ -113,12 +113,12 @@ const App = withAdaptivity(() => {
                                     setGroup(data.response[0]);
                                     go(configData.routes.pages);
                                 } else {
-                                    handleError(setSnackbar, go, {}, {
+                                    handleError(strings, setSnackbar, go, {}, {
                                         default_error_msg: 'No response get groups by id'
                                     });
                                 }
                             }).catch(e => {
-                                handleError(setSnackbar, go, e, {
+                                handleError(strings, setSnackbar, go, e, {
                                     default_error_msg: 'Error get groups by id'
                                 });
                             });
@@ -130,7 +130,7 @@ const App = withAdaptivity(() => {
                     go(configData.routes.token);
                 }
             } catch (e) {
-                handleError(setSnackbar, go, e, {
+                handleError(strings, setSnackbar, go, e, {
                     default_error_msg: 'Error get data from Storage'
                 });
             }
@@ -186,18 +186,18 @@ const App = withAdaptivity(() => {
 
                     go(configData.routes.home); // route after get token
                 } else {
-                    handleError(setSnackbar, go, {}, {
+                    handleError(strings, setSnackbar, go, {}, {
                         data: data,
                         default_error_msg: 'No access_token GetAuthToken'
                     });
                 }
             } catch (e) {
-                handleError(setSnackbar, go, e, {
+                handleError(strings, setSnackbar, go, e, {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
         }).catch(e => {
-            handleError(setSnackbar, go, e, {
+            handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get token'
             });
         });

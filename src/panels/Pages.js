@@ -74,7 +74,7 @@ const Pages = ({
                 } else {
                     setPages([]);
 
-                    handleError(setSnackbar, go, {}, {
+                    handleError(strings, setSnackbar, go, {}, {
                         data: data,
                         default_error_msg: 'No response get pages'
                     });
@@ -82,7 +82,7 @@ const Pages = ({
             }).catch(e => {
                 setPages([]);
 
-                handleError(setSnackbar, go, e, {
+                handleError(strings, setSnackbar, go, e, {
                     default_error_msg: 'Error get pages'
                 });
             });
