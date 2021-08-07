@@ -1,13 +1,11 @@
 # Wikilib
 
-Все wiki-страницы ваших сообществ в одном приложении
+Все wiki-страницы ваших сообществ в одном приложении.
 
-### Использование HTTPS при разработке
+## Troubleshooting
 
-`set HTTPS=true&&npm start`
+If you get an error `User authorization failed: invalid session`, try this comand:
 
-https://vk.com/@vkappsdev-razrabotka-na-lokalnom-servere
-
-### Запустите приложение
-
-`npm start`
+```
+rm ~/.config/configstore/@vkontakte/vk-miniapps-deploy.json
+```
