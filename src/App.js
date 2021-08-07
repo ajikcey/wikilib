@@ -77,6 +77,15 @@ const App = withAdaptivity(() => {
         }
     }
 
+    console.log(window.screen.availHeight, window.innerWidth);
+
+    if (bridge.supports('VKWebAppResizeWindow')) {
+        bridge.send("VKWebAppResizeWindow", {
+            "width": window.innerWidth,
+            "height": window.screen.availHeight - 250
+        }).then();
+    }
+
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
             if (type === 'vk-connect') {
