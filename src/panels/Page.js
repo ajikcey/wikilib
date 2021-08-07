@@ -309,10 +309,12 @@ const Page = ({
                         {(platform === VKCOM) &&
                         <CellButton
                             before={<Icon24ExternalLinkOutline/>}
-                            href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
-                            target='_blank' rel='noreferrer'
                             description={'+ ' + strings.rename}
-                        >{strings.open_vk_editor}</CellButton>
+                        >
+                            <Link
+                                href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
+                                target='_blank' rel='noreferrer'
+                            >{strings.open_vk_editor}</Link></CellButton>
                         }
 
                         <CellButton
