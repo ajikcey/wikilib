@@ -9,6 +9,7 @@ import {
 } from "@vkontakte/vkui";
 import React, {useEffect, useState} from "react";
 import {fetchGroups, fetchPages, handleError, savePage} from "../functions";
+import configData from "../config.json";
 
 /**
  * Форма редактирования настроек доступа wiki-страницы
@@ -75,6 +76,11 @@ const FormEditAccess = (props) => {
 
         if (!result.title) {
             setTitleError({error_msg: props.strings.enter_title});
+            return;
+        }
+
+        if (result.title.length > configData.max_length_title) {
+            setTitleError({error_msg: props.strings.too_long_title});
             return;
         }
 

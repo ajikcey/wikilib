@@ -33,6 +33,11 @@ const FormAddPage = (props) => {
             return;
         }
 
+        if (result.title.length > configData.max_length_title) {
+            setTitleError({error_msg: props.strings.too_long_title});
+            return;
+        }
+
         let page_exists = false;
         props.pages.forEach((value) => {
             if (value.title === result.title) page_exists = true;

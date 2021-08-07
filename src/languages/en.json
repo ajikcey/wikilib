@@ -67,6 +67,7 @@
   "sort_by_views": "By views",
   "sort_by_title": "By title",
   "enter_title": "Enter the title",
+  "too_long_title": "Too long title",
   "page_exists": "A page with the same name already exists",
   "info": "Information",
   "change_history": "Change history",
