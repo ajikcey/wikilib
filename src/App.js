@@ -77,12 +77,10 @@ const App = withAdaptivity(() => {
         }
     }
 
-    console.log(window.screen.availHeight, window.innerWidth);
-
     if (bridge.supports('VKWebAppResizeWindow')) {
         bridge.send("VKWebAppResizeWindow", {
             "width": window.innerWidth,
-            "height": window.screen.availHeight - 250
+            "height": Math.min(Math.max(window.screen.availHeight - 200, 670), 8050)
         }).then();
     }
 
