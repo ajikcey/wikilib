@@ -73,15 +73,16 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
                 </SimpleCell>
 
                 {(platform === VKCOM) &&
-                <CellButton
-                    description={strings.only_on_pc}
-                    before={<Icon36LinkOutline/>}
+                <Link
+                    href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
+                    target='_blank' rel='noreferrer'
                 >
-                    <Link
-                        href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
-                        target='_blank' rel='noreferrer'
-                    >{strings.open_vk_editor}</Link>
-                </CellButton>
+                    <CellButton
+                        description={strings.only_on_pc}
+                        before={<Icon36LinkOutline/>}
+                    >{strings.open_vk_editor}
+                    </CellButton>
+                </Link>
                 }
 
                 <FromEditPage

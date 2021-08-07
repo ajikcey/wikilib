@@ -307,14 +307,15 @@ const Page = ({
                         <Spacing separator size={16}/>
 
                         {(platform === VKCOM) &&
-                        <CellButton
-                            before={<Icon24ExternalLinkOutline/>}
-                            description={'+ ' + strings.rename}
+                        <Link
+                            href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
+                            target='_blank' rel='noreferrer'
                         >
-                            <Link
-                                href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
-                                target='_blank' rel='noreferrer'
-                            >{strings.open_vk_editor}</Link></CellButton>
+                            <CellButton
+                                before={<Icon24ExternalLinkOutline/>}
+                                description={'+ ' + strings.rename}
+                            >{strings.open_vk_editor}</CellButton>
+                        </Link>
                         }
 
                         <CellButton
