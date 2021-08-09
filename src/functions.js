@@ -179,39 +179,35 @@ export function handleError(strings, setSnackbar, go, e, options) {
                     error_msg = strings.page_not_found;
                 } else if (e.error_data.error_reason.error_code === 141) {
                     error_msg = strings.no_access_to_page;
-                } else if (e.error_data.error_reason.error_msg) {
-                    error_msg = e.error_data.error_reason.error_msg;
+                } else {
+                    error_msg = e.error_data.error_reason.error_code + ': ' + e.error_data.error_reason.error_msg;
                 }
             } else {
                 error_msg = e.error_data.error_reason; // бывает строкой
             }
-        } else if (e.error_data.error_msg) {
-            if (e.error_data.error_reason.error_code === 5) {
+        } else if (e.error_data.error_code) {
+            if (e.error_data.error_code === 5) {
                 go(configData.routes.token);
-            } else if (e.error_data.error_reason.error_code === 6) {
+            } else if (e.error_data.error_code === 6) {
                 error_msg = strings.too_many_requests_per_second;
-            } else if (e.error_data.error_reason.error_code === 119) {
+            } else if (e.error_data.error_code === 119) {
                 error_msg = strings.invalid_title;
-            } else if (e.error_data.error_reason.error_code === 140) {
+            } else if (e.error_data.error_code === 140) {
                 error_msg = strings.page_not_found;
-            } else if (e.error_data.error_reason.error_code === 141) {
+            } else if (e.error_data.error_code === 141) {
                 error_msg = strings.no_access_to_page;
             } else {
-                error_msg = e.error_data.error_msg; // бывает строкой
+                error_msg = e.error_data.error_code + ': ' + e.error_data.error_msg;
             }
         }
     }
 
-    error_msg = (error_msg || JSON.stringify(e));
-
-    if (error_msg) {
-        setSnackbar(<Snackbar
-            onClose={() => setSnackbar(null)}
-            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-        >
-            {error_msg}
-        </Snackbar>);
-    }
+    setSnackbar(<Snackbar
+        onClose={() => setSnackbar(null)}
+        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+    >
+        {error_msg || JSON.stringify(e)}
+    </Snackbar>);
 }
 
 /**
