@@ -1,62 +1,24 @@
-import {Icon24CheckCircleOutline} from "@vkontakte/icons";
 import {
     Button,
     FormItem,
     FormLayout,
     Input,
     NativeSelect, PanelSpinner,
-    Snackbar, Spacing
+    Spacing
 } from "@vkontakte/vkui";
-import React, {useEffect, useState} from "react";
-import {fetchGroups, fetchPages, handleError, savePage} from "../functions";
+import React, {useState} from "react";
+import {fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
 import configData from "../config.json";
 
 /**
- * Форма редактирования настроек доступа wiki-страницы
+ * Форма копирования wiki-страницы
  * @returns {JSX.Element}
  * @constructor
  */
-const FormEditAccess = (props) => {
+const FormCopyPage = (props) => {
     const [groupId, setGroupId] = useState(props.modalData.group_id);
     const [title, setTitle] = useState(props.modalData.title);
     const [titleError, setTitleError] = useState(null);
-
-    let groups = props.groups;
-
-    useEffect(() => {
-
-        if (!groups) {
-            moreGroups().then(() => {
-            });
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    /**
-     * Показать еще сообщества
-     * @returns {Promise<void>}
-     */
-    const moreGroups = async function () {
-        fetchGroups(props.groupOffset, props.accessToken.access_token).then(data => {
-            if (data.response) {
-                if (!groups) groups = {};
-                groups.count = data.response.count;
-                groups.items = (groups.items || []).concat(data.response.items);
-
-                props.setGroups(groups);
-                props.setGroupOffset(props.groupOffset);
-            } else {
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
-                    default_error_msg: 'No response get groups'
-                });
-            }
-        }).catch(e => {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
-                default_error_msg: 'Error get groups'
-            });
-        });
-    }
 
     /**
      * Копирование wiki-страницы
@@ -98,23 +60,50 @@ const FormEditAccess = (props) => {
             return;
         }
 
-        savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(data => {
+        savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(async data => {
             if (data.response) {
 
+                if (groupId !== props.modalData.group_id) {
+                    await fetchGroupsById([groupId], props.accessToken.access_token).then(data => {
+                        if (data.response) {
+                            props.setGroup(data.response[0]);
+                        } else {
+                            handleError(props.strings, props.setSnackbar, props.go, {}, {
+                                default_error_msg: 'No response get groups by id'
+                            });
+                        }
+                    }).catch(e => {
+                        handleError(props.strings, props.setSnackbar, props.go, e, {
+                            default_error_msg: 'Error get groups by id'
+                        });
+                    });
+                }
+
+                await fetchPage(data.response, groupId, 0, props.accessToken.access_token).then(data => {
+                    if (data.response) {
+                        props.setPageTitle(data.response);
+                    } else {
+                        handleError(props.strings, props.setSnackbar, props.go, {}, {
+                            data: data,
+                            default_error_msg: 'No response get page'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(props.strings, props.setSnackbar, props.go, e, {
+                        default_error_msg: 'Error get page'
+                    });
+                });
+
                 props.onCloseModal();
-                props.modalData.setSnackbar(null);
-                props.modalData.setSnackbar(<Snackbar
-                    onClose={() => props.modalData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{props.strings.saved}</Snackbar>);
+                props.go(configData.routes.page);
             } else {
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
-                    default_error_msg: 'No response save access'
+                    default_error_msg: 'No response save page'
                 });
             }
         }).catch(e => {
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
-                default_error_msg: 'Error save access'
+                default_error_msg: 'Error save page'
             });
         });
     };
@@ -142,8 +131,8 @@ const FormEditAccess = (props) => {
                     onChange={onChangeGroup}
                     defaultValue={groupId}
                 >
-                    {!groups && <PanelSpinner/>}
-                    {groups && groups.items && groups.items.map((group) => {
+                    {!props.groups && <PanelSpinner/>}
+                    {props.groups && props.groups.items && props.groups.items.map((group) => {
                         return (
                             <option
                                 value={group.id}
@@ -175,4 +164,4 @@ const FormEditAccess = (props) => {
     );
 }
 
-export default FormEditAccess;
+export default FormCopyPage;

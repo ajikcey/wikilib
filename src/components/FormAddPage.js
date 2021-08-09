@@ -1,6 +1,5 @@
 import configData from "../config.json";
-import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, FormItem, FormLayout, Input, Snackbar} from "@vkontakte/vkui";
+import {Button, FormItem, FormLayout, Input} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, handleError, savePage} from "../functions";
 
@@ -48,28 +47,34 @@ const FormAddPage = (props) => {
             return;
         }
 
-        savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(data => {
+        savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(async data => {
+            if (data.response) {
 
-            props.setSnackbar(<Snackbar
-                onClose={() => props.setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-            >{props.strings.saved}</Snackbar>);
-
-            fetchPage(data.response, props.group.id, 0, props.accessToken.access_token).then(data => {
-                if (data.response) {
-                    props.setPageTitle(data.response);
-                    props.onCloseModal();
-                    props.go(configData.routes.page);
-                } else {
-                    handleError(props.strings, props.setSnackbar, props.go, {}, {
-                        data: data,
-                        default_error_msg: 'No response get page'
+                await fetchPage(data.response, props.group.id, 0, props.accessToken.access_token).then(data => {
+                    if (data.response) {
+                        props.setPageTitle(data.response);
+                    } else {
+                        handleError(props.strings, props.setSnackbar, props.go, {}, {
+                            data: data,
+                            default_error_msg: 'No response get page'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(props.strings, props.setSnackbar, props.go, e, {
+                        default_error_msg: 'Error get page'
                     });
-                }
-            }).catch(e => {
-                handleError(props.strings, props.setSnackbar, props.go, e, {
-                    default_error_msg: 'Error get page'
                 });
+
+                props.onCloseModal();
+                props.go(configData.routes.page);
+            } else {
+                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                    default_error_msg: 'No response save page'
+                });
+            }
+        }).catch(e => {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+                default_error_msg: 'Error save page'
             });
         });
     }
