@@ -1,7 +1,7 @@
 import configData from "../config.json";
 import {Button, FormItem, FormLayout, Input} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {fetchPage, handleError, savePage} from "../functions";
+import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 
 /**
  * Форма создания wiki-страницы
@@ -15,7 +15,7 @@ const FormAddPage = (props) => {
     /**
      * Применить данную версию wiki-страницы
      */
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
 
         if (titleError) {
@@ -38,8 +38,12 @@ const FormAddPage = (props) => {
         }
 
         let page_exists = false;
-        props.pages.forEach((value) => {
-            if (value.title === result.title) page_exists = true;
+        await fetchPages(props.group.id, props.accessToken.access_token).then(data => {
+            if (data.response) {
+                data.response.forEach((value) => {
+                    if (value.title === result.title) page_exists = true;
+                });
+            }
         });
 
         if (page_exists) {

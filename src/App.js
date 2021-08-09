@@ -229,7 +229,7 @@ const App = withAdaptivity(() => {
                 header={strings.create_page}
             >
                 <FormAddPage
-                    go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group} pages={pages}
+                    go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group}
                     onCloseModal={onCloseModal} strings={strings} setPageTitle={setPageTitle}
                 />
             </ModalCard>

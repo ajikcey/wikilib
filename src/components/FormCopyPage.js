@@ -24,7 +24,7 @@ const FormCopyPage = (props) => {
      * Копирование wiki-страницы
      * @param e
      */
-    const onSubmit = async function (e) {
+    const onSubmit = async (e) => {
         e.preventDefault();
 
         if (titleError) {
