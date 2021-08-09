@@ -2,7 +2,7 @@ import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
 import {Button, FormItem, FormLayout, Input, Snackbar} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {savePage} from "../functions";
+import {fetchPage, handleError, savePage} from "../functions";
 
 /**
  * Форма создания wiki-страницы
@@ -48,15 +48,29 @@ const FormAddPage = (props) => {
             return;
         }
 
-        savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(() => {
+        savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(data => {
 
             props.setSnackbar(<Snackbar
                 onClose={() => props.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
             >{props.strings.saved}</Snackbar>);
 
-            props.onCloseModal();
-            props.go(configData.routes.page);
+            fetchPage(data.response, props.group.id, 0, props.accessToken.access_token).then(data => {
+                if (data.response) {
+                    props.setPageTitle(data.response);
+                    props.onCloseModal();
+                    props.go(configData.routes.page);
+                } else {
+                    handleError(props.strings, props.setSnackbar, props.go, {}, {
+                        data: data,
+                        default_error_msg: 'No response get page'
+                    });
+                }
+            }).catch(e => {
+                handleError(props.strings, props.setSnackbar, props.go, e, {
+                    default_error_msg: 'Error get page'
+                });
+            });
         });
     }
 
