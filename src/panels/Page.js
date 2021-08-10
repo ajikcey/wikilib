@@ -227,10 +227,10 @@ const Page = ({
                 left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
-                    status={cutDeclNum(pageTitle.views, [strings.view.toLowerCase(), strings.two_views.toLowerCase(), strings.some_views.toLowerCase()])}
+                    status={pageTitle.title}
                     before={<IconPage page={pageTitle}/>}
                 >
-                    {pageTitle.title}
+                    {strings.wiki_page}
                 </PanelHeaderContent>
             </PanelHeader>
 

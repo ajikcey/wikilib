@@ -12,7 +12,7 @@
     flex-shrink: 0;
 }
 
-*,
+.vkuiHeader,
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
