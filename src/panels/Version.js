@@ -52,10 +52,10 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
                 left={<PanelHeaderBack onClick={back}/>}
             >
                 <PanelHeaderContent
-                    status={(content.version ? 'v.' + content.version : strings.current_version.toLowerCase())}
+                    status={content.title}
                     before={<IconPage page={content}/>}
                 >
-                    {content.title}
+                    {strings.editing}
                 </PanelHeaderContent>
             </PanelHeader>
 
