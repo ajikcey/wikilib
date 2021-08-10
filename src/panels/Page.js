@@ -17,7 +17,6 @@ import {
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {
-    cutDeclNum,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
     fetchVersion, handleError, nameAccess,
