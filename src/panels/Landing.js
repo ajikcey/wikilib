@@ -18,7 +18,7 @@ const Landing = ({id, strings}) => {
                         <h3>{strings.app_desc}</h3>
 
                         <Div>
-                            <Button href={configData.app_url} mode='commerce' size='l'>
+                            <Button href={'https://vk.com/app' + configData.app_id} mode='commerce' size='l'>
                                 {strings.open_app}
                             </Button>
                         </Div>
