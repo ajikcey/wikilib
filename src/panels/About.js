@@ -78,10 +78,7 @@ const About = ({
                     default_error_msg: 'No result AddToFavorites'
                 });
             }
-        }).catch((e) => {
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error AddToFavorites'
-            });
+        }).catch(() => {
         });
     }
 
@@ -99,6 +96,7 @@ const About = ({
                 setModalData({group_id: data.group_id});
                 setActiveModal(configData.modals.redirectToCommunity);
             }
+        }).catch(() => {
         });
     }
 
