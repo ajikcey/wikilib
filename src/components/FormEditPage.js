@@ -65,15 +65,27 @@ const FromEditPage = (props) => {
             <FormItem
                 top="Текст"
                 status={textError ? 'error' : ''}
-                bottom={textError && textError.error_msg ? textError.error_msg : ''}
+                bottom={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>{textError && textError.error_msg ? textError.error_msg : ''}</div>
+                        <div>
+                            {text.length + ' / ' + configData.max_length_text}
+                        </div>
+                    </div>
+                }
             >
-                <Textarea
-                    rows={20}
-                    name='text'
-                    placeholder="Введите текст"
-                    onChange={onChangeText}
-                    value={text}
-                />
+                <div
+                    style={{position: 'relative'}}
+                >
+                    <Textarea
+                        rows={20}
+                        name='text'
+                        placeholder="Введите текст"
+                        onChange={onChangeText}
+                        value={text}
+                        maxlength={configData.max_length_text}
+                    />
+                </div>
             </FormItem>
             <FormItem style={{textAlign: 'right'}}>
                 <Button

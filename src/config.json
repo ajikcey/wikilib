@@ -3,6 +3,7 @@
   "app_id": 7896414,
   "max_last_groups": 25,
   "max_length_title": 128,
+  "max_length_text": 16300,
   "window_max_height": 8050,
   "window_min_height": 670,
   "vk_api_version": "5.131",
