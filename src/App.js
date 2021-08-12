@@ -117,6 +117,9 @@ const App = withAdaptivity(() => {
                         if (data[configData.storage_keys.access_token]) {
                             fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
                                 if (data.response) {
+
+                                    setGroups({items: data.response, count: data.response.length}); // список групп для копирования страницы в установленном сообществе
+
                                     setGroup(data.response[0]);
                                     go(configData.routes.pages);
                                 } else {

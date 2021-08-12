@@ -3,7 +3,7 @@ import {
     FormItem,
     FormLayout,
     Input,
-    NativeSelect, PanelSpinner,
+    NativeSelect,
     Spacing
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
@@ -131,7 +131,6 @@ const FormCopyPage = (props) => {
                     onChange={onChangeGroup}
                     defaultValue={groupId}
                 >
-                    {!props.groups && <PanelSpinner/>}
                     {props.groups && props.groups.items && props.groups.items.map((group) => {
                         return (
                             <option
