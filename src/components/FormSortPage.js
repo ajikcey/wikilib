@@ -1,5 +1,6 @@
 import {Button, FormItem, FormLayout, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
+import configData from "../config.json";
 
 /**
  * Форма редактирования настроек сортировки wiki-страницы
@@ -35,10 +36,10 @@ const FormEditAccess = (props) => {
 
         props.pages.sort((a, b) => {
             if (a[f] > b[f]) {
-                return (direction === 'asc' ? 1 : -1);
+                return (direction === configData.directions.asc ? 1 : -1);
             }
             if (a[f] < b[f]) {
-                return (direction === 'asc' ? -1 : 1);
+                return (direction === configData.directions.asc ? -1 : 1);
             }
             return 0;
         });
@@ -69,10 +70,10 @@ const FormEditAccess = (props) => {
                 <SliderSwitch
                     onSwitch={onSwitchDirection}
                     name='direction'
-                    activeValue={direction === 'asc' ? 'asc' : 'desc'}
+                    activeValue={direction === configData.directions.asc ? configData.directions.asc : configData.directions.desc}
                     options={[
-                        {value: 'desc', name: props.strings.descending},
-                        {value: 'asc', name: props.strings.ascending},
+                        {value: configData.directions.desc, name: props.strings.descending},
+                        {value: configData.directions.asc, name: props.strings.ascending},
                     ]}
                 />
             </FormItem>

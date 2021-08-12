@@ -62,10 +62,10 @@ const Pages = ({
 
                     data.response.sort((a, b) => {
                         if (a[f] > b[f]) {
-                            return (pageSort.direction === 'asc' ? 1 : -1);
+                            return (pageSort.direction === configData.directions.asc ? 1 : -1);
                         }
                         if (a[f] < b[f]) {
-                            return (pageSort.direction === 'asc' ? -1 : 1);
+                            return (pageSort.direction === configData.directions.asc ? -1 : 1);
                         }
                         return 0;
                     });
