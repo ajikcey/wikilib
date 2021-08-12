@@ -80,7 +80,7 @@ const App = withAdaptivity(() => {
     if (bridge.supports('VKWebAppResizeWindow')) {
         bridge.send("VKWebAppResizeWindow", {
             "width": window.innerWidth,
-            "height": Math.min(Math.max(window.screen.availHeight - 200, 670), 8050)
+            "height": Math.min(Math.max(window.screen.availHeight - 250, configData.window_min_height), configData.window_max_height)
         }).then();
     }
 
