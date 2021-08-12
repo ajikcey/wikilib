@@ -31,7 +31,7 @@ const FromEditPage = (props) => {
 
         setText(result.text);
         if (!result.text) {
-            setTextError({error_msg: 'Введите текст'});
+            setTextError({error_msg: props.strings.enter_text});
             return;
         }
 
@@ -54,7 +54,7 @@ const FromEditPage = (props) => {
         setText(e.currentTarget.value);
 
         if (!e.currentTarget.value) {
-            setTextError({error_msg: 'Введите текст'});
+            setTextError({error_msg: props.strings.enter_text});
         } else {
             setTextError(null);
         }
@@ -63,7 +63,7 @@ const FromEditPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                top="Текст"
+                top={props.strings.text}
                 status={textError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -80,7 +80,7 @@ const FromEditPage = (props) => {
                     <Textarea
                         rows={20}
                         name='text'
-                        placeholder="Введите текст"
+                        placeholder={props.strings.enter_text}
                         onChange={onChangeText}
                         value={text}
                         maxlength={configData.max_length_text}
@@ -93,7 +93,7 @@ const FromEditPage = (props) => {
                     size="l"
                     stretched={platform !== VKCOM}
                 >
-                    {props.content.version ? 'Применить данную версию' : props.strings.save}
+                    {props.content.version ? props.strings.apply_this_version : props.strings.save}
                 </Button>
             </FormItem>
         </FormLayout>
