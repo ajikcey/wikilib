@@ -355,11 +355,11 @@ export function getStrings() {
 export function nameAccess(key, strings) {
     switch (key) {
         case configData.wiki_access.staff:
-            return strings.all_users;
+            return strings.only_staff;
         case configData.wiki_access.member:
             return strings.only_member;
         case configData.wiki_access.all:
-            return strings.only_staff;
+            return strings.all_users;
         default:
             return "";
     }
