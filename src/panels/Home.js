@@ -214,7 +214,7 @@ const Home = ({
                                             wordBreak: 'break-word'
                                         }}>{group.name}</div>}
                                     >
-                                        <Avatar size={64} src={group.photo_200}/>
+                                        <Avatar size={64} src={group.photo_100}/>
                                     </HorizontalCell>
                                 );
                             })}
@@ -245,7 +245,7 @@ const Home = ({
                             ++groupCount;
                             return (
                                 <Cell
-                                    key={group.id} before={<Avatar size={48} src={group.photo_200}/>}
+                                    key={group.id} before={<Avatar size={48} src={group.photo_100}/>}
                                     badge={group.verified ? <Icon12Verified/> : null}
                                     description={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                                     onClick={() => {

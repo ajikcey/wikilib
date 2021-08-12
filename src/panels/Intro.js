@@ -42,7 +42,7 @@ const Intro = ({id, snackbarError, user, strings, userStatus, setUserStatus, go}
                 <Group>
                     <Placeholder
                         style={{maxWidth: 620}}
-                        icon={user.photo_200 && <Avatar src={user.photo_200}/>}
+                        icon={user.photo_100 && <Avatar src={user.photo_100}/>}
                         header={`${strings.hello}, ${user.first_name}!`}
                         action={<Button mode='commerce' size='l' onClick={viewIntro}>{strings.open_app}</Button>}
                     >

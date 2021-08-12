@@ -136,7 +136,7 @@ export function fetchUsers(user_ids, access_token) {
         method: "users.get",
         params: {
             user_ids: user_ids.join(','),
-            fields: ['photo_200'].join(','),
+            fields: ['photo_100'].join(','),
             v: configData.vk_api_version,
             access_token: access_token
         }

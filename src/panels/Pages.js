@@ -62,10 +62,10 @@ const Pages = ({
 
                     data.response.sort((a, b) => {
                         if (a[f] > b[f]) {
-                            return (pageSort.direction ? 1 : -1);
+                            return (pageSort.direction === 'asc' ? 1 : -1);
                         }
                         if (a[f] < b[f]) {
-                            return (pageSort.direction ? -1 : 1);
+                            return (pageSort.direction === 'asc' ? -1 : 1);
                         }
                         return 0;
                     });
@@ -134,7 +134,7 @@ const Pages = ({
             >
                 {(!queryParams.vk_group_id) && <PanelHeaderContent
                     status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                    before={<Avatar size={36} src={group.photo_200}/>}
+                    before={<Avatar size={36} src={group.photo_100}/>}
                 >
                     {group.name}
                 </PanelHeaderContent>

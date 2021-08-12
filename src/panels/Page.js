@@ -273,7 +273,7 @@ const Page = ({
                             after={<Link
                                 href={'https://vk.com/id' + pageTitle.editor_id} target='_blank'
                             >
-                                <Avatar size={32} src={editor.photo_200}/></Link>}
+                                <Avatar size={32} src={editor.photo_100}/></Link>}
                         >
                             <InfoRow header={strings.last_modified}>
                                 {timestampToDate(pageTitle.edited)}
@@ -284,7 +284,7 @@ const Page = ({
                             after={<Link
                                 href={'https://vk.com/id' + pageTitle.creator_id} target='_blank'
                             >
-                                <Avatar size={32} src={creator.photo_200}/></Link>}
+                                <Avatar size={32} src={creator.photo_100}/></Link>}
                         >
                             <InfoRow header={strings.date_created}>
                                 {timestampToDate(pageTitle.created)}

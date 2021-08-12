@@ -65,7 +65,7 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
                     after={<Link
                         href={'https://vk.com/id' + content.creator_id} target='_blank'
                     >
-                        <Avatar size={32} src={creator.photo_200}/></Link>}
+                        <Avatar size={32} src={creator.photo_100}/></Link>}
                 >
                     <InfoRow header={strings.version_saved}>
                         {timestampToDate(content.edited)}
