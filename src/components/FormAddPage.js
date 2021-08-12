@@ -32,11 +32,6 @@ const FormAddPage = (props) => {
             return;
         }
 
-        if (result.title.length > configData.max_length_title) {
-            setTitleError({error_msg: props.strings.too_long_title});
-            return;
-        }
-
         let page_exists = false;
         await fetchPages(props.group.id, props.accessToken.access_token).then(data => {
             if (data.response) {
@@ -103,14 +98,20 @@ const FormAddPage = (props) => {
                 top={props.strings.page_title}
                 style={{paddingLeft: 0, paddingRight: 0}}
                 status={titleError ? 'error' : ''}
-                bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
+                bottom={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>{titleError && titleError.error_msg ? titleError.error_msg : ''}</div>
+                        <div>
+                            {title.length + ' / ' + configData.max_length_title}
+                        </div>
+                    </div>
+                }
             >
                 <Input
-                    name='title'
                     autoFocus={true}
-                    placeholder=''
                     onChange={onChangeTitle}
                     value={title}
+                    maxlength={configData.max_length_title}
                 />
             </FormItem>
             <Button type='submit' size="l" mode="primary" stretched>

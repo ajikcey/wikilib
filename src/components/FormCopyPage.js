@@ -41,11 +41,6 @@ const FormCopyPage = (props) => {
             return;
         }
 
-        if (result.title.length > configData.max_length_title) {
-            setTitleError({error_msg: props.strings.too_long_title});
-            return;
-        }
-
         let page_exists = false;
         await fetchPages(groupId, props.accessToken.access_token).then(data => {
             if (data.response) {
@@ -145,12 +140,21 @@ const FormCopyPage = (props) => {
             <FormItem
                 top={props.strings.page_title}
                 status={titleError ? 'error' : ''}
-                bottom={titleError && titleError.error_msg ? titleError.error_msg : ''}
+                bottom={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <div>{titleError && titleError.error_msg ? titleError.error_msg : ''}</div>
+                        <div>
+                            {title.length + ' / ' + configData.max_length_title}
+                        </div>
+                    </div>
+                }
                 style={{paddingLeft: 0, paddingRight: 0}}
             >
                 <Input
                     onChange={onChangeTitle}
                     value={title}
+                    autoFocus={true}
+                    maxlength={configData.max_length_title}
                 />
             </FormItem>
 

@@ -154,6 +154,7 @@ const Pages = ({
                     onChange={onChangeSearch}
                     icon={<Icon24Filter/>}
                     onIconClick={onFiltersClick}
+                    maxlength={configData.max_length_title}
                 />
                 <CellButton
                     before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
