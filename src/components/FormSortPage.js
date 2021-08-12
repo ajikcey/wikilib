@@ -35,10 +35,10 @@ const FormEditAccess = (props) => {
 
         props.pages.sort((a, b) => {
             if (a[f] > b[f]) {
-                return (direction ? 1 : -1);
+                return (direction === 'asc' ? 1 : -1);
             }
             if (a[f] < b[f]) {
-                return (direction ? -1 : 1);
+                return (direction === 'asc' ? -1 : 1);
             }
             return 0;
         });
@@ -52,7 +52,7 @@ const FormEditAccess = (props) => {
     };
 
     const onSwitchDirection = function (value) {
-        setDirection(+value);
+        setDirection(value);
     };
 
     return (
@@ -69,10 +69,10 @@ const FormEditAccess = (props) => {
                 <SliderSwitch
                     onSwitch={onSwitchDirection}
                     name='direction'
-                    activeValue={direction ? direction : 0}
+                    activeValue={direction === 'asc' ? 'asc' : 'desc'}
                     options={[
-                        {value: 0, name: props.strings.descending},
-                        {value: 1, name: props.strings.ascending},
+                        {value: 'desc', name: props.strings.descending},
+                        {value: 'asc', name: props.strings.ascending},
                     ]}
                 />
             </FormItem>

@@ -52,7 +52,7 @@ const App = withAdaptivity(() => {
     const [modalData, setModalData] = useState({});
     const [pages, setPages] = useState(null);
     const [app, setApp] = useState(null);
-    const [pageSort, setPageSort] = useState({field: 0, direction: 0});
+    const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
     const [content, setContent] = useState({
         version: 0,
