@@ -24,7 +24,7 @@ const IconPage = (props) => {
     }
 
     return (
-        <Avatar mode="app" shadow={false} size={38} style={{backgroundColor: 'var(' + color + ')'}}>
+        <Avatar mode="app" shadow={false} size={36} style={{backgroundColor: 'var(' + color + ')'}}>
             <Icon24Article style={{color: '#fff'}}/>
         </Avatar>
     );
