@@ -147,12 +147,6 @@ const App = withAdaptivity(() => {
 
             setUser(user);
             setPopout(null);
-
-            bridge.send("VKWebAppRetargetingPixel", {"pixel_code": configData.pixel_code}).then((data) => {
-                console.log(data);
-            }).catch((e) => {
-                console.log(e);
-            });
         }
 
         initData().then();
