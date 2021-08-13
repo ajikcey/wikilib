@@ -38,9 +38,16 @@ const FormAddPage = (props) => {
                 data.response.forEach((value) => {
                     if (value.title === result.title) page_exists = true;
                 });
+            } else {
+                props.onCloseModal();
+                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get pages'
+                });
             }
         }).catch(e => {
-            handleError(props.strings, props.setSnackbar, props.go, e, {
+            props.onCloseModal();
+            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error get pages'
             });
         });
@@ -57,13 +64,13 @@ const FormAddPage = (props) => {
                     if (data.response) {
                         props.setPageTitle(data.response);
                     } else {
-                        handleError(props.strings, props.setSnackbar, props.go, {}, {
+                        handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                             data: data,
                             default_error_msg: 'No response get page'
                         });
                     }
                 }).catch(e => {
-                    handleError(props.strings, props.setSnackbar, props.go, e, {
+                    handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                         default_error_msg: 'Error get page'
                     });
                 });
@@ -71,11 +78,13 @@ const FormAddPage = (props) => {
                 props.onCloseModal();
                 props.go(configData.routes.page);
             } else {
+                props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save page'
                 });
             }
         }).catch(e => {
+            props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error save page'
             });

@@ -2,7 +2,7 @@ import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
 import {Button, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {savePage} from "../functions";
+import {handleError, savePage} from "../functions";
 
 /**
  * Форма редактирования wiki-страницы
@@ -43,6 +43,10 @@ const FromEditPage = (props) => {
             >{props.strings.saved}</Snackbar>);
 
             props.go(configData.routes.page);
+        }).catch(e => {
+            handleError(props.strings, props.setSnackbar, props.go, e, {
+                default_error_msg: 'Error save access'
+            });
         });
     }
 

@@ -50,7 +50,7 @@ const FormCopyPage = (props) => {
             }
         }).catch(e => {
             props.onCloseModal();
-            handleError(props.strings, props.setSnackbar, props.go, e, {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error get pages'
             });
         });
@@ -68,12 +68,12 @@ const FormCopyPage = (props) => {
                         if (data.response) {
                             props.setGroup(data.response[0]);
                         } else {
-                            handleError(props.strings, props.setSnackbar, props.go, {}, {
+                            handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                                 default_error_msg: 'No response get groups by id'
                             });
                         }
                     }).catch(e => {
-                        handleError(props.strings, props.setSnackbar, props.go, e, {
+                        handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                             default_error_msg: 'Error get groups by id'
                         });
                     });
@@ -83,13 +83,13 @@ const FormCopyPage = (props) => {
                     if (data.response) {
                         props.setPageTitle(data.response);
                     } else {
-                        handleError(props.strings, props.setSnackbar, props.go, {}, {
+                        handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                             data: data,
                             default_error_msg: 'No response get page'
                         });
                     }
                 }).catch(e => {
-                    handleError(props.strings, props.setSnackbar, props.go, e, {
+                    handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                         default_error_msg: 'Error get page'
                     });
                 });

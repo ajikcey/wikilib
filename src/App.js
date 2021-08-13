@@ -226,7 +226,7 @@ const App = withAdaptivity(() => {
                 header={strings.create_page}
             >
                 <FormAddPage
-                    go={go} accessToken={accessToken} setSnackbar={setSnackbar} group={group}
+                    modalData={modalData} go={go} accessToken={accessToken} group={group}
                     onCloseModal={onCloseModal} strings={strings} setPageTitle={setPageTitle}
                 />
             </ModalCard>
@@ -254,7 +254,7 @@ const App = withAdaptivity(() => {
             >
                 <FormEditAccess
                     modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group} setPageTitle={setPageTitle} strings={strings} setSnackbar={setSnackbar}
+                    go={go} group={group} setPageTitle={setPageTitle} strings={strings}
                 />
             </ModalCard>
 
@@ -265,7 +265,7 @@ const App = withAdaptivity(() => {
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} setPageTitle={setPageTitle} setSnackbar={setSnackbar}
+                    go={go} setPageTitle={setPageTitle}
                     groups={groups} setGroup={setGroup}
                     groupOffset={groupOffset} setGroupOffset={setGroupOffset} strings={strings}
                 />
@@ -282,7 +282,7 @@ const App = withAdaptivity(() => {
             >
                 <FormSortPage
                     modalData={modalData} pageSort={pageSort} setPageSort={setPageSort} strings={strings}
-                    onCloseModal={onCloseModal} setSnackbar={setSnackbar} pages={pages} setPages={setPages}
+                    onCloseModal={onCloseModal} pages={pages} setPages={setPages}
                 />
             </ModalPage>
         </ModalRoot>

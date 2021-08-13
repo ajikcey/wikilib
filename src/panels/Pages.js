@@ -31,6 +31,7 @@ const Pages = ({
                    go,
                    setPageTitle,
                    setActiveModal,
+                   setModalData,
                    snackbarError,
                    pages,
                    setPages
@@ -88,8 +89,7 @@ const Pages = ({
             });
         }
 
-        fetchGroupPages().then(() => {
-        });
+        fetchGroupPages().then();
 
         // eslint-disable-next-line
     }, []);
@@ -107,6 +107,9 @@ const Pages = ({
      * Создание wiki-страницы
      */
     const addPage = function () {
+        setModalData({
+            setSnackbar: setSnackbar,
+        });
         setActiveModal(configData.modals.addPage);
     }
 

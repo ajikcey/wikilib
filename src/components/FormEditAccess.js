@@ -47,11 +47,13 @@ const FormEditAccess = (props) => {
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >{props.strings.saved}</Snackbar>);
             } else {
+                props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save access'
                 });
             }
         }).catch(e => {
+            props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error save access'
             });
