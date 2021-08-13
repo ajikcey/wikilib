@@ -373,3 +373,14 @@ export function nameAccess(key, strings) {
 export function regexpSearch(str) {
     return new RegExp(str.replace(/(?=\W)/g, '\\'), "i");
 }
+
+/**
+ * Получение ссылки на wiki-страницу
+ * @param page_id
+ * @param group_id
+ * @param protocol
+ * @returns {string}
+ */
+export function calcLink(page_id, group_id, protocol = false) {
+    return (protocol ? 'https://' : '') + 'vk.com/page-' + group_id + '_' + page_id;
+}

@@ -16,6 +16,7 @@ import {
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {
+    calcLink,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
     fetchVersion, handleError, nameAccess,
@@ -113,17 +114,6 @@ const Page = ({
             setSnackbar: setSnackbar,
         });
         setActiveModal(configData.modals.accessPage);
-    }
-
-    /**
-     * Получение ссылки на wiki-страницу
-     * @param page_id
-     * @param group_id
-     * @param protocol
-     * @returns {string}
-     */
-    const calcLink = (page_id, group_id, protocol = false) => {
-        return (protocol ? 'https://' : '') + 'vk.com/page-' + group_id + '_' + page_id;
     }
 
     /**
