@@ -257,7 +257,7 @@ const Page = ({
 
                         <SimpleCell
                             disabled
-                            before={<Icon24Linked width={28} height={28}/>}
+                            before={<Icon24Linked width={32} height={32}/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header={strings.wiki_link}>
@@ -273,7 +273,7 @@ const Page = ({
                             target='_blank'
                         >
                             <SimpleCell
-                                before={<Icon36CalendarOutline width={28} height={28}/>}
+                                before={<Icon36CalendarOutline width={32} height={32}/>}
                                 after={<Avatar size={32} src={editor.photo_100}/>}
                             >
                                 <InfoRow header={strings.last_modified}>
@@ -286,7 +286,7 @@ const Page = ({
                             target='_blank'
                         >
                             <SimpleCell
-                                before={<Icon36CalendarOutline width={28} height={28}/>}
+                                before={<Icon36CalendarOutline width={32} height={32}/>}
                                 after={<Avatar size={32} src={creator.photo_100}/>}
                             >
                                 <InfoRow header={strings.date_created}>
