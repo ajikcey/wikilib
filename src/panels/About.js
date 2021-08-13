@@ -10,7 +10,7 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner, Title, Text, UsersStack, Spacing, Link
+    PanelSpinner, Title, Text, UsersStack, Spacing, SimpleCell
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
@@ -177,17 +177,15 @@ const About = ({
                 </Group>
                 <Group>
                     <Header mode='secondary'>{strings.developer}</Header>
-                    <Link
+
+                    <SimpleCell
                         href={'https://vk.com/' + app.groups[0].screen_name} target='_blank'
+                        before={<Avatar size={48} src={app.groups[0].photo_100}/>}
+                        badge={app.groups[0].verified ? <Icon12Verified/> : null}
+                        description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                     >
-                        <CellButton
-                            before={<Avatar size={48} src={app.groups[0].photo_100}/>}
-                            badge={app.groups[0].verified ? <Icon12Verified/> : null}
-                            description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                        >
-                            {app.groups[0].name}
-                        </CellButton>
-                    </Link>
+                        {app.groups[0].name}
+                    </SimpleCell>
                 </Group>
             </Fragment>
             }
