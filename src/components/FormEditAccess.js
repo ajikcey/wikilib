@@ -91,13 +91,6 @@ const FormEditAccess = (props) => {
             <FormItem top={props.strings.who_can_edit}>
                 <Radio
                     name="who_can_edit"
-                    value={configData.wiki_access.all}
-                    checked={who_can_edit === configData.wiki_access.all}
-                    onChange={onChangeWho_can_edit}
-                    disabled={props.group && props.group.is_closed > 0}
-                >{nameAccess(configData.wiki_access.all, props.strings)}</Radio>
-                <Radio
-                    name="who_can_edit"
                     value={configData.wiki_access.member}
                     checked={who_can_edit === configData.wiki_access.member}
                     onChange={onChangeWho_can_edit}
