@@ -81,7 +81,8 @@ const FormCopyPage = (props) => {
 
                 await fetchPage(data.response, groupId, 0, props.accessToken.access_token).then(data => {
                     if (data.response) {
-                        props.setPageTitle(data.response);
+                        props.onCloseModal();
+                        props.go(configData.routes.pages);
                     } else {
                         handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                             data: data,
@@ -93,9 +94,6 @@ const FormCopyPage = (props) => {
                         default_error_msg: 'Error get page'
                     });
                 });
-
-                props.onCloseModal();
-                props.go(configData.routes.page);
             } else {
                 props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
