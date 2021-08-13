@@ -9,14 +9,14 @@ import {
     PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Counter, PanelHeaderButton
+    Counter, PanelHeaderButton, Button
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import {
     Icon24Filter,
     Icon28AddOutline, Icon28InfoOutline,
-    Icon32SearchOutline,
+    Icon32SearchOutline, Icon48BlockOutline,
 } from "@vkontakte/icons";
 import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
@@ -142,6 +142,18 @@ const Pages = ({
                 {(!!queryParams.vk_group_id) && <Fragment>{configData.name}</Fragment>
                 }
             </PanelHeader>
+            {(group.deactivated) &&
+            <Group>
+                <Placeholder
+                    icon={<Icon48BlockOutline style={{color: 'var(--destructive)'}}/>}
+                    header={strings.access_denied}
+                    action={<Button size="l" onClick={back}>{strings.back}</Button>}
+                >
+                    {strings.group_deactivated}
+                </Placeholder>
+            </Group>
+            }
+            {(!group.deactivated) &&
             <Group>
                 <Header
                     mode="primary"
@@ -154,7 +166,7 @@ const Pages = ({
                     onChange={onChangeSearch}
                     icon={<Icon24Filter/>}
                     onIconClick={onFiltersClick}
-                    maxlength={configData.max_length_title}
+                    maxLength={configData.max_length_title}
                 />
                 <CellButton
                     before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
@@ -193,6 +205,7 @@ const Pages = ({
                 </Fragment>
                 }
             </Group>
+            }
             {snackbar}
         </Panel>
     )

@@ -20,6 +20,7 @@
   "continue": "Continue",
   "need_token": "For the application to work, you need to give access to communities and wiki-pages.",
   "access_rights": "Access rights",
+  "access_denied": "Access denied",
   "grant_access": "Grant access",
   "member": "Member",
   "two_members": "Members",
@@ -58,6 +59,7 @@
   "apply": "Apply",
   "save": "Save",
   "edit": "Edit",
+  "back": "Back",
   "apply_this_version": "Apply this version",
   "sorting_field": "Sorting field",
   "sorting_direction": "Direction",
@@ -90,5 +92,6 @@
   "version_saved": "Version saved",
   "current_version": "Current version",
   "only_on_pc": "Only on PC",
-  "too_many_requests_per_second": "Too many requests per second"
+  "too_many_requests_per_second": "Too many requests per second",
+  "group_deactivated": "Community deleted or blocked"
 }

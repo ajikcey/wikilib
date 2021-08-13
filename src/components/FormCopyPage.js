@@ -154,7 +154,7 @@ const FormCopyPage = (props) => {
                     onChange={onChangeTitle}
                     value={title}
                     autoFocus={true}
-                    maxlength={configData.max_length_title}
+                    maxLength={configData.max_length_title}
                 />
             </FormItem>
 

@@ -111,7 +111,7 @@ const FormAddPage = (props) => {
                     autoFocus={true}
                     onChange={onChangeTitle}
                     value={title}
-                    maxlength={configData.max_length_title}
+                    maxLength={configData.max_length_title}
                 />
             </FormItem>
             <Button type='submit' size="l" mode="primary" stretched>

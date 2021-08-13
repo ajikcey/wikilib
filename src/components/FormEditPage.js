@@ -83,7 +83,7 @@ const FromEditPage = (props) => {
                         placeholder={props.strings.enter_text}
                         onChange={onChangeText}
                         value={text}
-                        maxlength={configData.max_length_text}
+                        maxLength={configData.max_length_text}
                     />
                 </div>
             </FormItem>
