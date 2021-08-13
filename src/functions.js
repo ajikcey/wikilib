@@ -180,7 +180,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
                 } else if (e.error_data.error_reason.error_code === 141) {
                     error_msg = strings.no_access_to_page;
                 } else {
-                    error_msg = e.error_data.error_reason.error_code + ': ' + e.error_data.error_reason.error_msg;
+                    error_msg = e.error_data.error_reason.error_msg + ' (1-' + e.error_data.error_reason.error_code + ')';
                 }
             } else {
                 if (e.error_data.error_code === 1) {
@@ -188,7 +188,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
                 } else if (e.error_data.error_code === 3) {
                     error_msg = strings.connection_lost;
                 } else {
-                    error_msg = e.error_data.error_code + ': ' + e.error_data.error_reason; // бывает строкой
+                    error_msg =  e.error_data.error_reason + ' (2-' + e.error_data.error_code + ')'; // бывает строкой
                 }
             }
         } else if (e.error_data.error_code) {
@@ -203,7 +203,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
             } else if (e.error_data.error_code === 141) {
                 error_msg = strings.no_access_to_page;
             } else {
-                error_msg = e.error_data.error_code + ': ' + e.error_data.error_msg;
+                error_msg = e.error_data.error_msg + ' (3-' + e.error_data.error_code + ')';
             }
         }
     }
