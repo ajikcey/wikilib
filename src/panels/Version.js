@@ -60,17 +60,19 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
             </PanelHeader>
 
             <Group>
-                <SimpleCell
-                    before={<Icon36CalendarOutline/>}
-                    after={<Link
-                        href={'https://vk.com/id' + content.creator_id} target='_blank'
-                    >
-                        <Avatar size={32} src={creator.photo_100}/></Link>}
+                <Link
+                    href={'https://vk.com/id' + content.creator_id}
+                    target='_blank'
                 >
-                    <InfoRow header={strings.version_saved}>
-                        {timestampToDate(content.edited)}
-                    </InfoRow>
-                </SimpleCell>
+                    <SimpleCell
+                        before={<Icon36CalendarOutline/>}
+                        after={<Avatar size={32} src={creator.photo_100}/>}
+                    >
+                        <InfoRow header={strings.version_saved}>
+                            {timestampToDate(content.edited)}
+                        </InfoRow>
+                    </SimpleCell>
+                </Link>
 
                 {(platform === VKCOM) &&
                 <Link

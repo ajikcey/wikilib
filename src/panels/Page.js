@@ -256,6 +256,7 @@ const Page = ({
                     <Fragment>
 
                         <SimpleCell
+                            disabled
                             before={<Icon24Linked width={28} height={28}/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
@@ -267,28 +268,32 @@ const Page = ({
                                     {calcLink(pageTitle.id, pageTitle.group_id)}</Link>
                             </InfoRow>
                         </SimpleCell>
-                        <SimpleCell
-                            before={<Icon36CalendarOutline/>}
-                            after={<Link
-                                href={'https://vk.com/id' + pageTitle.editor_id} target='_blank'
-                            >
-                                <Avatar size={32} src={editor.photo_100}/></Link>}
+                        <Link
+                            href={'https://vk.com/id' + pageTitle.editor_id}
+                            target='_blank'
                         >
-                            <InfoRow header={strings.last_modified}>
-                                {timestampToDate(pageTitle.edited)}
-                            </InfoRow>
-                        </SimpleCell>
-                        <SimpleCell
-                            before={<Icon36CalendarOutline/>}
-                            after={<Link
-                                href={'https://vk.com/id' + pageTitle.creator_id} target='_blank'
+                            <SimpleCell
+                                before={<Icon36CalendarOutline/>}
+                                after={<Avatar size={32} src={editor.photo_100}/>}
                             >
-                                <Avatar size={32} src={creator.photo_100}/></Link>}
+                                <InfoRow header={strings.last_modified}>
+                                    {timestampToDate(pageTitle.edited)}
+                                </InfoRow>
+                            </SimpleCell>
+                        </Link>
+                        <Link
+                            href={'https://vk.com/id' + pageTitle.creator_id}
+                            target='_blank'
                         >
-                            <InfoRow header={strings.date_created}>
-                                {timestampToDate(pageTitle.created)}
-                            </InfoRow>
-                        </SimpleCell>
+                            <SimpleCell
+                                before={<Icon36CalendarOutline/>}
+                                after={<Avatar size={32} src={creator.photo_100}/>}
+                            >
+                                <InfoRow header={strings.date_created}>
+                                    {timestampToDate(pageTitle.created)}
+                                </InfoRow>
+                            </SimpleCell>
+                        </Link>
 
                         <Spacing separator size={16}/>
 
