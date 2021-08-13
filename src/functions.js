@@ -185,6 +185,8 @@ export function handleError(strings, setSnackbar, go, e, options) {
             } else {
                 if (e.error_data.error_code === 1) {
                     error_msg = strings.network_error;
+                } else if (e.error_data.error_code === 3) {
+                    error_msg = strings.connection_lost;
                 } else {
                     error_msg = e.error_data.error_code + ': ' + e.error_data.error_reason; // бывает строкой
                 }
