@@ -11,7 +11,6 @@ import {
     Icon24Linked,
     Icon24Write,
     Icon28CopyOutline,
-    Icon28EditOutline,
     Icon32SearchOutline,
     Icon36CalendarOutline,
 } from "@vkontakte/icons";
@@ -269,7 +268,7 @@ const Page = ({
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
-                            before={<Icon28EditOutline/>}
+                            before={<Icon36CalendarOutline/>}
                             after={<Link
                                 href={'https://vk.com/id' + pageTitle.editor_id} target='_blank'
                             >
