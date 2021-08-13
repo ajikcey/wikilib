@@ -142,7 +142,7 @@ const Pages = ({
                 {(!!queryParams.vk_group_id) && <Fragment>{configData.name}</Fragment>
                 }
             </PanelHeader>
-            {(group.deactivated) &&
+            {(!!group.deactivated) &&
             <Group>
                 <Placeholder
                     icon={<Icon48BlockOutline style={{color: 'var(--destructive)'}}/>}
