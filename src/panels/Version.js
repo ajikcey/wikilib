@@ -2,13 +2,12 @@ import React, {useEffect, useState} from 'react';
 
 import {
     Avatar,
-    CellButton,
-    Group, InfoRow, Link,
+    Group, InfoRow,
     Panel, PanelHeader, PanelHeaderBack, PanelHeaderContent, SimpleCell, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
-    Icon36CalendarOutline, Icon36LinkOutline,
+    Icon28CalendarOutline, Icon28LinkCircleOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {fetchUsers, handleError, timestampToDate} from "../functions";
@@ -60,31 +59,24 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
             </PanelHeader>
 
             <Group>
-                <Link
+                <SimpleCell
                     href={'https://vk.com/id' + content.creator_id}
                     target='_blank'
+                    before={<Icon28CalendarOutline/>}
+                    after={<Avatar size={32} src={creator.photo_100}/>}
                 >
-                    <SimpleCell
-                        before={<Icon36CalendarOutline/>}
-                        after={<Avatar size={32} src={creator.photo_100}/>}
-                    >
-                        <InfoRow header={strings.version_saved}>
-                            {timestampToDate(content.edited)}
-                        </InfoRow>
-                    </SimpleCell>
-                </Link>
+                    <InfoRow header={strings.version_saved}>
+                        {timestampToDate(content.edited)}
+                    </InfoRow>
+                </SimpleCell>
 
                 {(platform === VKCOM) &&
-                <Link
+                <SimpleCell
                     href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
-                >
-                    <CellButton
-                        description={strings.only_on_pc}
-                        before={<Icon36LinkOutline/>}
-                    >{strings.open_vk_editor}
-                    </CellButton>
-                </Link>
+                    before={<Icon28LinkCircleOutline/>}
+                >{strings.open_vk_editor}
+                </SimpleCell>
                 }
 
                 <FromEditPage

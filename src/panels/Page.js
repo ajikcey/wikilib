@@ -8,11 +8,9 @@ import {
 
 import {
     Icon24CheckCircleOutline, Icon24Copy, Icon24ExternalLinkOutline,
-    Icon24Linked,
-    Icon24Write,
+    Icon24Write, Icon28CalendarOutline, Icon28ChainOutline,
     Icon28CopyOutline,
     Icon32SearchOutline,
-    Icon36CalendarOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {
@@ -119,7 +117,9 @@ const Page = ({
     /**
      * Копирование ссылку на wiki-страницу
      */
-    const copy = () => {
+    const copy = (e) => {
+        e.preventDefault();
+
         bridge.send("VKWebAppCopyText", {text: calcLink(pageTitle.id, pageTitle.group_id)}).then((data) => {
             if (data.result === true) {
                 if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
@@ -244,10 +244,9 @@ const Page = ({
                     {!(infoPage && creator && editor) && <PanelSpinner/>}
                     {(infoPage && creator && editor) &&
                     <Fragment>
-
                         <SimpleCell
                             disabled
-                            before={<Icon24Linked width={32} height={32}/>}
+                            before={<Icon28ChainOutline/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header={strings.wiki_link}>
@@ -255,35 +254,30 @@ const Page = ({
                                     href={calcLink(pageTitle.id, pageTitle.group_id, true)}
                                     target='_blank'
                                 >
-                                    {calcLink(pageTitle.id, pageTitle.group_id)}</Link>
+                                    {calcLink(pageTitle.id, pageTitle.group_id)}
+                                </Link>
                             </InfoRow>
                         </SimpleCell>
-                        <Link
+                        <SimpleCell
                             href={'https://vk.com/id' + pageTitle.editor_id}
                             target='_blank'
+                            before={<Icon28CalendarOutline/>}
+                            after={<Avatar size={32} src={editor.photo_100}/>}
                         >
-                            <SimpleCell
-                                before={<Icon36CalendarOutline width={32} height={32}/>}
-                                after={<Avatar size={32} src={editor.photo_100}/>}
-                            >
-                                <InfoRow header={strings.last_modified}>
-                                    {timestampToDate(pageTitle.edited)}
-                                </InfoRow>
-                            </SimpleCell>
-                        </Link>
-                        <Link
+                            <InfoRow header={strings.last_modified}>
+                                {timestampToDate(pageTitle.edited)}
+                            </InfoRow>
+                        </SimpleCell>
+                        <SimpleCell
                             href={'https://vk.com/id' + pageTitle.creator_id}
                             target='_blank'
+                            before={<Icon28CalendarOutline/>}
+                            after={<Avatar size={32} src={creator.photo_100}/>}
                         >
-                            <SimpleCell
-                                before={<Icon36CalendarOutline width={32} height={32}/>}
-                                after={<Avatar size={32} src={creator.photo_100}/>}
-                            >
-                                <InfoRow header={strings.date_created}>
-                                    {timestampToDate(pageTitle.created)}
-                                </InfoRow>
-                            </SimpleCell>
-                        </Link>
+                            <InfoRow header={strings.date_created}>
+                                {timestampToDate(pageTitle.created)}
+                            </InfoRow>
+                        </SimpleCell>
 
                         <Spacing separator size={16}/>
 
@@ -291,7 +285,6 @@ const Page = ({
                             indicator={nameAccess(pageTitle.who_can_view, strings)}
                             onClick={settingAccessPage}
                         >{strings.view}</SimpleCell>
-
                         <SimpleCell
                             indicator={nameAccess(pageTitle.who_can_edit, strings)}
                             onClick={settingAccessPage}
@@ -300,22 +293,19 @@ const Page = ({
                         <Spacing separator size={16}/>
 
                         {(platform === VKCOM) &&
-                        <Link
+
+                        <SimpleCell
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
                             target='_blank' rel='noreferrer'
-                        >
-                            <CellButton
-                                before={<Icon24ExternalLinkOutline/>}
-                                description={'+ ' + strings.rename}
-                            >{strings.open_vk_editor}</CellButton>
-                        </Link>
-                        }
+                            before={<Icon24ExternalLinkOutline/>}
+                            description={'+ ' + strings.rename}
+                        >{strings.open_vk_editor}</SimpleCell>
 
+                        }
                         <CellButton
                             before={<Icon24Write/>}
                             onClick={editPage}
                         >{strings.edit}</CellButton>
-
                         <CellButton
                             before={<Icon24Copy/>}
                             onClick={copyPage}
