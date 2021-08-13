@@ -23,7 +23,7 @@ import {
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
-import {cutDeclNum, declOfNum, fetchGroups, fetchGroupsById, handleError} from "../functions";
+import {cutDeclNum, declOfNum, fetchGroups, fetchGroupsById, handleError, regexpSearch} from "../functions";
 
 const Home = ({
                   id,
@@ -240,7 +240,7 @@ const Home = ({
                 <Fragment>
                     <List>
                         {groups.items.map((group) => {
-                            if (search && !group.name.match(new RegExp(search, "i"))) return null;
+                            if (search && !group.name.match(regexpSearch(search))) return null;
 
                             ++groupCount;
                             return (

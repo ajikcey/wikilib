@@ -364,3 +364,12 @@ export function nameAccess(key, strings) {
             return "";
     }
 }
+
+/**
+ * Возвращает регулярное выражение с экранированными не-буквенно-цифрового символа
+ * @param str
+ * @returns {RegExp}
+ */
+export function regexpSearch(str) {
+    return new RegExp(str.replace(/(?=\W)/g, '\\'), "i");
+}

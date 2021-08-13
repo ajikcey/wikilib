@@ -18,7 +18,7 @@ import {
     Icon28AddOutline, Icon28InfoOutline,
     Icon32SearchOutline, Icon48BlockOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, timestampToDate} from "../functions";
+import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
 
 const Pages = ({
@@ -184,7 +184,7 @@ const Pages = ({
                 <Fragment>
                     <List>
                         {pages.map((page) => {
-                            if (search && !page.title.match(new RegExp(search, "i"))) return null;
+                            if (search && !page.title.match(regexpSearch(search))) return null;
 
                             ++pageCount;
                             return (
