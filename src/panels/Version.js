@@ -62,7 +62,7 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
                 <SimpleCell
                     href={'https://vk.com/id' + content.creator_id}
                     target='_blank'
-                    before={<Icon28CalendarOutline/>}
+                    before={<Icon28CalendarOutline width={32} height={32}/>}
                     after={<Avatar size={32} src={creator.photo_100}/>}
                 >
                     <InfoRow header={strings.version_saved}>
@@ -74,7 +74,7 @@ const Version = ({id, accessToken, content, group, strings, go, snackbarError}) 
                 <SimpleCell
                     href={'https://vk.com/page-' + group.id + '_' + content.page_id + '?act=edit&section=edit' + (content.version ? '&hid=' + content.version : '')}
                     target='_blank' rel='noreferrer'
-                    before={<Icon28LinkCircleOutline/>}
+                    before={<Icon28LinkCircleOutline width={32} height={32}/>}
                 >{strings.open_vk_editor}
                 </SimpleCell>
                 }

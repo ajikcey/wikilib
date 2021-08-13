@@ -246,7 +246,7 @@ const Page = ({
                     <Fragment>
                         <SimpleCell
                             disabled
-                            before={<Icon28ChainOutline/>}
+                            before={<Icon28ChainOutline width={32} height={32}/>}
                             after={<IconButton onClick={copy}><Icon28CopyOutline/></IconButton>}
                         >
                             <InfoRow header={strings.wiki_link}>
@@ -261,7 +261,7 @@ const Page = ({
                         <SimpleCell
                             href={'https://vk.com/id' + pageTitle.editor_id}
                             target='_blank'
-                            before={<Icon28CalendarOutline/>}
+                            before={<Icon28CalendarOutline width={32} height={32}/>}
                             after={<Avatar size={32} src={editor.photo_100}/>}
                         >
                             <InfoRow header={strings.last_modified}>
@@ -271,7 +271,7 @@ const Page = ({
                         <SimpleCell
                             href={'https://vk.com/id' + pageTitle.creator_id}
                             target='_blank'
-                            before={<Icon28CalendarOutline/>}
+                            before={<Icon28CalendarOutline width={32} height={32}/>}
                             after={<Avatar size={32} src={creator.photo_100}/>}
                         >
                             <InfoRow header={strings.date_created}>
