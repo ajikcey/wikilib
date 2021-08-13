@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, savePage} from "../functions";
 
@@ -71,10 +71,8 @@ const FromEditPage = (props) => {
                 status={textError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>{textError && textError.error_msg ? textError.error_msg : ''}</div>
-                        <div>
-                            {text.length + ' / ' + configData.max_length_text}
-                        </div>
+                        <Caption>{textError && textError.error_msg ? textError.error_msg : ''}</Caption>
+                        <Caption>{text.length + ' / ' + configData.max_length_text}</Caption>
                     </div>
                 }
             >

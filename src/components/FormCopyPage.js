@@ -1,9 +1,9 @@
 import {
-    Button,
+    Button, Caption,
     FormItem,
     FormLayout,
     Input,
-    NativeSelect,
+    NativeSelect, ScreenSpinner,
     Spacing
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
@@ -41,6 +41,8 @@ const FormCopyPage = (props) => {
             return;
         }
 
+        props.setPopout(<ScreenSpinner size='large'/>);
+
         let page_exists = false;
         await fetchPages(groupId, props.accessToken.access_token).then(data => {
             if (data.response) {
@@ -56,11 +58,12 @@ const FormCopyPage = (props) => {
         });
 
         if (page_exists) {
+            props.setPopout(null);
             setTitleError({error_msg: props.strings.page_exists});
             return;
         }
 
-        savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(async data => {
+        await savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(async data => {
             if (data.response) {
 
                 if (groupId !== props.modalData.group_id) {
@@ -106,6 +109,8 @@ const FormCopyPage = (props) => {
                 default_error_msg: 'Error save page'
             });
         });
+
+        props.setPopout(null);
     };
 
     const onChangeTitle = (e) => {
@@ -147,10 +152,8 @@ const FormCopyPage = (props) => {
                 status={titleError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>{titleError && titleError.error_msg ? titleError.error_msg : ''}</div>
-                        <div>
-                            {title.length + ' / ' + configData.max_length_title}
-                        </div>
+                        <Caption>{titleError && titleError.error_msg ? titleError.error_msg : ''}</Caption>
+                        <Caption>{title.length + ' / ' + configData.max_length_title}</Caption>
                     </div>
                 }
                 style={{paddingLeft: 0, paddingRight: 0}}

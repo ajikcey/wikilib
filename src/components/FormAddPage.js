@@ -1,5 +1,5 @@
 import configData from "../config.json";
-import {Button, FormItem, FormLayout, Input} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input, ScreenSpinner} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 
@@ -32,6 +32,8 @@ const FormAddPage = (props) => {
             return;
         }
 
+        props.setPopout(<ScreenSpinner size='large'/>);
+
         let page_exists = false;
         await fetchPages(props.group.id, props.accessToken.access_token).then(data => {
             if (data.response) {
@@ -53,11 +55,12 @@ const FormAddPage = (props) => {
         });
 
         if (page_exists) {
+            props.setPopout(null);
             setTitleError({error_msg: props.strings.page_exists});
             return;
         }
 
-        savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(async data => {
+        await savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(async data => {
             if (data.response) {
 
                 await fetchPage(data.response, props.group.id, 0, props.accessToken.access_token).then(data => {
@@ -89,6 +92,8 @@ const FormAddPage = (props) => {
                 default_error_msg: 'Error save page'
             });
         });
+
+        props.setPopout(null);
     }
 
     /**
@@ -113,10 +118,8 @@ const FormAddPage = (props) => {
                 status={titleError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <div>{titleError && titleError.error_msg ? titleError.error_msg : ''}</div>
-                        <div>
-                            {title.length + ' / ' + configData.max_length_title}
-                        </div>
+                        <Caption>{titleError && titleError.error_msg ? titleError.error_msg : ''}</Caption>
+                        <Caption>{title.length + ' / ' + configData.max_length_title}</Caption>
                     </div>
                 }
             >
