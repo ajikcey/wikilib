@@ -226,7 +226,11 @@ const Home = ({
 
             <Group>
                 <Header mode="primary" indicator={groups ? groups.count : 0}>{strings.all_communities}</Header>
-                <Search placeholder={strings.community_search} onChange={onChangeSearch}/>
+                <Search
+                    placeholder={strings.community_search}
+                    onChange={onChangeSearch}
+                    maxLength={configData.max_length_title}
+                />
 
                 {(!groups) && <PanelSpinner/>}
 
