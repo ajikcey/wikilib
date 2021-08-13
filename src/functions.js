@@ -183,7 +183,11 @@ export function handleError(strings, setSnackbar, go, e, options) {
                     error_msg = e.error_data.error_reason.error_code + ': ' + e.error_data.error_reason.error_msg;
                 }
             } else {
-                error_msg = e.error_data.error_reason; // бывает строкой
+                if (e.error_data.error_code === 1) {
+                    error_msg = strings.network_error;
+                } else {
+                    error_msg = e.error_data.error_code + ': ' + e.error_data.error_reason; // бывает строкой
+                }
             }
         } else if (e.error_data.error_code) {
             if (e.error_data.error_code === 5) {

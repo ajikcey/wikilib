@@ -39,6 +39,10 @@ const FormAddPage = (props) => {
                     if (value.title === result.title) page_exists = true;
                 });
             }
+        }).catch(e => {
+            handleError(props.strings, props.setSnackbar, props.go, e, {
+                default_error_msg: 'Error get pages'
+            });
         });
 
         if (page_exists) {

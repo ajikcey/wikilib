@@ -48,6 +48,11 @@ const FormCopyPage = (props) => {
                     if (value.title === result.title) page_exists = true;
                 });
             }
+        }).catch(e => {
+            props.onCloseModal();
+            handleError(props.strings, props.setSnackbar, props.go, e, {
+                default_error_msg: 'Error get pages'
+            });
         });
 
         if (page_exists) {
@@ -92,11 +97,13 @@ const FormCopyPage = (props) => {
                 props.onCloseModal();
                 props.go(configData.routes.page);
             } else {
+                props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save page'
                 });
             }
         }).catch(e => {
+            props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error save page'
             });

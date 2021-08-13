@@ -93,5 +93,6 @@
   "current_version": "Текущая версия",
   "only_on_pc": "Только на ПК",
   "too_many_requests_per_second": "Слишком много запросов в секунду",
-  "group_deactivated": "Сообщество удалено или заблокировано"
+  "group_deactivated": "Сообщество удалено или заблокировано",
+  "network_error": "Ошибка сети"
 }
