@@ -377,7 +377,7 @@ export function nameAccess(key, strings) {
  * @returns {RegExp}
  */
 export function regexpSearch(str) {
-    return new RegExp(str.replace(/(?=\W)/g, '\\'), "i");
+    return new RegExp(str.trim().replace(/(?=\W)/g, '\\'), "i");
 }
 
 /**
