@@ -179,7 +179,7 @@ const App = withAdaptivity(() => {
     const fetchToken = async function () {
         await bridge.send('VKWebAppGetAuthToken', {
             app_id: configData.app_id,
-            scope: ['groups', 'pages'].join(',')
+            scope: ['pages'].join(',')
         }).then(data => {
             try {
                 if (data.access_token) {
@@ -198,11 +198,6 @@ const App = withAdaptivity(() => {
                     });
 
                     go(configData.routes.home); // route after get token
-                } else {
-                    handleError(strings, setSnackbar, go, {}, {
-                        data: data,
-                        default_error_msg: 'No access_token GetAuthToken'
-                    });
                 }
             } catch (e) {
                 handleError(strings, setSnackbar, go, e, {

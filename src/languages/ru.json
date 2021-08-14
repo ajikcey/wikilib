@@ -94,5 +94,6 @@
   "too_many_requests_per_second": "Слишком много запросов в секунду",
   "group_deactivated": "Сообщество удалено или заблокировано",
   "network_error": "Ошибка сети",
+  "user_denied": "Отклонено",
   "connection_lost": "Соединение потеряно"
 }

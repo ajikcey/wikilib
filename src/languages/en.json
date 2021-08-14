@@ -94,5 +94,6 @@
   "too_many_requests_per_second": "Too many requests per second",
   "group_deactivated": "Community deleted or blocked",
   "network_error": "Network error",
+  "user_denied": "User denied",
   "connection_lost": "Connection lost"
 }

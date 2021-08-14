@@ -173,6 +173,8 @@ export function handleError(strings, setSnackbar, go, e, options) {
                     go(configData.routes.token);
                 } else if (e.error_data.error_reason.error_code === 6) {
                     error_msg = strings.too_many_requests_per_second;
+                } else if (e.error_data.error_reason.error_code === 15) {
+                    error_msg = strings.access_denied;
                 } else if (e.error_data.error_reason.error_code === 119) {
                     error_msg = strings.invalid_title;
                 } else if (e.error_data.error_reason.error_code === 140) {
@@ -187,6 +189,8 @@ export function handleError(strings, setSnackbar, go, e, options) {
                     error_msg = strings.network_error;
                 } else if (e.error_data.error_code === 3) {
                     error_msg = strings.connection_lost;
+                } else if (e.error_data.error_code === 4) {
+                    error_msg = strings.user_denied;
                 } else {
                     error_msg =  e.error_data.error_reason + ' (2-' + e.error_data.error_code + ')'; // бывает строкой
                 }
