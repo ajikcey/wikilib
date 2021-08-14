@@ -54,6 +54,9 @@ const App = withAdaptivity(() => {
     const [app, setApp] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
+
+    let history = [configData.routes.home];
+
     const [content, setContent] = useState({
         version: 0,
         page_id: 0,
@@ -151,6 +154,8 @@ const App = withAdaptivity(() => {
 
         initData().then();
 
+        window.addEventListener('popstate', () => goBack());
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -161,6 +166,24 @@ const App = withAdaptivity(() => {
     const go = panel => {
         setSnackbar(false);
         setActivePanel(panel);
+    };
+
+    /**
+     * Возврат на прошлую панель
+     */
+    const goBack = () => {
+        if (history.length > 1) {
+            history.pop(); // удаляем последний элемент в массиве
+            setActivePanel(history[history.length - 1]);
+        } else {
+            bridge.send("VKWebAppClose", {"status": "success"}).then();
+        }
+    };
+
+    const goToPage = (panel) => {
+        window.history.pushState({panel: panel}, panel);
+        setActivePanel(panel);
+        history.push(panel);
     };
 
     /**
@@ -295,7 +318,11 @@ const App = withAdaptivity(() => {
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
                         <SplitCol>
-                            <View activePanel={activePanel}>
+                            <View
+                                activePanel={activePanel}
+                                history={history}
+                                onSwipeBack={goBack}
+                            >
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
                                 <About
@@ -315,7 +342,7 @@ const App = withAdaptivity(() => {
                                     lastGroups={lastGroups} setLastGroups={setLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
                                     snackbarError={snackbar} lastGroupIds={lastGroupIds}
-                                    setLastGroupIds={setLastGroupIds} go={go}/>
+                                    setLastGroupIds={setLastGroupIds} go={go} goToPage={goToPage}/>
                                 <Pages
                                     pageSort={pageSort} strings={strings}
                                     queryParams={queryParams} setModalData={setModalData}

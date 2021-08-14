@@ -30,8 +30,7 @@ const About = ({
                    setActiveModal,
                    app,
                    strings,
-                   setApp,
-                   queryParams
+                   setApp
                }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
@@ -100,19 +99,11 @@ const About = ({
         });
     }
 
-    const back = function () {
-        if (queryParams.vk_group_id) {
-            go(configData.routes.pages);
-        } else {
-            go(configData.routes.home);
-        }
-    }
-
     return (
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
+                left={<PanelHeaderBack onClick={() => window.history.back()}/>}
             >
             </PanelHeader>
 
