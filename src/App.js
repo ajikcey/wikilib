@@ -204,11 +204,7 @@ const App = withAdaptivity(() => {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
-        }).catch(e => {
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error get token'
-            });
-        });
+        }).catch();
     };
 
     /**
