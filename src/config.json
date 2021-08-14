@@ -9,6 +9,9 @@
   "vk_api_version": "5.131",
   "community_url": "https://vk.com/wikilib",
   "pixel_code": "VK-RTRG-1028148-eNZMc",
+  "scope": [
+    "pages"
+  ],
   "wiki_access": {
     "all": 2,
     "member": 1,

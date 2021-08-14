@@ -179,10 +179,18 @@ const App = withAdaptivity(() => {
     const fetchToken = async function () {
         await bridge.send('VKWebAppGetAuthToken', {
             app_id: configData.app_id,
-            scope: ['pages'].join(',')
+            scope: configData.scope.join(',')
         }).then(data => {
             try {
-                if (data.access_token) {
+                if (!data.access_token) {
+                    handleError(strings, setSnackbar, go, {}, {
+                        default_error_msg: 'No access token'
+                    });
+                } else if (data.scope !== configData.scope.join(',')) {
+                    handleError(strings, setSnackbar, go, {}, {
+                        default_error_msg: strings.not_all_access_rights
+                    });
+                } else {
                     setAccessToken(data);
 
                     bridge.send('VKWebAppStorageSet', {
