@@ -95,6 +95,8 @@ const App = withAdaptivity(() => {
             }
         });
 
+        window.addEventListener('popstate', () => goBack());
+
         async function initData() {
             const user = await bridge.send('VKWebAppGetUserInfo');
             const data = {};
@@ -153,6 +155,13 @@ const App = withAdaptivity(() => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    /**
+     * Возврат на прошлую панель
+     */
+    const goBack = () => {
+        // todo: back to previous panel
+    };
 
     /**
      * Переход на другую панель

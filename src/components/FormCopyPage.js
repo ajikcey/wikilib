@@ -136,9 +136,10 @@ const FormCopyPage = (props) => {
                     onChange={onChangeGroup}
                     defaultValue={groupId}
                 >
-                    {props.groups && props.groups.items && props.groups.items.map((group) => {
+                    {props.groups && props.groups.items && props.groups.items.map((group, index) => {
                         return (
                             <option
+                                key={index}
                                 value={group.id}
                             >
                                 {group.name}
