@@ -200,6 +200,8 @@ export function handleError(strings, setSnackbar, go, e, options) {
                 go(configData.routes.token);
             } else if (e.error_data.error_code === 6) {
                 error_msg = strings.too_many_requests_per_second;
+            } else if (e.error_data.error_code === 15) {
+                error_msg = strings.access_denied;
             } else if (e.error_data.error_code === 119) {
                 error_msg = strings.invalid_title;
             } else if (e.error_data.error_code === 140) {
