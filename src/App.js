@@ -325,7 +325,7 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} lastGroupIds={lastGroupIds}
                                     setLastGroupIds={setLastGroupIds} go={go}/>
                                 <Pages
-                                    pageSort={pageSort} strings={strings}
+                                    pageSort={pageSort} strings={strings} lastGroupIds={lastGroupIds}
                                     queryParams={queryParams} setModalData={setModalData}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}

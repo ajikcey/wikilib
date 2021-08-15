@@ -75,7 +75,7 @@ const Home = ({
             });
         }
 
-        fetchLastGroups().then(()=>{
+        fetchLastGroups().then(() => {
             if (!groups) {
                 moreGroups().then();
             }
@@ -119,54 +119,24 @@ const Home = ({
 
     /**
      * Очистка недавно просмотренных сообществ
-     * @returns {Promise<void>}
      */
-    const clearLast = async function () {
+    const clearLast = () => {
         setLastGroupIds([]);
         setLastGroups([]);
 
-        try {
-            await bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.last_groups,
-                value: JSON.stringify([])
-            });
-        } catch (e) {
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error with sending data to Storage'
-            });
-        }
+        bridge.send('VKWebAppStorageSet', {
+            key: configData.storage_keys.last_groups,
+            value: JSON.stringify([])
+        }).then().catch();
     }
 
     /**
      * Выбор сообщества для показа wiki-страниц
      * @param item
      */
-    const selectGroup = function (item) {
-        const index = lastGroupIds.indexOf(item.id);
-        if (index > -1) {
-            // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
-            lastGroupIds.splice(index, 1);
-        }
-        lastGroupIds.unshift(item.id);
-
-        if (lastGroupIds.length > configData.max_last_groups) {
-            lastGroupIds.splice(configData.max_last_groups, lastGroupIds.length - configData.max_last_groups);
-        }
-
-        try {
-            bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.last_groups,
-                value: JSON.stringify(lastGroupIds)
-            }).then(() => {
-            });
-
-            setGroup(item);
-            go(configData.routes.pages);
-        } catch (e) {
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error with sending data to Storage'
-            });
-        }
+    const selectGroup = (item) => {
+        setGroup(item);
+        go(configData.routes.pages);
     }
 
     const onChangeSearch = (e) => {
