@@ -48,7 +48,7 @@ const Pages = ({
         /**
          * @returns {Promise}
          */
-        async function addCacheGroup() {
+        async function saveLastGroup() {
             const index = lastGroupIds.indexOf(group.id);
 
             if (index > -1) {
@@ -115,7 +115,7 @@ const Pages = ({
         }
 
         fetchGroupPages().then(() => {
-            addCacheGroup().then().catch();
+            saveLastGroup().then().catch();
         }).catch();
 
         // eslint-disable-next-line
