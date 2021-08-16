@@ -155,14 +155,13 @@ const App = withAdaptivity(() => {
     }, []);
 
     // Прослушивание события кнопки Назад
-    window.addEventListener('popstate', e => goBack(e));
+    window.addEventListener('popstate', e => e.preventDefault() & goBack(e));
 
     /**
      * Возврат на прошлую панель
      * @param e
      */
     const goBack = (e) => {
-        e.preventDefault();
 
         if (popout) {
             setPopout(null);
