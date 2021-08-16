@@ -95,7 +95,7 @@ const App = withAdaptivity(() => {
             }
         });
 
-        window.addEventListener('popstate', () => goBack());
+        window.addEventListener('popstate', e => goBack(e));
 
         async function initData() {
             const user = await bridge.send('VKWebAppGetUserInfo');
@@ -158,9 +158,20 @@ const App = withAdaptivity(() => {
 
     /**
      * Возврат на прошлую панель
+     * @param e
      */
-    const goBack = () => {
-        // todo: back to previous panel
+    const goBack = (e) => {
+        e.preventDefault();
+
+        if (popout) {
+            setPopout(null);
+        }
+
+        if (activeModal) {
+            setActiveModal(null);
+        }
+
+        return false;
     };
 
     /**
