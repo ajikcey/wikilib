@@ -95,8 +95,6 @@ const App = withAdaptivity(() => {
             }
         });
 
-        window.addEventListener('popstate', e => goBack(e));
-
         async function initData() {
             const user = await bridge.send('VKWebAppGetUserInfo');
             const data = {};
@@ -155,6 +153,9 @@ const App = withAdaptivity(() => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Прослушивание события кнопки Назад
+    window.addEventListener('popstate', e => goBack(e));
 
     /**
      * Возврат на прошлую панель
