@@ -154,8 +154,7 @@ const App = withAdaptivity(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Прослушивание события кнопки Назад
-    window.addEventListener('popstate', (e) => goBack(e));
+    window.addEventListener('popstate', (e) => e.preventDefault());
 
     /**
      * Возврат на прошлую панель
