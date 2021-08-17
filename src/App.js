@@ -160,19 +160,19 @@ const App = withAdaptivity(() => {
      * Возврат на прошлую панель
      * @param e
      */
-    const goBack = (e) => {
-        e.preventDefault();
-
-        if (popout) {
-            setPopout(null);
-        }
-
-        if (activeModal) {
-            setActiveModal(null);
-        }
-
-        return false;
-    };
+    // const goBack = (e) => {
+    //     e.preventDefault();
+    //
+    //     if (popout) {
+    //         setPopout(null);
+    //     }
+    //
+    //     if (activeModal) {
+    //         setActiveModal(null);
+    //     }
+    //
+    //     return false;
+    // };
 
     /**
      * Переход на другую панель
