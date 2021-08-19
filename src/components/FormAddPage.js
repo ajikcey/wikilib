@@ -41,6 +41,7 @@ const FormAddPage = (props) => {
                     if (value.title === result.title) page_exists = true;
                 });
             } else {
+                props.setPopout(null);
                 props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     data: data,
@@ -48,6 +49,7 @@ const FormAddPage = (props) => {
                 });
             }
         }).catch(e => {
+            props.setPopout(null);
             props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error get pages'

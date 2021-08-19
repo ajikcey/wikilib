@@ -49,8 +49,16 @@ const FormCopyPage = (props) => {
                 data.response.forEach((value) => {
                     if (value.title === result.title) page_exists = true;
                 });
+            } else {
+                props.setPopout(null);
+                props.onCloseModal();
+                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get pages'
+                });
             }
         }).catch(e => {
+            props.setPopout(null);
             props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error get pages'
@@ -124,6 +132,7 @@ const FormCopyPage = (props) => {
     };
 
     const onChangeGroup = (e) => {
+        setTitleError(null);
         setGroupId(+e.target.value);
     };
 
