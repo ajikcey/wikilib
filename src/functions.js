@@ -208,6 +208,8 @@ export function handleError(strings, setSnackbar, go, e, options) {
                 error_msg = strings.page_not_found;
             } else if (e.error_data.error_code === 141) {
                 error_msg = strings.no_access_to_page;
+            } else if (e.error_data.error_code === -1020) {
+                error_msg = strings.network_error;
             } else {
                 error_msg = e.error_data.error_msg + ' (3-' + e.error_data.error_code + ')';
             }
