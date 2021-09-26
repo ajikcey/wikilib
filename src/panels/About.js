@@ -40,7 +40,10 @@ const About = ({
         if (!app) {
             fetchApp(accessToken.access_token).then(data => {
                 if (data.response) {
-                    setApp(data.response);
+                    app = data.response;
+                    app.profiles.reverse(); // Show last friends first
+
+                    setApp(app);
                 } else {
                     handleError(strings, setSnackbar, go, {}, {
                         data: data,
@@ -146,7 +149,7 @@ const About = ({
                             <Spacing size={16}/>
                             <UsersStack
                                 photos={
-                                    app.profiles.reverse().map(function (item) {
+                                    app.profiles.map(function (item) {
                                         return item.photo_100
                                     })
                                 }
