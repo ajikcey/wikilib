@@ -72,7 +72,7 @@ const FromEditPage = (props) => {
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <Caption>{textError && textError.error_msg ? textError.error_msg : ''}</Caption>
-                        <Caption>{text.length + ' / ' + configData.max_length_text}</Caption>
+                        <Caption>{text.length + '/' + configData.max_length_text}</Caption>
                     </div>
                 }
             >

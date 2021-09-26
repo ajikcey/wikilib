@@ -121,7 +121,7 @@ const FormAddPage = (props) => {
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <Caption>{titleError && titleError.error_msg ? titleError.error_msg : ''}</Caption>
-                        <Caption>{title.length + ' / ' + configData.max_length_title}</Caption>
+                        <Caption>{title.length + '/' + configData.max_length_title}</Caption>
                     </div>
                 }
             >
