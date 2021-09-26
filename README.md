@@ -18,7 +18,7 @@ https://vk.com/vkappsdev
 
 ## Troubleshooting
 
-If you get an error `User authorization failed: invalid session`, try this comand:
+If you get an error `User authorization failed: invalid session`, try this command:
 
 ```
 rm ~/.config/configstore/@vkontakte/vk-miniapps-deploy.json
