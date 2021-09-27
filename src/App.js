@@ -297,17 +297,9 @@ const App = withAdaptivity(() => {
                             <View activePanel={activePanel}>
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
-                                <About
-                                    queryParams={queryParams} strings={strings}
-                                    id={configData.routes.about} go={go} snackbarError={snackbar}
-                                    setModalData={setModalData} app={app} setApp={setApp}
-                                    accessToken={accessToken} setActiveModal={setActiveModal}/>
                                 <Intro
                                     id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
                                     setUserStatus={setUserStatus} userStatus={userStatus} strings={strings}/>
-                                <Token
-                                    id={configData.routes.token} strings={strings}
-                                    fetchToken={fetchToken} snackbarError={snackbar}/>
                                 <Home
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                                     groups={groups} setGroups={setGroups} strings={strings}
@@ -330,6 +322,14 @@ const App = withAdaptivity(() => {
                                     strings={strings}
                                     id={configData.routes.wiki_version} content={content} group={group}
                                     accessToken={accessToken} snackbarError={snackbar} go={go}/>
+                                <Token
+                                    id={configData.routes.token} strings={strings}
+                                    fetchToken={fetchToken} snackbarError={snackbar}/>
+                                <About
+                                    queryParams={queryParams} strings={strings}
+                                    id={configData.routes.about} go={go} snackbarError={snackbar}
+                                    setModalData={setModalData} app={app} setApp={setApp}
+                                    accessToken={accessToken} setActiveModal={setActiveModal}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

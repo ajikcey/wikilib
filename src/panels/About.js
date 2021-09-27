@@ -40,10 +40,9 @@ const About = ({
         if (!app) {
             fetchApp(accessToken.access_token).then(data => {
                 if (data.response) {
-                    app = data.response;
-                    app.profiles.reverse(); // Show last friends first
+                    data.response.profiles.reverse(); // Show last friends first
 
-                    setApp(app);
+                    setApp(data.response);
                 } else {
                     handleError(strings, setSnackbar, go, {}, {
                         data: data,
