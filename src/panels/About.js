@@ -37,7 +37,7 @@ const About = ({
 
     useEffect(() => {
 
-        if (!app) {
+        if (!app || !app.items) {
             fetchApp(accessToken.access_token).then(data => {
                 if (data.response) {
                     data.response.profiles.reverse(); // Show last friends first
