@@ -70,7 +70,10 @@ const FormEditAccess = (props) => {
 
     return (
         <FormLayout onSubmit={onSubmit}>
-            <FormItem top={props.strings.who_can_view}>
+            <FormItem
+                style={{paddingLeft: 0, paddingRight: 0}}
+                top={props.strings.who_can_view}
+            >
                 <Radio
                     name="who_can_view"
                     value={configData.wiki_access.all}
@@ -90,7 +93,10 @@ const FormEditAccess = (props) => {
                     onChange={onChangeWho_can_view}
                 >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
-            <FormItem top={props.strings.who_can_edit}>
+            <FormItem
+                style={{paddingLeft: 0, paddingRight: 0}}
+                top={props.strings.who_can_edit}
+            >
                 <Radio
                     name="who_can_edit"
                     value={configData.wiki_access.member}
