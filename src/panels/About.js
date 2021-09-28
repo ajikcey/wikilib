@@ -10,14 +10,14 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner, Title, Text, UsersStack, Spacing, SimpleCell
+    PanelSpinner, Title, Text, UsersStack, Spacing, SimpleCell, Placeholder
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon12Verified, Icon24CheckCircleOutline,
-    Icon28BookmarkOutline, Icon28UsersOutline
+    Icon28BookmarkOutline, Icon28UsersOutline, Icon32SearchOutline
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp} from "../functions";
 
@@ -44,12 +44,16 @@ const About = ({
 
                     setApp(data.response);
                 } else {
+                    setApp({});
+
                     handleError(strings, setSnackbar, go, {}, {
                         data: data,
                         default_error_msg: 'No response get app'
                     });
                 }
             }).catch(e => {
+                setApp({});
+
                 handleError(strings, setSnackbar, go, e, {
                     default_error_msg: 'Error get app'
                 });
@@ -119,7 +123,9 @@ const About = ({
             </PanelHeader>
 
             {(!app) && <PanelSpinner/>}
-            {(app) &&
+            {(app && !app.items) &&
+            <Placeholder icon={<Icon32SearchOutline/>}>{strings.information_not_found}</Placeholder>}
+            {(app && app.items) &&
             <Fragment>
                 <Group>
                     <Div style={{

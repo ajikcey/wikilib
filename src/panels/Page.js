@@ -71,12 +71,16 @@ const Page = ({
 
                 setInfoPage(data.response);
             } else {
+                setInfoPage({});
+
                 handleError(strings, setSnackbar, go, {}, {
                     data: data,
                     default_error_msg: 'No response get page'
                 });
             }
         }).catch(e => {
+            setInfoPage({});
+
             handleError(strings, setSnackbar, go, e, {
                 default_error_msg: 'Error get page'
             });
@@ -241,8 +245,10 @@ const Page = ({
 
                 {(tab === 'info') &&
                 <Fragment>
-                    {!(infoPage && creator && editor) && <PanelSpinner/>}
-                    {(infoPage && creator && editor) &&
+                    {(!infoPage) && <PanelSpinner/>}
+                    {(infoPage && !infoPage.id) &&
+                    <Placeholder icon={<Icon32SearchOutline/>}>{strings.information_not_found}</Placeholder>}
+                    {(infoPage && infoPage.id) &&
                     <Fragment>
                         <SimpleCell
                             disabled
@@ -262,7 +268,7 @@ const Page = ({
                             href={'https://vk.com/id' + pageTitle.editor_id}
                             target='_blank'
                             before={<Icon28CalendarOutline width={32} height={32}/>}
-                            after={<Avatar size={32} src={editor.photo_100}/>}
+                            after={<Avatar size={32} src={editor && editor.photo_100}/>}
                         >
                             <InfoRow header={strings.last_modified}>
                                 {timestampToDate(pageTitle.edited)}
@@ -272,7 +278,7 @@ const Page = ({
                             href={'https://vk.com/id' + pageTitle.creator_id}
                             target='_blank'
                             before={<Icon28CalendarOutline width={32} height={32}/>}
-                            after={<Avatar size={32} src={creator.photo_100}/>}
+                            after={<Avatar size={32} src={creator && creator.photo_100}/>}
                         >
                             <InfoRow header={strings.date_created}>
                                 {timestampToDate(pageTitle.created)}
