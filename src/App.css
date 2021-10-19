@@ -21,3 +21,9 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+.vkuiModalCard__in {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
