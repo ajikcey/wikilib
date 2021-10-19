@@ -28,37 +28,34 @@ const About = ({
                    accessToken,
                    setModalData,
                    setActiveModal,
-                   app,
                    strings,
-                   setApp,
                    queryParams
                }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
+    const [app, setApp] = useState(null);
 
     useEffect(() => {
 
-        if (!app || !app.items) {
-            fetchApp(accessToken.access_token).then(data => {
-                if (data.response) {
-                    data.response.profiles.reverse(); // Show last friends first
+        fetchApp(accessToken.access_token).then(data => {
+            if (data.response) {
+                data.response.profiles.reverse(); // Show last friends first
 
-                    setApp(data.response);
-                } else {
-                    setApp({});
-
-                    handleError(strings, setSnackbar, go, {}, {
-                        data: data,
-                        default_error_msg: 'No response get app'
-                    });
-                }
-            }).catch(e => {
+                setApp(data.response);
+            } else {
                 setApp({});
 
-                handleError(strings, setSnackbar, go, e, {
-                    default_error_msg: 'Error get app'
+                handleError(strings, setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get app'
                 });
+            }
+        }).catch(e => {
+            setApp({});
+
+            handleError(strings, setSnackbar, go, e, {
+                default_error_msg: 'Error get app'
             });
-        }
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

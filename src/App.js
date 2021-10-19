@@ -51,7 +51,6 @@ const App = withAdaptivity(() => {
     const [pageTitle, setPageTitle] = useState(null);
     const [modalData, setModalData] = useState({});
     const [pages, setPages] = useState(null);
-    const [app, setApp] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
     const [content, setContent] = useState({
@@ -328,7 +327,7 @@ const App = withAdaptivity(() => {
                                 <About
                                     queryParams={queryParams} strings={strings}
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
-                                    setModalData={setModalData} app={app} setApp={setApp}
+                                    setModalData={setModalData}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
                             </View>
                         </SplitCol>

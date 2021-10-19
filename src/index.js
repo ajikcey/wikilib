@@ -8,7 +8,11 @@ import TagManager from 'react-gtm-module'
 
 // Init VK  Mini App
 bridge.send("VKWebAppInit").then((data) => {
+    if (process.env.NODE_ENV === "development") {
+        console.log(data);
+    }
 });
+
 bridge.subscribe(({detail: {type, data}}) => {
     const schemeAttribute = document.createAttribute('scheme');
 
@@ -25,14 +29,14 @@ bridge.subscribe(({detail: {type, data}}) => {
     }
 });
 
-const tagManagerArgs = {
+TagManager.initialize({
     gtmId: 'GTM-M6TRBHK'
-};
-TagManager.initialize(tagManagerArgs);
+});
 
 ReactDOM.render(<App/>, document.getElementById("root"));
 
 if (process.env.NODE_ENV === "development") {
     import("./eruda").then(({default: eruda}) => {
-    }); //runtime download
+        console.log(eruda);
+    });
 }
