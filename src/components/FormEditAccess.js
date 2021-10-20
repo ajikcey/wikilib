@@ -60,7 +60,7 @@ const FormEditAccess = (props) => {
             });
         });
 
-        props.onCloseModal();
+        // props.onCloseModal();
     };
 
     const onChangeWho_can_view = function (e) {
