@@ -1,5 +1,5 @@
 import configData from "../config.json";
-import {Button, Caption, FormItem, FormLayout, Input, ScreenSpinner} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input, Spinner} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 
@@ -11,11 +11,11 @@ import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 const FormAddPage = (props) => {
     const [title, setTitle] = useState("");
     const [titleError, setTitleError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    /**
-     * Применить данную версию wiki-страницы
-     */
     const onSubmit = async (e) => {
+        let system_error = null;
+
         e.preventDefault();
 
         if (titleError) {
@@ -32,7 +32,8 @@ const FormAddPage = (props) => {
             return;
         }
 
-        props.setPopout(<ScreenSpinner size='large'/>);
+        if (loading) return;
+        setLoading(true);
 
         let page_exists = false;
         await fetchPages(props.group.id, props.accessToken.access_token).then(data => {
@@ -41,23 +42,26 @@ const FormAddPage = (props) => {
                     if (value.title === result.title) page_exists = true;
                 });
             } else {
-                props.setPopout(null);
-                props.onCloseModal();
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                system_error = [{}, {
                     data: data,
                     default_error_msg: 'No response get pages'
-                });
+                }];
             }
         }).catch(e => {
-            props.setPopout(null);
-            props.onCloseModal();
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error get pages'
-            });
+            }];
         });
 
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            props.onCloseModal();
+            return;
+        }
+
         if (page_exists) {
-            props.setPopout(null);
+            setLoading(false);
             setTitleError({error_msg: props.strings.page_exists});
             return;
         }
@@ -69,33 +73,36 @@ const FormAddPage = (props) => {
                     if (data.response) {
                         props.setPageTitle(data.response);
                     } else {
-                        handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                        system_error = [{}, {
                             data: data,
                             default_error_msg: 'No response get page'
-                        });
+                        }];
                     }
                 }).catch(e => {
-                    handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+                    system_error = [e, {
                         default_error_msg: 'Error get page'
-                    });
+                    }];
                 });
-
-                props.onCloseModal();
-                props.go(configData.routes.page);
             } else {
-                props.onCloseModal();
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                system_error = [{}, {
                     default_error_msg: 'No response save page'
-                });
+                }];
             }
         }).catch(e => {
-            props.onCloseModal();
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error save page'
-            });
+            }];
         });
 
-        props.setPopout(null);
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            props.onCloseModal();
+            return;
+        }
+
+        props.go(configData.routes.page);
+        props.onCloseModal();
     }
 
     /**
@@ -133,7 +140,8 @@ const FormAddPage = (props) => {
                 />
             </FormItem>
             <Button type='submit' size="l" mode="primary" stretched>
-                {props.strings.create}
+                {loading && <Spinner size="small"/>}
+                {!loading && props.strings.create}
             </Button>
         </FormLayout>
     );

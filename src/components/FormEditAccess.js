@@ -20,9 +20,11 @@ const FormEditAccess = (props) => {
      * @param e
      */
     const onSubmit = async function (e) {
+        let system_error = null;
+
         e.preventDefault();
 
-        if (loading) return false;
+        if (loading) return;
         setLoading(true);
 
         await bridge.send("VKWebAppCallAPIMethod", {
@@ -37,30 +39,35 @@ const FormEditAccess = (props) => {
             }
         }).then(data => {
             if (data.response) {
-                // hot update
                 let pageTitle = props.pageTitle;
 
                 pageTitle.who_can_view = who_can_view;
                 pageTitle.who_can_edit = who_can_edit;
                 props.setPageTitle(pageTitle);
-
-                props.modalData.setSnackbar(null);
-                props.modalData.setSnackbar(<Snackbar
-                    onClose={() => props.modalData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{props.strings.saved}</Snackbar>);
             } else {
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                system_error= [{}, {
                     default_error_msg: 'No response save access'
-                });
+                }];
             }
         }).catch(e => {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+            system_error= [e, {
                 default_error_msg: 'Error save access'
-            });
+            }];
         });
 
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            props.onCloseModal();
+            return;
+        }
+
         props.onCloseModal();
+        props.modalData.setSnackbar(null);
+        props.modalData.setSnackbar(<Snackbar
+            onClose={() => props.modalData.setSnackbar(null)}
+            before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+        >{props.strings.saved}</Snackbar>);
     };
 
     const onChangeWho_can_view = function (e) {

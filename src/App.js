@@ -226,7 +226,6 @@ const App = withAdaptivity(() => {
                 <FormAddPage
                     modalData={modalData} go={go} accessToken={accessToken} group={group}
                     onCloseModal={onCloseModal} strings={strings} setPageTitle={setPageTitle}
-                    setPopout={setPopout}
                 />
             </ModalCard>
 

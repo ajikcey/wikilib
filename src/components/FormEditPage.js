@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, Caption, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Snackbar, Spinner, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, savePage} from "../functions";
 
@@ -12,13 +12,13 @@ import {handleError, savePage} from "../functions";
 const FromEditPage = (props) => {
     const [text, setText] = useState(props.content.source);
     const [textError, setTextError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const platform = usePlatform();
 
-    /**
-     * Применить данную версию wiki-страницы
-     */
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
+        let system_error = null;
+
         e.preventDefault();
 
         if (textError) {
@@ -35,19 +35,29 @@ const FromEditPage = (props) => {
             return;
         }
 
-        savePage(props.content.page_id, props.group.id, props.accessToken.access_token, null, result.text).then(() => {
+        if (loading) return;
+        setLoading(true);
 
-            props.setSnackbar(<Snackbar
-                onClose={() => props.setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-            >{props.strings.saved}</Snackbar>);
-
-            props.go(configData.routes.page);
+        await savePage(props.content.page_id, props.group.id, props.accessToken.access_token, null, result.text).then(() => {
+            // success
         }).catch(e => {
-            handleError(props.strings, props.setSnackbar, props.go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error save access'
-            });
+            }];
         });
+
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            return;
+        }
+
+        props.setSnackbar(<Snackbar
+            onClose={() => props.setSnackbar(null)}
+            before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+        >{props.strings.saved}</Snackbar>);
+
+        props.go(configData.routes.page);
     }
 
     /**
@@ -95,7 +105,8 @@ const FromEditPage = (props) => {
                     size="l"
                     stretched={platform !== VKCOM}
                 >
-                    {props.content.version ? props.strings.apply_this_version : props.strings.save}
+                    {loading && <Spinner size="small"/>}
+                    {!loading && (props.content.version ? props.strings.apply_this_version : props.strings.save)}
                 </Button>
             </FormItem>
         </FormLayout>
