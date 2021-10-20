@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, FormItem, FormLayout, Radio, Snackbar} from "@vkontakte/vkui";
+import {Button, FormItem, FormLayout, Radio, Snackbar, Spinner} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, nameAccess} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
@@ -13,15 +13,19 @@ import bridge from "@vkontakte/vk-bridge";
 const FormEditAccess = (props) => {
     const [who_can_view, setWho_can_view] = useState(props.pageTitle.who_can_view);
     const [who_can_edit, setWho_can_edit] = useState(props.pageTitle.who_can_edit);
+    const [loading, setLoading] = useState(false);
 
     /**
      * Сохранение настроек доступа к wiki-странице
      * @param e
      */
-    const onSubmit = function (e) {
+    const onSubmit = async function (e) {
         e.preventDefault();
 
-        bridge.send("VKWebAppCallAPIMethod", {
+        if (loading) return false;
+        setLoading(true);
+
+        await bridge.send("VKWebAppCallAPIMethod", {
             method: "pages.saveAccess",
             params: {
                 page_id: props.pageTitle.id,
@@ -40,24 +44,23 @@ const FormEditAccess = (props) => {
                 pageTitle.who_can_edit = who_can_edit;
                 props.setPageTitle(pageTitle);
 
-                props.onCloseModal();
                 props.modalData.setSnackbar(null);
                 props.modalData.setSnackbar(<Snackbar
                     onClose={() => props.modalData.setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
                 >{props.strings.saved}</Snackbar>);
             } else {
-                props.onCloseModal();
                 handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
                     default_error_msg: 'No response save access'
                 });
             }
         }).catch(e => {
-            props.onCloseModal();
             handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
                 default_error_msg: 'Error save access'
             });
         });
+
+        props.onCloseModal();
     };
 
     const onChangeWho_can_view = function (e) {
@@ -111,7 +114,8 @@ const FormEditAccess = (props) => {
                 >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
             <Button type='submit' size="l" mode="primary" stretched>
-                {props.strings.save}
+                {loading && <Spinner size="small"/>}
+                {!loading && props.strings.save}
             </Button>
         </FormLayout>
     );

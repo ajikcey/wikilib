@@ -216,12 +216,14 @@ export function handleError(strings, setSnackbar, go, e, options) {
         }
     }
 
-    setSnackbar(<Snackbar
-        onClose={() => setSnackbar(null)}
-        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-    >
-        {error_msg || JSON.stringify(e)}
-    </Snackbar>);
+    if (setSnackbar) {
+        setSnackbar(<Snackbar
+            onClose={() => setSnackbar(null)}
+            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+        >
+            {error_msg || JSON.stringify(e)}
+        </Snackbar>);
+    }
 }
 
 /**
