@@ -15,10 +15,6 @@ const FormEditAccess = (props) => {
     const [who_can_edit, setWho_can_edit] = useState(props.pageTitle.who_can_edit);
     const [loading, setLoading] = useState(false);
 
-    /**
-     * Сохранение настроек доступа к wiki-странице
-     * @param e
-     */
     const onSubmit = async function (e) {
         let system_error = null;
 

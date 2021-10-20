@@ -3,8 +3,8 @@ import {
     FormItem,
     FormLayout,
     Input,
-    NativeSelect, ScreenSpinner,
-    Spacing
+    NativeSelect,
+    Spacing, Spinner
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
@@ -19,12 +19,11 @@ const FormCopyPage = (props) => {
     const [groupId, setGroupId] = useState(props.modalData.group_id);
     const [title, setTitle] = useState(props.modalData.title);
     const [titleError, setTitleError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    /**
-     * Копирование wiki-страницы
-     * @param e
-     */
     const onSubmit = async (e) => {
+        let system_error = null;
+
         e.preventDefault();
 
         if (titleError) {
@@ -41,7 +40,8 @@ const FormCopyPage = (props) => {
             return;
         }
 
-        props.setPopout(<ScreenSpinner size='large'/>);
+        if (loading) return;
+        setLoading(true);
 
         let page_exists = false;
         await fetchPages(groupId, props.accessToken.access_token).then(data => {
@@ -50,23 +50,26 @@ const FormCopyPage = (props) => {
                     if (value.title === result.title) page_exists = true;
                 });
             } else {
-                props.setPopout(null);
-                props.onCloseModal();
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                system_error = [{}, {
                     data: data,
                     default_error_msg: 'No response get pages'
-                });
+                }];
             }
         }).catch(e => {
-            props.setPopout(null);
-            props.onCloseModal();
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error get pages'
-            });
+            }];
         });
 
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            props.onCloseModal();
+            return;
+        }
+
         if (page_exists) {
-            props.setPopout(null);
+            setLoading(false);
             setTitleError({error_msg: props.strings.page_exists});
             return;
         }
@@ -79,46 +82,58 @@ const FormCopyPage = (props) => {
                         if (data.response) {
                             props.setGroup(data.response[0]);
                         } else {
-                            handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                            system_error = [{}, {
                                 default_error_msg: 'No response get groups by id'
-                            });
+                            }];
                         }
                     }).catch(e => {
-                        handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+                        system_error = [e, {
                             default_error_msg: 'Error get groups by id'
-                        });
+                        }];
                     });
+
+                    if (system_error) {
+                        handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+                        setLoading(false);
+                        props.onCloseModal();
+                        return;
+                    }
                 }
 
                 await fetchPage(data.response, groupId, 0, props.accessToken.access_token).then(data => {
                     if (data.response) {
-                        props.onCloseModal();
-                        props.go(configData.routes.pages);
+                        // success
                     } else {
-                        handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                        system_error = [{}, {
                             data: data,
                             default_error_msg: 'No response get page'
-                        });
+                        }];
                     }
                 }).catch(e => {
-                    handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+                    system_error = [e, {
                         default_error_msg: 'Error get page'
-                    });
+                    }];
                 });
             } else {
-                props.onCloseModal();
-                handleError(props.strings, props.modalData.setSnackbar, props.go, {}, {
+                system_error = [{}, {
                     default_error_msg: 'No response save page'
-                });
+                }];
             }
         }).catch(e => {
-            props.onCloseModal();
-            handleError(props.strings, props.modalData.setSnackbar, props.go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error save page'
-            });
+            }];
         });
 
-        props.setPopout(null);
+        if (system_error) {
+            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            setLoading(false);
+            props.onCloseModal();
+            return;
+        }
+
+        props.go(configData.routes.pages);
+        props.onCloseModal();
     };
 
     const onChangeTitle = (e) => {
@@ -179,7 +194,8 @@ const FormCopyPage = (props) => {
             <Spacing size={16}/>
 
             <Button type='submit' size="l" mode="primary" stretched>
-                {props.strings.copy}
+                {loading && <Spinner size="small"/>}
+                {!loading && props.strings.copy}
             </Button>
         </FormLayout>
     );

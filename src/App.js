@@ -265,7 +265,6 @@ const App = withAdaptivity(() => {
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} setPageTitle={setPageTitle} groups={groups} setGroup={setGroup}
                     groupOffset={groupOffset} setGroupOffset={setGroupOffset} strings={strings}
-                    setPopout={setPopout}
                 />
             </ModalCard>
 
