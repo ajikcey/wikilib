@@ -1,7 +1,9 @@
 {
   "app_desc": "Application for working with wiki-pages in VKontakte.",
   "acquaintance": "This is an application for working with wiki-pages in VKontakte.",
+  "unloaded_app": "Failed to load application",
   "open_app": "Open the app",
+  "reload_app": "Reload",
   "open_community": "Go to community",
   "hello": "Hello",
   "recently_watched": "Recently watched",

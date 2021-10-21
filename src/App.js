@@ -35,6 +35,7 @@ import FormEditAccess from "./components/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
 import FormSortPage from "./components/FormSortPage";
 import FormCopyPage from "./components/FormCopyPage";
+import Unloaded from "./panels/Unloaded";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -148,7 +149,11 @@ const App = withAdaptivity(() => {
             setPopout(null);
         }
 
-        initData().then();
+        initData().then().catch(e => {
+            console.log('unloaded', e);
+            setPopout(null);
+            go(configData.routes.unloaded);
+        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -202,7 +207,10 @@ const App = withAdaptivity(() => {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
-        }).catch();
+        }).catch(e => {
+            console.log(e);
+
+        });
     };
 
     /**
@@ -327,6 +335,8 @@ const App = withAdaptivity(() => {
                                     id={configData.routes.about} go={go} snackbarError={snackbar}
                                     setModalData={setModalData}
                                     accessToken={accessToken} setActiveModal={setActiveModal}/>
+                                <Unloaded
+                                    strings={strings} id={configData.routes.unloaded}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

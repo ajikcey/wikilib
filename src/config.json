@@ -29,6 +29,7 @@
     "about": "about",
     "home": "home",
     "token": "token",
+    "unloaded": "unloaded",
     "intro": "intro"
   },
   "storage_keys": {
