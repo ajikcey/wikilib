@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {
     Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM
+    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM, ScreenSpinner
 } from '@vkontakte/vkui';
 
 import {
@@ -28,6 +28,7 @@ const Page = ({
                   accessToken,
                   pageTitle,
                   setContent,
+                  setPopout,
                   go,
                   group,
                   strings,
@@ -151,8 +152,11 @@ const Page = ({
      * Выбор версии wiki-страницы для сохранения
      * @param item
      */
-    const selectVersion = function (item) {
-        fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
+    const selectVersion = async function (item) {
+        let system_error = null;
+
+        setPopout(<ScreenSpinner size='large'/>);
+        await fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
             if (data.response) {
                 setContent({
                     page_id: pageTitle.id,
@@ -164,18 +168,26 @@ const Page = ({
                     who_can_view: pageTitle.who_can_view,
                     who_can_edit: pageTitle.who_can_edit
                 });
-                go(configData.routes.wiki_version);
             } else {
-                handleError(strings, setSnackbar, go, {}, {
+                system_error = [{}, {
                     data: data,
                     default_error_msg: 'No response get version'
-                });
+                }];
             }
         }).catch(e => {
-            handleError(strings, setSnackbar, go, e, {
+            system_error = [e, {
                 default_error_msg: 'Error get version'
-            });
+            }];
         });
+
+        setPopout(null);
+
+        if (system_error) {
+            handleError(strings, setSnackbar, go, system_error[0], system_error[1]);
+            return;
+        }
+
+        go(configData.routes.wiki_version);
     }
 
     /**

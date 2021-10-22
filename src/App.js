@@ -319,7 +319,7 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
-                                    strings={strings}
+                                    strings={strings} setPopout={setPopout}
                                     id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
