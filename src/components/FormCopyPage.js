@@ -154,9 +154,29 @@ const FormCopyPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
+                top={props.strings.page_title}
+                status={titleError ? 'error' : ''}
+                bottom={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <Caption>{titleError && titleError.error_msg ? titleError.error_msg : ''}</Caption>
+                        <Caption>{title.length + '/' + configData.max_length_title}</Caption>
+                    </div>
+                }
+                style={{paddingLeft: 0, paddingRight: 0}}
+            >
+                <Input
+                    tabIndex={1}
+                    onChange={onChangeTitle}
+                    value={title}
+                    autoFocus={true}
+                    maxLength={configData.max_length_title}
+                />
+            </FormItem>
+            <FormItem
                 top={props.strings.community}
                 style={{paddingLeft: 0, paddingRight: 0}}>
                 <NativeSelect
+                    tabIndex={2}
                     onChange={onChangeGroup}
                     defaultValue={groupId}
                 >
@@ -171,24 +191,6 @@ const FormCopyPage = (props) => {
                         );
                     })}
                 </NativeSelect>
-            </FormItem>
-            <FormItem
-                top={props.strings.page_title}
-                status={titleError ? 'error' : ''}
-                bottom={
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <Caption>{titleError && titleError.error_msg ? titleError.error_msg : ''}</Caption>
-                        <Caption>{title.length + '/' + configData.max_length_title}</Caption>
-                    </div>
-                }
-                style={{paddingLeft: 0, paddingRight: 0}}
-            >
-                <Input
-                    onChange={onChangeTitle}
-                    value={title}
-                    autoFocus={true}
-                    maxLength={configData.max_length_title}
-                />
             </FormItem>
 
             <Spacing size={16}/>
