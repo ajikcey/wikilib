@@ -4,10 +4,11 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@happysanta/router": "^0.1.21",
     "@vkontakte/icons": "^1.131.0",
     "@vkontakte/vk-bridge": "^2.4.8",
     "@vkontakte/vk-miniapps-deploy": "0.0.25",
-    "@vkontakte/vkui": "^4.19.0",
+    "@vkontakte/vkui": "^4.20.0",
     "chalk": "^4.1.2",
     "eruda": "^2.4.1",
     "eruda-code": "^2.0.0",
