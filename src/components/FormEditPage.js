@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, Caption, FormItem, FormLayout, Snackbar, Spinner, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, savePage} from "../functions";
 
@@ -103,11 +103,9 @@ const FromEditPage = (props) => {
                 <Button
                     type='submit'
                     size="l"
+                    loading={loading}
                     stretched={platform !== VKCOM}
-                >
-                    {loading && <Spinner size="small"/>}
-                    {!loading && (props.content.version ? props.strings.apply_this_version : props.strings.save)}
-                </Button>
+                >{props.content.version ? props.strings.apply_this_version : props.strings.save}</Button>
             </FormItem>
         </FormLayout>
     );

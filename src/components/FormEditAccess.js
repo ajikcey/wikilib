@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, FormItem, FormLayout, Radio, Snackbar, Spinner} from "@vkontakte/vkui";
+import {Button, FormItem, FormLayout, Radio, Snackbar} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, nameAccess} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
@@ -116,10 +116,13 @@ const FormEditAccess = (props) => {
                     onChange={onChangeWho_can_edit}
                 >{nameAccess(configData.wiki_access.staff, props.strings)}</Radio>
             </FormItem>
-            <Button type='submit' size="l" mode="primary" stretched>
-                {loading && <Spinner size="small"/>}
-                {!loading && props.strings.save}
-            </Button>
+            <Button
+                loading={loading}
+                type='submit'
+                size="l"
+                mode="primary"
+                stretched
+            >{props.strings.save}</Button>
         </FormLayout>
     );
 }

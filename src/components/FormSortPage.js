@@ -78,7 +78,12 @@ const FormEditAccess = (props) => {
                 />
             </FormItem>
             <FormItem>
-                <Button type='submit' size="l" mode="primary" stretched>{props.strings.apply}</Button>
+                <Button
+                    type='submit'
+                    size="l"
+                    mode="primary"
+                    stretched
+                >{props.strings.apply}</Button>
             </FormItem>
         </FormLayout>
     );

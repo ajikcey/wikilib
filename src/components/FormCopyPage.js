@@ -4,7 +4,7 @@ import {
     FormLayout,
     Input,
     NativeSelect,
-    Spacing, Spinner
+    Spacing
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
@@ -195,10 +195,13 @@ const FormCopyPage = (props) => {
 
             <Spacing size={16}/>
 
-            <Button type='submit' size="l" mode="primary" stretched>
-                {loading && <Spinner size="small"/>}
-                {!loading && props.strings.copy}
-            </Button>
+            <Button
+                loading={loading}
+                type='submit'
+                size="l"
+                mode="primary"
+                stretched
+            >{props.strings.copy}</Button>
         </FormLayout>
     );
 }

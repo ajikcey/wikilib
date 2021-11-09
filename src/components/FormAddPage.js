@@ -1,5 +1,5 @@
 import configData from "../config.json";
-import {Button, Caption, FormItem, FormLayout, Input, Spinner} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 
@@ -139,10 +139,13 @@ const FormAddPage = (props) => {
                     maxLength={configData.max_length_title}
                 />
             </FormItem>
-            <Button type='submit' size="l" mode="primary" stretched>
-                {loading && <Spinner size="small"/>}
-                {!loading && props.strings.create}
-            </Button>
+            <Button
+                loading={loading}
+                type='submit'
+                size="l"
+                mode="primary"
+                stretched
+            >{props.strings.create}</Button>
         </FormLayout>
     );
 }
