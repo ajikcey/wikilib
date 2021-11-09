@@ -9,13 +9,13 @@ import {
     PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Counter, PanelHeaderButton, Button
+    Counter, Button
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import {
     Icon24Filter,
-    Icon28AddOutline, Icon28InfoOutline,
+    Icon28AddOutline,
     Icon32SearchOutline, Icon48BlockOutline,
 } from "@vkontakte/icons";
 import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../functions";
@@ -25,7 +25,6 @@ import bridge from "@vkontakte/vk-bridge";
 const Pages = ({
                    id,
                    accessToken,
-                   queryParams,
                    group,
                    pageSort,
                    strings,
@@ -157,20 +156,14 @@ const Pages = ({
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={(queryParams.vk_group_id ?
-                    <PanelHeaderButton><Icon28InfoOutline onClick={() => {
-                        go(configData.routes.about)
-                    }}/></PanelHeaderButton> : <PanelHeaderBack onClick={back}/>)}
+                left={<PanelHeaderBack onClick={back}/>}
             >
-                {(!queryParams.vk_group_id) && <PanelHeaderContent
+                <PanelHeaderContent
                     status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
                     before={<Avatar size={36} src={group.photo_100}/>}
                 >
                     {group.name}
                 </PanelHeaderContent>
-                }
-                {(!!queryParams.vk_group_id) && <Fragment>{configData.name}</Fragment>
-                }
             </PanelHeader>
             {(!!group.deactivated) &&
             <Group>
@@ -188,8 +181,7 @@ const Pages = ({
                 <Header
                     mode="primary"
                     indicator={pages ? pages.length : 0}
-                >
-                    {strings.wiki_pages}</Header>
+                >{strings.wiki_pages}</Header>
 
                 <Search
                     placeholder={strings.search_pages}
@@ -201,8 +193,7 @@ const Pages = ({
                 <CellButton
                     before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
                     onClick={addPage}
-                >
-                    {strings.new_page}</CellButton>
+                >{strings.new_page}</CellButton>
 
                 {(!pages) && <PanelSpinner/>}
                 {(pages && pages.length < 1) &&

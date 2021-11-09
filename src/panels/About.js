@@ -28,14 +28,12 @@ const About = ({
                    accessToken,
                    setModalData,
                    setActiveModal,
-                   strings,
-                   queryParams
+                   strings
                }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [app, setApp] = useState(null);
 
     useEffect(() => {
-
         fetchApp(accessToken.access_token).then(data => {
             if (data.response) {
                 data.response.profiles.reverse(); // Show last friends first
@@ -104,11 +102,7 @@ const About = ({
     }
 
     const back = function () {
-        if (queryParams.vk_group_id) {
-            go(configData.routes.pages);
-        } else {
-            go(configData.routes.home);
-        }
+        go(configData.routes.home);
     }
 
     return (

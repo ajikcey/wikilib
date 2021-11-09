@@ -212,7 +212,7 @@ const Page = ({
      */
     const copyPage = () => {
         setModalData({
-            group_id: infoPage.group_id,
+            group: group,
             title: infoPage.title,
             text: infoPage.source,
             setSnackbar: setSnackbar,

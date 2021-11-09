@@ -117,9 +117,6 @@ const App = withAdaptivity(() => {
                         if (data[configData.storage_keys.access_token]) {
                             fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
                                 if (data.response) {
-
-                                    setGroups({items: data.response, count: data.response.length}); // список групп для копирования страницы в установленном сообществе
-
                                     setGroup(data.response[0]);
                                     go(configData.routes.pages);
                                 } else {
@@ -209,7 +206,6 @@ const App = withAdaptivity(() => {
             }
         }).catch(e => {
             console.log(e);
-
         });
     };
 
@@ -217,7 +213,6 @@ const App = withAdaptivity(() => {
      * Закрытие модального окна
      */
     const onCloseModal = function () {
-        setModalData({});
         setActiveModal(null); // null для скрытия
     };
 
@@ -271,8 +266,8 @@ const App = withAdaptivity(() => {
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} setPageTitle={setPageTitle} groups={groups} setGroup={setGroup}
-                    groupOffset={groupOffset} setGroupOffset={setGroupOffset} strings={strings}
+                    go={go} setPageTitle={setPageTitle} setGroup={setGroup}
+                    setGroupOffset={setGroupOffset} strings={strings}
                 />
             </ModalCard>
 

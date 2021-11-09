@@ -6,8 +6,8 @@ import {
     NativeSelect,
     Spacing
 } from "@vkontakte/vkui";
-import React, {useState} from "react";
-import {fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
+import React, {useEffect, useState} from "react";
+import {fetchGroups, fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
 import configData from "../config.json";
 
 /**
@@ -16,10 +16,11 @@ import configData from "../config.json";
  * @constructor
  */
 const FormCopyPage = (props) => {
-    const [groupId, setGroupId] = useState(props.modalData.group_id);
+    const [groupId, setGroupId] = useState(props.modalData.group.id);
     const [title, setTitle] = useState(props.modalData.title);
     const [titleError, setTitleError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [groups, setGroups] = useState({items: [props.modalData.group], count: 1});
 
     const onSubmit = async (e) => {
         let system_error = null;
@@ -77,7 +78,7 @@ const FormCopyPage = (props) => {
         await savePage(null, groupId, props.accessToken.access_token, title, props.modalData.text).then(async data => {
             if (data.response) {
 
-                if (groupId !== props.modalData.group_id) {
+                if (groupId !== props.modalData.group.id) {
                     await fetchGroupsById([groupId], props.accessToken.access_token).then(data => {
                         if (data.response) {
                             props.setGroup(data.response[0]);
@@ -151,6 +152,16 @@ const FormCopyPage = (props) => {
         setGroupId(+e.target.value);
     };
 
+    useEffect(() => {
+        fetchGroups(0, props.accessToken.access_token).then(data => {
+            if (data.response) {
+                setGroups(data.response);
+            }
+        }).catch();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
@@ -162,7 +173,7 @@ const FormCopyPage = (props) => {
                         <Caption>{title.length + '/' + configData.max_length_title}</Caption>
                     </div>
                 }
-                style={{paddingLeft: 0, paddingRight: 0}}
+                style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}
             >
                 <Input
                     tabIndex={1}
@@ -174,13 +185,13 @@ const FormCopyPage = (props) => {
             </FormItem>
             <FormItem
                 top={props.strings.community}
-                style={{paddingLeft: 0, paddingRight: 0}}>
+                style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}>
                 <NativeSelect
                     tabIndex={2}
                     onChange={onChangeGroup}
-                    defaultValue={groupId}
+                    defaultValue={props.modalData.group.id}
                 >
-                    {props.groups && props.groups.items && props.groups.items.map((group, index) => {
+                    {groups && groups.items && groups.items.map((group, index) => {
                         return (
                             <option
                                 key={index}
