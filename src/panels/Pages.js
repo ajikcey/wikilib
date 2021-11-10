@@ -20,7 +20,6 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../functions";
 import IconPage from "../components/IconPage";
-import bridge from "@vkontakte/vk-bridge";
 
 const Pages = ({
                    id,
@@ -29,11 +28,11 @@ const Pages = ({
                    pageSort,
                    strings,
                    go,
-                   lastGroupIds,
                    setPageTitle,
                    setActiveModal,
                    setModalData,
                    snackbarError,
+                   addLastGroup,
                    pages,
                    setPages
                }) => {
@@ -43,30 +42,6 @@ const Pages = ({
     let pageCount = 0;
 
     useEffect(() => {
-
-        /**
-         * @returns {Promise}
-         */
-        async function saveLastGroup() {
-            const index = lastGroupIds.indexOf(group.id);
-
-            if (index > -1) {
-                // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
-                lastGroupIds.splice(index, 1);
-            }
-
-            lastGroupIds.unshift(group.id);
-
-            if (lastGroupIds.length > configData.max_last_groups) {
-                lastGroupIds.splice(configData.max_last_groups, lastGroupIds.length - configData.max_last_groups);
-            }
-
-            return bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.last_groups,
-                value: JSON.stringify(lastGroupIds)
-            });
-        }
-
         /**
          * Получение wiki-страниц сообщества
          * @returns {Promise<void>}
@@ -114,7 +89,7 @@ const Pages = ({
         }
 
         fetchGroupPages().then(() => {
-            saveLastGroup().then().catch();
+            addLastGroup(group);
         }).catch();
 
         // eslint-disable-next-line

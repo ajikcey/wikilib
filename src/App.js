@@ -43,7 +43,6 @@ const App = withAdaptivity(() => {
     const [user, setUser] = useState(null);
     const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
     const [userStatus, setUserStatus] = useState(null);
-    const [lastGroupIds, setLastGroupIds] = useState([]);
     const [groups, setGroups] = useState(null);
     const [lastGroups, setLastGroups] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
@@ -110,29 +109,34 @@ const App = withAdaptivity(() => {
 
                 setUserStatus(data[configData.storage_keys.status]);
                 setAccessToken(data[configData.storage_keys.access_token]);
-                setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
-                    if (queryParams.vk_group_id) {
-                        if (data[configData.storage_keys.access_token]) {
-                            fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
-                                if (data.response) {
-                                    setGroup(data.response[0]);
-                                    go(configData.routes.pages);
-                                } else {
-                                    handleError(strings, setSnackbar, go, {}, {
-                                        default_error_msg: 'No response get groups by id'
+
+                    const lastGroupIds = Object.values(data[configData.storage_keys.last_groups]);
+                    fetchLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token).then(() => {
+
+                        if (queryParams.vk_group_id) {
+                            // если открыто приложение сообщества
+                            if (data[configData.storage_keys.access_token]) {
+                                fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
+                                    if (data.response) {
+                                        setGroup(data.response[0]);
+                                        go(configData.routes.pages);
+                                    } else {
+                                        handleError(strings, setSnackbar, go, {}, {
+                                            default_error_msg: 'No response get groups by id'
+                                        });
+                                    }
+                                }).catch(e => {
+                                    handleError(strings, setSnackbar, go, e, {
+                                        default_error_msg: 'Error get groups by id'
                                     });
-                                }
-                            }).catch(e => {
-                                handleError(strings, setSnackbar, go, e, {
-                                    default_error_msg: 'Error get groups by id'
                                 });
-                            });
+                            }
+                        } else {
+                            go(configData.routes.home);
                         }
-                    } else {
-                        go(configData.routes.home);
-                    }
+                    });
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     go(configData.routes.token);
                 }
@@ -163,6 +167,59 @@ const App = withAdaptivity(() => {
         setSnackbar(false);
         setActivePanel(panel);
     };
+
+    /**
+     * Получение посещенных недавно сообществ
+     * @returns {Promise<void>}
+     */
+    async function fetchLastGroups(ids, access_token) {
+        return new Promise((resolve) => {
+            if (ids && ids.length > 0) {
+                fetchGroupsById(ids, access_token).then(data => {
+                    if (data.response) {
+                        setLastGroups(data.response);
+                        resolve();
+                    } else {
+                        handleError(strings, setSnackbar, go, {}, {
+                            default_error_msg: 'No response get groups by id'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(strings, setSnackbar, go, e, {
+                        default_error_msg: 'Error get groups by id'
+                    });
+                });
+            } else {
+                setLastGroups([]);
+                resolve();
+            }
+        });
+    }
+
+    /**
+     * Добавление просмотренного сообщества
+     * @param added_group
+     */
+    function addLastGroup(added_group) {
+        const group_ids = lastGroups.map(g => g.id);
+        const index = group_ids.indexOf(added_group.id);
+
+        if (index > -1) {
+            // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
+            lastGroups.splice(index, 1);
+        }
+
+        lastGroups.unshift(added_group);
+
+        if (lastGroups.length > configData.max_last_groups) {
+            lastGroups.splice(configData.max_last_groups, lastGroups.length - configData.max_last_groups);
+        }
+
+        bridge.send('VKWebAppStorageSet', {
+            key: configData.storage_keys.last_groups,
+            value: JSON.stringify(lastGroups.map(g => g.id))
+        }).then().catch();
+    }
 
     /**
      * Получение токена пользователя
@@ -305,10 +362,9 @@ const App = withAdaptivity(() => {
                                     groups={groups} setGroups={setGroups} strings={strings}
                                     lastGroups={lastGroups} setLastGroups={setLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                                    snackbarError={snackbar} lastGroupIds={lastGroupIds}
-                                    setLastGroupIds={setLastGroupIds} go={go}/>
+                                    snackbarError={snackbar} go={go}/>
                                 <Pages
-                                    pageSort={pageSort} strings={strings} lastGroupIds={lastGroupIds}
+                                    pageSort={pageSort} strings={strings} addLastGroup={addLastGroup}
                                     queryParams={queryParams} setModalData={setModalData}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}

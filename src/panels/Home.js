@@ -23,7 +23,7 @@ import {
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
-import {cutDeclNum, declOfNum, fetchGroups, fetchGroupsById, handleError, regexpSearch} from "../functions";
+import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../functions";
 
 const Home = ({
                   id,
@@ -31,10 +31,8 @@ const Home = ({
                   go,
                   strings,
                   setGroup,
-                  lastGroupIds,
                   groups,
                   setGroups,
-                  setLastGroupIds,
                   snackbarError,
                   lastGroups,
                   setLastGroups,
@@ -47,39 +45,9 @@ const Home = ({
     let groupCount = 0;
 
     useEffect(() => {
-        /**
-         * Получение посещенных недавно сообществ
-         * @returns {Promise<void>}
-         */
-        async function fetchLastGroups() {
-            return new Promise((resolve) => {
-                if (lastGroupIds.length > 0) {
-                    fetchGroupsById(lastGroupIds, accessToken.access_token).then(data => {
-                        if (data.response) {
-                            setLastGroups(data.response);
-                            resolve();
-                        } else {
-                            handleError(strings, setSnackbar, go, {}, {
-                                default_error_msg: 'No response get groups by id'
-                            });
-                        }
-                    }).catch(e => {
-                        handleError(strings, setSnackbar, go, e, {
-                            default_error_msg: 'Error get groups by id'
-                        });
-                    });
-                } else {
-                    setLastGroups([]);
-                    resolve();
-                }
-            });
+        if (!groups) {
+            moreGroups().then();
         }
-
-        fetchLastGroups().then(() => {
-            if (!groups) {
-                moreGroups().then();
-            }
-        });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -121,7 +89,6 @@ const Home = ({
      * Очистка недавно просмотренных сообществ
      */
     const clearLast = () => {
-        setLastGroupIds([]);
         setLastGroups([]);
 
         bridge.send('VKWebAppStorageSet', {
