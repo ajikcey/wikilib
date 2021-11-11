@@ -1,6 +1,5 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
-import bridge from "@vkontakte/vk-bridge";
 import {
     Avatar,
     Group,
@@ -9,21 +8,20 @@ import {
     PanelHeader,
     Cell,
     List,
-    HorizontalScroll,
-    HorizontalCell,
     Search,
     PanelHeaderButton,
     Placeholder,
     PanelSpinner,
-    Div, Footer, Link, Button
+    Div, Footer, Button
 } from '@vkontakte/vkui';
 import {
-    Icon12Verified, Icon16Clear,
+    Icon12Verified,
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
 import configData from "../config.json";
 import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../functions";
+import HorizontalScrollGroups from "../components/HorizontalScrollGroups";
 
 const Home = ({
                   id,
@@ -86,18 +84,6 @@ const Home = ({
     }
 
     /**
-     * Очистка недавно просмотренных сообществ
-     */
-    const clearLast = () => {
-        setLastGroups([]);
-
-        bridge.send('VKWebAppStorageSet', {
-            key: configData.storage_keys.last_groups,
-            value: JSON.stringify([])
-        }).then().catch();
-    }
-
-    /**
      * Выбор сообщества для показа wiki-страниц
      * @param item
      */
@@ -121,45 +107,12 @@ const Home = ({
                 {configData.name}
             </PanelHeader>
 
-            {(lastGroups && lastGroups.length > 0) &&
-            <Fragment>
-                <Group>
-                    <Header
-                        aside={<Link
-                            style={{color: 'var(--icon_secondary)'}} mode="tertiary"
-                            onClick={clearLast}
-                        >
-                            <Icon16Clear/>
-                        </Link>}>
-                        {strings.recently_watched}
-                    </Header>
-
-                    <HorizontalScroll showArrows getScrollToLeft={i => i - 320} getScrollToRight={i => i + 320}>
-                        <div style={{display: 'flex'}}>
-                            {lastGroups.map((group) => {
-                                return (
-                                    <HorizontalCell
-                                        key={group.id}
-                                        onClick={() => {
-                                            selectGroup(group)
-                                        }}
-                                        header={<div style={{
-                                            WebkitBoxOrient: 'vertical',
-                                            WebkitLineClamp: 2,
-                                            display: '-webkit-box',
-                                            overflow: 'hidden',
-                                            wordBreak: 'break-word'
-                                        }}>{group.name}</div>}
-                                    >
-                                        <Avatar size={64} src={group.photo_100}/>
-                                    </HorizontalCell>
-                                );
-                            })}
-                        </div>
-                    </HorizontalScroll>
-                </Group>
-            </Fragment>
-            }
+            <HorizontalScrollGroups
+                setLastGroups={setLastGroups}
+                selectGroup={selectGroup}
+                lastGroups={lastGroups}
+                strings={strings}
+            />
 
             <Group>
                 <Header mode="primary" indicator={groups ? groups.count : 0}>{strings.all_communities}</Header>
@@ -192,9 +145,7 @@ const Home = ({
                                     onClick={() => {
                                         selectGroup(group)
                                     }}
-                                >
-                                    {group.name}
-                                </Cell>
+                                >{group.name}</Cell>
                             );
                         })}
                     </List>
@@ -208,8 +159,7 @@ const Home = ({
                             mode="secondary"
                             size='l'
                             onClick={moreGroups}
-                        >
-                            {strings.show_more}</Button>
+                        >{strings.show_more}</Button>
                     </Div>
                     }
 
