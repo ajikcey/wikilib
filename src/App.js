@@ -314,8 +314,7 @@ const App = withAdaptivity(() => {
             >
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} setPageTitle={setPageTitle} setGroup={setGroup}
-                    strings={strings}
+                    go={go} setGroup={setGroup} strings={strings}
                 />
             </ModalCard>
 
@@ -326,8 +325,7 @@ const App = withAdaptivity(() => {
             >
                 <FormEditPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group}
-                    strings={strings}
+                    go={go} group={group} strings={strings}
                 />
             </ModalCard>
 
