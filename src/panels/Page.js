@@ -164,6 +164,7 @@ const Page = ({
                 setModalData({
                     setSnackbar: setSnackbar,
                     getPageData: getPageData,
+                    setTab: setTab,
                     version: data.response.id,
                     page_id: pageTitle.id,
                     title: data.response.title,
@@ -200,6 +201,7 @@ const Page = ({
         setModalData({
             setSnackbar: setSnackbar,
             getPageData: getPageData,
+            setTab: setTab,
             version: 0,
             page_id: infoPage.id,
             title: infoPage.title,
@@ -237,7 +239,7 @@ const Page = ({
             >
                 <PanelHeaderContent
                     status={pageTitle.title}
-                    before={<IconPage page={pageTitle}/>}
+                    before={<IconPage page={infoPage ?? pageTitle}/>}
                 >
                     {strings.wiki_page}
                 </PanelHeaderContent>
@@ -282,16 +284,6 @@ const Page = ({
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
-                            href={'https://vk.com/id' + (editor ? editor.id : pageTitle.editor_id)}
-                            target='_blank'
-                            before={<Icon28CalendarOutline width={32} height={32}/>}
-                            after={<Avatar size={32} src={editor && editor.photo_100}/>}
-                        >
-                            <InfoRow header={strings.last_modified}>
-                                {timestampToDate(infoPage.edited)}
-                            </InfoRow>
-                        </SimpleCell>
-                        <SimpleCell
                             href={'https://vk.com/id' + (creator ? creator.id : pageTitle.creator_id)}
                             target='_blank'
                             before={<Icon28CalendarOutline width={32} height={32}/>}
@@ -299,6 +291,16 @@ const Page = ({
                         >
                             <InfoRow header={strings.date_created}>
                                 {timestampToDate(infoPage.created)}
+                            </InfoRow>
+                        </SimpleCell>
+                        <SimpleCell
+                            href={'https://vk.com/id' + (editor ? editor.id : pageTitle.editor_id)}
+                            target='_blank'
+                            before={<Icon28CalendarOutline width={32} height={32}/>}
+                            after={<Avatar size={32} src={editor && editor.photo_100}/>}
+                        >
+                            <InfoRow header={strings.last_modified}>
+                                {timestampToDate(infoPage.edited)}
                             </InfoRow>
                         </SimpleCell>
 

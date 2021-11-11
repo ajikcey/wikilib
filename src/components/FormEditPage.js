@@ -67,6 +67,7 @@ const FromEditPage = (props) => {
         >{props.strings.saved}</Snackbar>);
 
         props.onCloseModal();
+        props.modalData.setTab('info');
     }
 
     /**
