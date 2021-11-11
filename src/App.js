@@ -28,7 +28,6 @@ import Token from "./panels/Token";
 import Pages from "./panels/Pages";
 import About from "./panels/About";
 import Page from "./panels/Page";
-import Version from "./panels/Version";
 import {definePlatform, fetchGroupsById, getStrings, handleError} from "./functions";
 import FormAddPage from "./components/FormAddPage";
 import FormEditAccess from "./components/FormEditAccess";
@@ -36,6 +35,7 @@ import AppModalPageHeader from "./components/AppModalPageHeader";
 import FormSortPage from "./components/FormSortPage";
 import FormCopyPage from "./components/FormCopyPage";
 import Unloaded from "./panels/Unloaded";
+import FormEditPage from "./components/FormEditPage";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -53,17 +53,6 @@ const App = withAdaptivity(() => {
     const [pages, setPages] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
-    const [content, setContent] = useState({
-        version: 0,
-        page_id: 0,
-        group_id: 0,
-        title: "",
-        source: "",
-        created: 0,
-        creator_id: 0,
-        who_can_view: 0,
-        who_can_edit: 0
-    });
 
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
@@ -180,11 +169,13 @@ const App = withAdaptivity(() => {
                         setLastGroups(data.response);
                         resolve();
                     } else {
+                        setLastGroups([]);
                         handleError(strings, setSnackbar, go, {}, {
                             default_error_msg: 'No response get groups by id'
                         });
                     }
                 }).catch(e => {
+                    setLastGroups([]);
                     handleError(strings, setSnackbar, go, e, {
                         default_error_msg: 'Error get groups by id'
                     });
@@ -324,7 +315,19 @@ const App = withAdaptivity(() => {
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} setPageTitle={setPageTitle} setGroup={setGroup}
-                    setGroupOffset={setGroupOffset} strings={strings}
+                    strings={strings}
+                />
+            </ModalCard>
+
+            <ModalCard
+                id={configData.modals.editPage}
+                onClose={onCloseModal}
+                header={strings.edit_page}
+            >
+                <FormEditPage
+                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    go={go} group={group}
+                    strings={strings}
                 />
             </ModalCard>
 
@@ -371,13 +374,9 @@ const App = withAdaptivity(() => {
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
                                     strings={strings} setPopout={setPopout}
-                                    id={configData.routes.page} pageTitle={pageTitle} setContent={setContent}
+                                    id={configData.routes.page} pageTitle={pageTitle}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
-                                <Version
-                                    strings={strings}
-                                    id={configData.routes.wiki_version} content={content} group={group}
-                                    accessToken={accessToken} snackbarError={snackbar} go={go}/>
                                 <Token
                                     id={configData.routes.token} strings={strings}
                                     fetchToken={fetchToken} snackbarError={snackbar}/>

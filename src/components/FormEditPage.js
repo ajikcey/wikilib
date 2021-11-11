@@ -1,6 +1,15 @@
 import configData from "../config.json";
-import {Icon24CheckCircleOutline} from "@vkontakte/icons";
-import {Button, Caption, FormItem, FormLayout, Snackbar, Textarea, usePlatform, VKCOM} from "@vkontakte/vkui";
+import {Icon24CheckCircleOutline, Icon24ExternalLinkOutline} from "@vkontakte/icons";
+import {
+    Div, Button,
+    Caption,
+    FormItem,
+    FormLayout,
+    Snackbar,
+    Textarea,
+    usePlatform,
+    VKCOM
+} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, savePage} from "../functions";
 
@@ -10,20 +19,17 @@ import {handleError, savePage} from "../functions";
  * @constructor
  */
 const FromEditPage = (props) => {
-    const [text, setText] = useState(props.content.source);
+    const [text, setText] = useState(props.modalData.source);
     const [textError, setTextError] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const platform = usePlatform();
 
     const onSubmit = async (e) => {
+        e.preventDefault();
         let system_error = null;
 
-        e.preventDefault();
-
-        if (textError) {
-            return;
-        }
+        if (textError) return;
 
         const result = {
             text: text.trim()
@@ -38,7 +44,7 @@ const FromEditPage = (props) => {
         if (loading) return;
         setLoading(true);
 
-        await savePage(props.content.page_id, props.group.id, props.accessToken.access_token, null, result.text).then(() => {
+        await savePage(props.modalData.page_id, props.group.id, props.accessToken.access_token, null, result.text).then(() => {
             // success
         }).catch(e => {
             system_error = [e, {
@@ -49,15 +55,18 @@ const FromEditPage = (props) => {
         if (system_error) {
             handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
             setLoading(false);
+            props.onCloseModal();
             return;
         }
 
-        props.setSnackbar(<Snackbar
-            onClose={() => props.setSnackbar(null)}
+        props.modalData.getPageData().then();
+
+        props.modalData.setSnackbar(<Snackbar
+            onClose={() => props.modalData.setSnackbar(null)}
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >{props.strings.saved}</Snackbar>);
 
-        props.go(configData.routes.page);
+        props.onCloseModal();
     }
 
     /**
@@ -77,7 +86,7 @@ const FromEditPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                top={props.strings.text}
+                style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
                 status={textError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -86,11 +95,9 @@ const FromEditPage = (props) => {
                     </div>
                 }
             >
-                <div
-                    style={{position: 'relative'}}
-                >
+                <div style={{position: 'relative'}}>
                     <Textarea
-                        rows={20}
+                        rows={30}
                         name='text'
                         placeholder={props.strings.enter_text}
                         onChange={onChangeText}
@@ -99,13 +106,26 @@ const FromEditPage = (props) => {
                     />
                 </div>
             </FormItem>
-            <FormItem style={{textAlign: 'right'}}>
-                <Button
-                    type='submit'
-                    size="l"
-                    loading={loading}
-                    stretched={platform !== VKCOM}
-                >{props.content.version ? props.strings.apply_this_version : props.strings.save}</Button>
+            <FormItem
+                style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
+            >
+                <Div style={{display: 'flex', padding: 0}}>
+                    {(platform === VKCOM) &&
+                    <Button
+                        size="l" mode="secondary"
+                        style={{marginRight: 8}}
+                        href={'https://vk.com/page-' + props.group.id + '_' + props.modalData.page_id + '?act=edit&section=edit' + (props.modalData.version ? '&hid=' + props.modalData.version : '')}
+                        target='_blank' rel='noreferrer' stretched={1}
+                        after={<Icon24ExternalLinkOutline/>}
+                    >{props.strings.open_vk_editor}</Button>
+                    }
+                    <Button
+                        type='submit'
+                        size="l"
+                        loading={loading}
+                        stretched={1}
+                    >{props.modalData.version ? props.strings.apply_this_version : props.strings.save}</Button>
+                </Div>
             </FormItem>
         </FormLayout>
     );

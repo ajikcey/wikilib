@@ -14,13 +14,10 @@ const FormAddPage = (props) => {
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e) => {
+        e.preventDefault();
         let system_error = null;
 
-        e.preventDefault();
-
-        if (titleError) {
-            return;
-        }
+        if (titleError) return;
 
         const result = {
             title: title.trim()

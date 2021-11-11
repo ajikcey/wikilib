@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {
     Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
     Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM, ScreenSpinner
+    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM
 } from '@vkontakte/vkui';
 
 import {
@@ -27,8 +27,6 @@ const Page = ({
                   id,
                   accessToken,
                   pageTitle,
-                  setContent,
-                  setPopout,
                   go,
                   group,
                   strings,
@@ -47,7 +45,32 @@ const Page = ({
 
     useEffect(() => {
 
-        fetchPage(pageTitle.id, pageTitle.group_id, 1, accessToken.access_token).then(data => {
+        getPageData().then();
+
+        fetchHistory(pageTitle.id, pageTitle.group_id, accessToken.access_token).then(data => {
+            if (data.response) {
+                setHistory(data.response);
+            } else {
+                setHistory([]);
+
+                handleError(strings, setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get history'
+                });
+            }
+        }).catch(e => {
+            setHistory([]);
+
+            handleError(strings, setSnackbar, go, e, {
+                default_error_msg: 'Error get history'
+            });
+        });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const getPageData = async () => {
+        await fetchPage(pageTitle.id, pageTitle.group_id, 1, accessToken.access_token).then(data => {
             if (data.response) {
                 fetchUsers([data.response.creator_id, data.response.editor_id], accessToken.access_token).then(data => {
                     if (data.response) {
@@ -86,28 +109,7 @@ const Page = ({
                 default_error_msg: 'Error get page'
             });
         });
-
-        fetchHistory(pageTitle.id, pageTitle.group_id, accessToken.access_token).then(data => {
-            if (data.response) {
-                setHistory(data.response);
-            } else {
-                setHistory([]);
-
-                handleError(strings, setSnackbar, go, {}, {
-                    data: data,
-                    default_error_msg: 'No response get history'
-                });
-            }
-        }).catch(e => {
-            setHistory([]);
-
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error get history'
-            });
-        });
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }
 
     /**
      * Изменение настройки, кто может просматривать страницу
@@ -155,12 +157,13 @@ const Page = ({
     const selectVersion = async function (item) {
         let system_error = null;
 
-        setPopout(<ScreenSpinner size='large'/>);
         await fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
             if (data.response) {
-                setContent({
-                    page_id: pageTitle.id,
+                setModalData({
+                    setSnackbar: setSnackbar,
+                    getPageData: getPageData,
                     version: data.response.id,
+                    page_id: pageTitle.id,
                     title: data.response.title,
                     source: data.response.source,
                     edited: data.response.version_created,
@@ -180,21 +183,21 @@ const Page = ({
             }];
         });
 
-        setPopout(null);
-
         if (system_error) {
             handleError(strings, setSnackbar, go, system_error[0], system_error[1]);
             return;
         }
 
-        go(configData.routes.wiki_version);
+        setActiveModal(configData.modals.editPage);
     }
 
     /**
      * Редактирование wiki-страницы
      */
     const editPage = () => {
-        setContent({
+        setModalData({
+            setSnackbar: setSnackbar,
+            getPageData: getPageData,
             version: 0,
             page_id: infoPage.id,
             title: infoPage.title,
@@ -204,7 +207,7 @@ const Page = ({
             who_can_view: infoPage.who_can_view,
             who_can_edit: infoPage.who_can_edit
         });
-        go(configData.routes.wiki_version);
+        setActiveModal(configData.modals.editPage);
     }
 
     /**
@@ -215,7 +218,7 @@ const Page = ({
             group: group,
             title: infoPage.title,
             text: infoPage.source,
-            setSnackbar: setSnackbar,
+            setSnackbar: setSnackbar
         });
         setActiveModal(configData.modals.copyPage);
     }

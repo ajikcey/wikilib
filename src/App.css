@@ -27,3 +27,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+#editPage.vkuiModalCard--vkcom .vkuiModalCard__in {
+    max-width: 88%;
+}
