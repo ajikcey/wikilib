@@ -280,34 +280,34 @@ const Page = ({
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
-                            href={'https://vk.com/id' + pageTitle.editor_id}
+                            href={'https://vk.com/id' + (editor ? editor.id : pageTitle.editor_id)}
                             target='_blank'
                             before={<Icon28CalendarOutline width={32} height={32}/>}
                             after={<Avatar size={32} src={editor && editor.photo_100}/>}
                         >
                             <InfoRow header={strings.last_modified}>
-                                {timestampToDate(pageTitle.edited)}
+                                {timestampToDate(infoPage.edited)}
                             </InfoRow>
                         </SimpleCell>
                         <SimpleCell
-                            href={'https://vk.com/id' + pageTitle.creator_id}
+                            href={'https://vk.com/id' + (creator ? creator.id : pageTitle.creator_id)}
                             target='_blank'
                             before={<Icon28CalendarOutline width={32} height={32}/>}
                             after={<Avatar size={32} src={creator && creator.photo_100}/>}
                         >
                             <InfoRow header={strings.date_created}>
-                                {timestampToDate(pageTitle.created)}
+                                {timestampToDate(infoPage.created)}
                             </InfoRow>
                         </SimpleCell>
 
                         <Spacing separator size={16}/>
 
                         <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_view, strings)}
+                            indicator={nameAccess(infoPage.who_can_view, strings)}
                             onClick={settingAccessPage}
                         >{strings.view}</SimpleCell>
                         <SimpleCell
-                            indicator={nameAccess(pageTitle.who_can_edit, strings)}
+                            indicator={nameAccess(infoPage.who_can_edit, strings)}
                             onClick={settingAccessPage}
                         >{strings.editing}</SimpleCell>
 
