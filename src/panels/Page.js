@@ -47,25 +47,6 @@ const Page = ({
 
         getPageData().then();
 
-        fetchHistory(pageTitle.id, pageTitle.group_id, accessToken.access_token).then(data => {
-            if (data.response) {
-                setHistory(data.response);
-            } else {
-                setHistory([]);
-
-                handleError(strings, setSnackbar, go, {}, {
-                    data: data,
-                    default_error_msg: 'No response get history'
-                });
-            }
-        }).catch(e => {
-            setHistory([]);
-
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error get history'
-            });
-        });
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -231,6 +212,33 @@ const Page = ({
         go(configData.routes.pages);
     }
 
+    const tabInfo = () => {
+        setTab('info');
+    }
+
+    const tabHistory = () => {
+        setTab('history');
+
+        fetchHistory(pageTitle.id, pageTitle.group_id, accessToken.access_token).then(data => {
+            if (data.response) {
+                setHistory(data.response);
+            } else {
+                setHistory([]);
+
+                handleError(strings, setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No response get history'
+                });
+            }
+        }).catch(e => {
+            setHistory([]);
+
+            handleError(strings, setSnackbar, go, e, {
+                default_error_msg: 'Error get history'
+            });
+        });
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -249,12 +257,11 @@ const Page = ({
                 <Tabs>
                     <HorizontalScroll>
                         <TabsItem
-                            onClick={() => setTab('info')}
+                            onClick={tabInfo}
                             selected={tab === 'info'}
                         >{strings.info}</TabsItem>
-
                         <TabsItem
-                            onClick={() => setTab('history')}
+                            onClick={tabHistory}
                             selected={tab === 'history'}
                         >{strings.change_history}</TabsItem>
                     </HorizontalScroll>
