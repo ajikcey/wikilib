@@ -117,6 +117,8 @@ const Page = ({
     const settingAccessPage = () => {
         setModalData({
             setSnackbar: setSnackbar,
+            setInfoPage: setInfoPage,
+            infoPage: infoPage,
         });
         setActiveModal(configData.modals.accessPage);
     }

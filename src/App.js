@@ -302,8 +302,8 @@ const App = withAdaptivity(() => {
                 header={strings.accessing_page}
             >
                 <FormEditAccess
-                    modalData={modalData} pageTitle={pageTitle} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group} setPageTitle={setPageTitle} strings={strings}
+                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    go={go} group={group} strings={strings}
                 />
             </ModalCard>
 

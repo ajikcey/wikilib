@@ -11,8 +11,8 @@ import bridge from "@vkontakte/vk-bridge";
  * @constructor
  */
 const FormEditAccess = (props) => {
-    const [who_can_view, setWho_can_view] = useState(props.pageTitle.who_can_view);
-    const [who_can_edit, setWho_can_edit] = useState(props.pageTitle.who_can_edit);
+    const [who_can_view, setWho_can_view] = useState(props.modalData.infoPage.who_can_view);
+    const [who_can_edit, setWho_can_edit] = useState(props.modalData.infoPage.who_can_edit);
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async function (e) {
@@ -26,8 +26,8 @@ const FormEditAccess = (props) => {
         await bridge.send("VKWebAppCallAPIMethod", {
             method: "pages.saveAccess",
             params: {
-                page_id: props.pageTitle.id,
-                group_id: props.pageTitle.group_id,
+                page_id: props.modalData.infoPage.id,
+                group_id: props.modalData.infoPage.group_id,
                 view: who_can_view,
                 edit: who_can_edit,
                 v: configData.vk_api_version,
@@ -35,11 +35,11 @@ const FormEditAccess = (props) => {
             }
         }).then(data => {
             if (data.response) {
-                let pageTitle = props.pageTitle;
+                let infoPage = props.modalData.infoPage;
 
-                pageTitle.who_can_view = who_can_view;
-                pageTitle.who_can_edit = who_can_edit;
-                props.setPageTitle(pageTitle);
+                infoPage.who_can_view = who_can_view;
+                infoPage.who_can_edit = who_can_edit;
+                props.modalData.setInfoPage(infoPage);
             } else {
                 system_error= [{}, {
                     default_error_msg: 'No response save access'
