@@ -171,6 +171,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
             if (typeof e.error_data.error_reason === 'object') {
                 if (e.error_data.error_reason.error_code === 5) {
                     go(configData.routes.token);
+                    return;
                 } else if (e.error_data.error_reason.error_code === 6) {
                     error_msg = strings.too_many_requests_per_second;
                 } else if (e.error_data.error_reason.error_code === 15) {
@@ -198,6 +199,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
         } else if (e.error_data.error_code) {
             if (e.error_data.error_code === 5) {
                 go(configData.routes.token);
+                return;
             } else if (e.error_data.error_code === 6) {
                 error_msg = strings.too_many_requests_per_second;
             } else if (e.error_data.error_code === 15) {
