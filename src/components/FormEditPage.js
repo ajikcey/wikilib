@@ -87,7 +87,7 @@ const FromEditPage = (props) => {
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
-                style={{paddingBottom: 0}}
+                style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
                 status={textError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -107,7 +107,9 @@ const FromEditPage = (props) => {
                     />
                 </div>
             </FormItem>
-            <FormItem>
+            <FormItem
+                style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
+            >
                 <Div style={{display: 'flex', padding: 0}}>
                     {(platform === VKCOM) &&
                     <Button
