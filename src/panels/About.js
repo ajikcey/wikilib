@@ -159,7 +159,6 @@ const About = ({
                             weight="medium"
                         >
                             {app.items[0].title}
-                            >{app.items[0].title}
                         </Title>
                         <Text
                             style={{
