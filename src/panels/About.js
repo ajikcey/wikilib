@@ -10,14 +10,17 @@ import {
     Avatar,
     CellButton,
     Snackbar,
-    PanelSpinner, Title, Text, UsersStack, Spacing, SimpleCell, Placeholder
+    PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, SimpleCell
 } from '@vkontakte/vkui';
 
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon12Verified, Icon24CheckCircleOutline,
-    Icon28BookmarkOutline, Icon28UsersOutline, Icon32SearchOutline
+    Icon28BookmarkOutline,
+    Icon24CheckCircleOutline,
+    Icon28Notifications,
+    Icon28UsersOutline,
+    Icon32SearchOutline, Icon28MessageOutline, Icon12Verified, Icon28LikeOutline
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp} from "../functions";
 
@@ -101,6 +104,30 @@ const About = ({
         });
     }
 
+    /**
+     * Запросить разрешение на отправку уведомлений
+     * @returns {Promise<void>}
+     */
+    const AllowNotifications = async () => {
+        await bridge.send("VKWebAppAllowNotifications").then((data) => {
+            if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                }
+
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >{strings.allowed}</Snackbar>);
+            } else {
+                handleError(strings, setSnackbar, go, {}, {
+                    data: data,
+                    default_error_msg: 'No result VKWebAppAllowNotifications'
+                });
+            }
+        }).catch();
+    }
+
     const back = function () {
         go(configData.routes.home);
     }
@@ -132,6 +159,7 @@ const About = ({
                             weight="medium"
                         >
                             {app.items[0].title}
+                            >{app.items[0].title}
                         </Title>
                         <Text
                             style={{
@@ -164,15 +192,27 @@ const About = ({
                         {strings.app_desc}
                     </Div>
                     <CellButton
+                        before={<Icon28Notifications/>}
+                        onClick={AllowNotifications}
+                    >{strings.allow_notifications}</CellButton>
+                    <CellButton
                         before={<Icon28BookmarkOutline/>}
                         onClick={AddToFavorites}
-                    >
-                        {strings.save_to_bookmarks}</CellButton>
+                    >{strings.save_to_bookmarks}</CellButton>
                     <CellButton
                         before={<Icon28UsersOutline/>}
                         onClick={AddToCommunity}
-                    >
-                        {strings.add_to_community}</CellButton>
+                    >{strings.add_to_community}</CellButton>
+                    <CellButton
+                        before={<Icon28LikeOutline/>}
+                        href='https://vk.com/topic-205670119_48228061'
+                        target='_blank'
+                    >{strings.write_feedback}</CellButton>
+                    <CellButton
+                        before={<Icon28MessageOutline/>}
+                        href={'https://vk.com/im?sel=-' + app.groups[0].id}
+                        target='_blank'
+                    >{strings.contact_support}</CellButton>
                 </Group>
                 <Group>
                     <Header mode='secondary'>{strings.developer}</Header>
@@ -182,9 +222,7 @@ const About = ({
                         before={<Avatar size={48} src={app.groups[0].photo_100}/>}
                         badge={app.groups[0].verified ? <Icon12Verified/> : null}
                         description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                    >
-                        {app.groups[0].name}
-                    </SimpleCell>
+                    >{app.groups[0].name}</SimpleCell>
                 </Group>
             </Fragment>
             }
