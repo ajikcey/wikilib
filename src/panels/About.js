@@ -16,14 +16,8 @@ import {
 import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
-    Icon12Verified,
-    Icon24CheckCircleOutline,
-    Icon28BookmarkOutline,
-    Icon28LikeOutline,
-    Icon28MessageOutline,
-    Icon28Notifications,
-    Icon28UsersOutline,
-    Icon32SearchOutline
+    Icon12Verified, Icon24CheckCircleOutline,
+    Icon28BookmarkOutline, Icon28UsersOutline, Icon32SearchOutline
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp} from "../functions";
 
@@ -85,7 +79,8 @@ const About = ({
                     default_error_msg: 'No result AddToFavorites'
                 });
             }
-        }).catch();
+        }).catch(() => {
+        });
     }
 
     /**
@@ -102,31 +97,8 @@ const About = ({
                 setModalData({group_id: data.group_id});
                 setActiveModal(configData.modals.redirectToCommunity);
             }
-        }).catch();
-    }
-
-    /**
-     * Запросить разрешение на отправку уведомлений
-     * @returns {Promise<void>}
-     */
-    const AllowNotifications = async () => {
-        await bridge.send("VKWebAppAllowNotifications").then((data) => {
-            if (data.result === true) {
-                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
-                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
-                }
-
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{strings.allowed}</Snackbar>);
-            } else {
-                handleError(strings, setSnackbar, go, {}, {
-                    data: data,
-                    default_error_msg: 'No result VKWebAppAllowNotifications'
-                });
-            }
-        }).catch();
+        }).catch(() => {
+        });
     }
 
     const back = function () {
@@ -158,7 +130,8 @@ const About = ({
                         <Title
                             style={{marginBottom: 0, marginTop: 5}} level="2"
                             weight="medium"
-                        >{app.items[0].title}
+                        >
+                            {app.items[0].title}
                         </Title>
                         <Text
                             style={{
@@ -187,38 +160,30 @@ const About = ({
                 </Group>
                 <Group>
                     <Header mode='secondary'>{strings.about_app}</Header>
-                    <Div>{strings.app_desc}</Div>
-                    <CellButton
-                        before={<Icon28Notifications/>}
-                        onClick={AllowNotifications}
-                    >{strings.allow_notifications}</CellButton>
+                    <Div>
+                        {strings.app_desc}
+                    </Div>
                     <CellButton
                         before={<Icon28BookmarkOutline/>}
                         onClick={AddToFavorites}
-                    >{strings.save_to_bookmarks}</CellButton>
+                    >
+                        {strings.save_to_bookmarks}</CellButton>
                     <CellButton
                         before={<Icon28UsersOutline/>}
                         onClick={AddToCommunity}
-                    >{strings.add_to_community}</CellButton>
-                    <CellButton
-                        before={<Icon28LikeOutline/>}
-                        href='https://vk.com/topic-205670119_48228061'
-                        target='_blank'
-                    >{strings.write_feedback}</CellButton>
-                    <CellButton
-                        before={<Icon28MessageOutline/>}
-                        href={'https://vk.com/im?sel=-' + app.groups[0].id}
-                        target='_blank'
-                    >{strings.contact_support}</CellButton>
+                    >
+                        {strings.add_to_community}</CellButton>
                 </Group>
                 <Group>
                     <Header mode='secondary'>{strings.developer}</Header>
+
                     <SimpleCell
                         href={'https://vk.com/' + app.groups[0].screen_name} target='_blank'
                         before={<Avatar size={48} src={app.groups[0].photo_100}/>}
                         badge={app.groups[0].verified ? <Icon12Verified/> : null}
                         description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                    >{app.groups[0].name}
+                    >
+                        {app.groups[0].name}
                     </SimpleCell>
                 </Group>
             </Fragment>
