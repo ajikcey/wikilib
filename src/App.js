@@ -318,18 +318,16 @@ const App = withAdaptivity(() => {
                 />
             </ModalCard>
 
-            <ModalPage
+            <ModalCard
                 id={configData.modals.editPage}
                 onClose={onCloseModal}
-                header={<AppModalPageHeader
-                    onClose={onCloseModal}
-                >{strings.edit_page}</AppModalPageHeader>}
+                header={strings.edit_page}
             >
                 <FormEditPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} group={group} strings={strings}
                 />
-            </ModalPage>
+            </ModalCard>
 
             <ModalPage
                 id={configData.modals.sortPage}
@@ -337,7 +335,8 @@ const App = withAdaptivity(() => {
                 header={<AppModalPageHeader
                     onClose={onCloseModal}
                     onSubmitFormId='formSortPage'
-                >{strings.sorting}</AppModalPageHeader>}
+                >
+                    {strings.sorting}</AppModalPageHeader>}
             >
                 <FormSortPage
                     modalData={modalData} pageSort={pageSort} setPageSort={setPageSort} strings={strings}
