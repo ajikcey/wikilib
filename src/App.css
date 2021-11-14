@@ -1,5 +1,5 @@
 ::-webkit-scrollbar {
-    width: 0; /* убрано, потому что из-за правого скролбара перестает работать горизонтальный список */
+    width: 5px;
     background: var(--background_highlighted);
 }
 
