@@ -1,13 +1,3 @@
-::-webkit-scrollbar {
-    width: 0; /* убрано, потому что из-за правого скролбара перестает работать горизонтальный список */
-    background: var(--background_highlighted);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--background_highlighted);
-    border-radius: 5px;
-}
-
 .vkuiSimpleCell__indicator {
     flex-shrink: 0;
 }
