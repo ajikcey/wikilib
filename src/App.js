@@ -347,11 +347,11 @@ const App = withAdaptivity(() => {
     );
 
     return (
-        <ConfigProvider platform={definePlatform(queryParams)}>
+        <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={true}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
-                        <SplitCol>
+                        <SplitCol animate={true}>
                             <View activePanel={activePanel}>
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
