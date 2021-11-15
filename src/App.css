@@ -31,8 +31,3 @@
 #editPage.vkuiModalCard--vkcom .vkuiModalCard__in {
     max-width: 88%;
 }
-
-textarea {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
