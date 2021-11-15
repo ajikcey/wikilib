@@ -12,7 +12,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, usePlatform, VKCOM
+    ModalCard, ModalPage
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -53,8 +53,6 @@ const App = withAdaptivity(() => {
     const [pages, setPages] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
-
-    const platform = usePlatform();
 
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
@@ -352,7 +350,7 @@ const App = withAdaptivity(() => {
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
-                        <SplitCol animate={platform !== VKCOM}>
+                        <SplitCol animate={true}>
                             <View activePanel={activePanel}>
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
