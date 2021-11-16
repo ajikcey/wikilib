@@ -35,7 +35,6 @@ import AppModalPageHeader from "./components/AppModalPageHeader";
 import FormSortPage from "./components/FormSortPage";
 import FormCopyPage from "./components/FormCopyPage";
 import Unloaded from "./panels/Unloaded";
-import FormEditPage from "./components/FormEditPage";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -314,17 +313,6 @@ const App = withAdaptivity(() => {
                 <FormCopyPage
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} setGroup={setGroup} strings={strings}
-                />
-            </ModalCard>
-
-            <ModalCard
-                id={configData.modals.editPage}
-                onClose={onCloseModal}
-                header={strings.edit_page}
-            >
-                <FormEditPage
-                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
-                    go={go} group={group} strings={strings}
                 />
             </ModalCard>
 

@@ -66,8 +66,8 @@ const FromEditPage = (props) => {
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >{props.strings.saved}</Snackbar>);
 
-        props.onCloseModal();
         props.modalData.setTab('info');
+        props.onCloseModal();
     }
 
     /**
@@ -85,14 +85,14 @@ const FromEditPage = (props) => {
     }
 
     return (
-        <FormLayout onSubmit={onSubmit}>
+        <FormLayout onSubmit={onSubmit} >
             <FormItem
-                style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
+                style={{padding: 0}}
                 status={textError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <Caption>{textError && textError.error_msg ? textError.error_msg : ''}</Caption>
-                        <Caption>{text.length + '/' + configData.max_length_text}</Caption>
+                        <Caption>{text ? text.length : 0 + '/' + configData.max_length_text}</Caption>
                     </div>
                 }
             >
@@ -127,6 +127,16 @@ const FromEditPage = (props) => {
                         stretched={1}
                     >{props.modalData.version ? props.strings.apply_this_version : props.strings.save}</Button>
                 </Div>
+                {(platform !== VKCOM) &&
+                <Button
+                    type='button'
+                    style={{marginTop: 8}}
+                    onClick={props.onCloseModal}
+                    size="l"
+                    mode="secondary"
+                    stretched={1}
+                >{props.strings.cancel}</Button>
+                }
             </FormItem>
         </FormLayout>
     );

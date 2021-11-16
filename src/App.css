@@ -28,6 +28,11 @@
     box-sizing: border-box;
 }
 
-#editPage.vkuiModalCard--vkcom .vkuiModalCard__in {
-    max-width: 88%;
+.formEditPage {
+    width: 100%;
+    max-width: 640px;
+}
+
+.formEditPage.formEditPage--vkcom {
+    width: 80%;
 }

@@ -43,7 +43,6 @@
     "addPage": "addPage",
     "sortPage": "sortPage",
     "copyPage": "copyPage",
-    "editPage": "editPage",
     "accessPage": "accessPage"
   }
 }
