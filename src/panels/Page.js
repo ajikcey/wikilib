@@ -22,8 +22,6 @@ import {
 } from "../functions";
 import IconPage from "../components/IconPage";
 import bridge from "@vkontakte/vk-bridge";
-import CustomPopout from "../components/CustomPopout";
-import FormEditPage from "../components/FormEditPage";
 
 const Page = ({
                   id,
@@ -32,7 +30,6 @@ const Page = ({
                   go,
                   group,
                   strings,
-                  setPopout,
                   setModalData,
                   setActiveModal,
                   snackbarError
@@ -142,11 +139,10 @@ const Page = ({
      */
     const selectVersion = async function (item) {
         let system_error = null;
-        let modalData = null;
 
         await fetchVersion(item.id, pageTitle.group_id, accessToken.access_token).then(data => {
             if (data.response) {
-                modalData = {
+                setModalData({
                     setSnackbar: setSnackbar,
                     getPageData: getPageData,
                     setTab: setTab,
@@ -158,7 +154,7 @@ const Page = ({
                     creator_id: data.response.creator_id,
                     who_can_view: pageTitle.who_can_view,
                     who_can_edit: pageTitle.who_can_edit
-                };
+                });
             } else {
                 system_error = [{}, {
                     data: data,
@@ -176,26 +172,14 @@ const Page = ({
             return;
         }
 
-        const onClose = () => setPopout(null);
-
-        if (modalData) {
-            setPopout(
-                <CustomPopout
-                    onClose={onClose}>
-                    <FormEditPage
-                        modalData={modalData} onCloseModal={onClose}
-                        accessToken={accessToken} go={go} group={group} strings={strings}
-                    />
-                </CustomPopout>
-            )
-        }
+        setActiveModal(configData.modals.editPage);
     }
 
     /**
      * Редактирование wiki-страницы
      */
     const editPage = () => {
-        const modalData = {
+        setModalData({
             setSnackbar: setSnackbar,
             getPageData: getPageData,
             setTab: setTab,
@@ -207,19 +191,8 @@ const Page = ({
             creator_id: infoPage.creator_id,
             who_can_view: infoPage.who_can_view,
             who_can_edit: infoPage.who_can_edit
-        };
-
-        const onClose = () => setPopout(null);
-
-        setPopout(
-            <CustomPopout
-                onClose={onClose}>
-                <FormEditPage
-                    modalData={modalData} onCloseModal={onClose}
-                    accessToken={accessToken} go={go} group={group} strings={strings}
-                />
-            </CustomPopout>
-        )
+        });
+        setActiveModal(configData.modals.editPage);
     }
 
     /**
