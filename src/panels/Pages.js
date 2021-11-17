@@ -88,12 +88,14 @@ const Pages = ({
             });
         }
 
-        fetchGroupPages().then(() => {
-            addLastGroup(group);
-        }).catch();
+        if (group) {
+            fetchGroupPages().then(() => {
+                addLastGroup(group);
+            }).catch();
+        }
 
         // eslint-disable-next-line
-    }, []);
+    }, [group]); // ждем получение группы из родительского потока
 
     /**
      * Выбор wiki-страницы для показа информации
@@ -129,79 +131,86 @@ const Pages = ({
 
     return (
         <Panel id={id}>
-            <PanelHeader
-                mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
-            >
-                <PanelHeaderContent
-                    status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                    before={<Avatar size={36} src={group.photo_100}/>}
+            {(!group) && <PanelSpinner/>}
+
+            {group &&
+            <Fragment>
+                <PanelHeader
+                    mode="secondary"
+                    left={<PanelHeaderBack onClick={back}/>}
                 >
-                    {group.name}
-                </PanelHeaderContent>
-            </PanelHeader>
-            {(!!group.deactivated) &&
-            <Group>
-                <Placeholder
-                    icon={<Icon48BlockOutline style={{color: 'var(--destructive)'}}/>}
-                    header={strings.access_denied}
-                    action={<Button size="l" onClick={back}>{strings.back}</Button>}
-                >
-                    {strings.group_deactivated}
-                </Placeholder>
-            </Group>
-            }
-            {(!group.deactivated) &&
-            <Group>
-                <Header
-                    mode="primary"
-                    indicator={pages ? pages.length : 0}
-                >{strings.wiki_pages}</Header>
-
-                <Search
-                    placeholder={strings.search_pages}
-                    onChange={onChangeSearch}
-                    icon={<Icon24Filter/>}
-                    onIconClick={onFiltersClick}
-                    maxLength={configData.max_length_title}
-                />
-                <CellButton
-                    before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
-                    onClick={addPage}
-                >{strings.new_page}</CellButton>
-
-                {(!pages) && <PanelSpinner/>}
-                {(pages && pages.length < 1) &&
-                <Fragment>
-                    <Placeholder icon={<Icon32SearchOutline/>}>{strings.no_pages_found}</Placeholder>
-                </Fragment>
+                    <PanelHeaderContent
+                        status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
+                        before={<Avatar size={36} src={group.photo_100}/>}
+                    >
+                        {group.name}
+                    </PanelHeaderContent>
+                </PanelHeader>
+                {(!!group.deactivated) &&
+                <Group>
+                    <Placeholder
+                        icon={<Icon48BlockOutline style={{color: 'var(--destructive)'}}/>}
+                        header={strings.access_denied}
+                        action={<Button size="l" onClick={back}>{strings.back}</Button>}
+                    >
+                        {strings.group_deactivated}
+                    </Placeholder>
+                </Group>
                 }
-                {(pages && pages.length > 0) &&
-                <Fragment>
-                    <List>
-                        {pages.map((page) => {
-                            if (search && !page.title.match(regexpSearch(search))) return null;
+                {(!group.deactivated) &&
+                <Group>
+                    <Header
+                        mode="primary"
+                        indicator={pages ? pages.length : 0}
+                    >{strings.wiki_pages}</Header>
 
-                            ++pageCount;
-                            return (
-                                <Cell
-                                    key={page.id} before={<IconPage page={page}/>}
-                                    indicator={<Counter>{cutNum(page.views)}</Counter>}
-                                    description={timestampToDate(page.edited) + ' ' + page.editor_name}
-                                    onClick={() => {
-                                        selectPage(page);
-                                    }}
-                                >
-                                    {page.title}
-                                </Cell>
-                            );
-                        })}
-                    </List>
-                    <Footer>{pageCount} {declOfNum(pageCount, [strings.page.toLowerCase(), strings.two_pages.toLowerCase(), strings.some_pages.toLowerCase()])}</Footer>
-                </Fragment>
+                    <Search
+                        placeholder={strings.search_pages}
+                        onChange={onChangeSearch}
+                        icon={<Icon24Filter/>}
+                        onIconClick={onFiltersClick}
+                        maxLength={configData.max_length_title}
+                    />
+                    <CellButton
+                        before={<Avatar size={38} shadow={false}><Icon28AddOutline/></Avatar>}
+                        onClick={addPage}
+                    >{strings.new_page}</CellButton>
+
+                    {(!pages) && <PanelSpinner/>}
+                    {(pages && pages.length < 1) &&
+                    <Fragment>
+                        <Placeholder icon={<Icon32SearchOutline/>}>{strings.no_pages_found}</Placeholder>
+                    </Fragment>
+                    }
+                    {(pages && pages.length > 0) &&
+                    <Fragment>
+                        <List>
+                            {pages.map((page) => {
+                                if (search && !page.title.match(regexpSearch(search))) return null;
+
+                                ++pageCount;
+                                return (
+                                    <Cell
+                                        key={page.id} before={<IconPage page={page}/>}
+                                        indicator={<Counter>{cutNum(page.views)}</Counter>}
+                                        description={timestampToDate(page.edited) + ' ' + page.editor_name}
+                                        onClick={() => {
+                                            selectPage(page);
+                                        }}
+                                    >
+                                        {page.title}
+                                    </Cell>
+                                );
+                            })}
+                        </List>
+                        <Footer>{pageCount} {declOfNum(pageCount, [strings.page.toLowerCase(), strings.two_pages.toLowerCase(), strings.some_pages.toLowerCase()])}</Footer>
+                    </Fragment>
+                    }
+                </Group>
                 }
-            </Group>
+            </Fragment>
             }
+
             {snackbar}
         </Panel>
     )

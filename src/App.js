@@ -3,7 +3,6 @@ import bridge from '@vkontakte/vk-bridge';
 import qs from 'querystring';
 import {
     View,
-    ScreenSpinner,
     AdaptivityProvider,
     AppRoot,
     ModalRoot,
@@ -12,7 +11,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage
+    ModalCard, ModalPage, useAdaptivity, ViewWidth
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -40,8 +39,7 @@ import FormEditPage from "./components/FormEditPage";
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
     const [activeModal, setActiveModal] = useState(null);
-    const [user, setUser] = useState(null);
-    const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
+    const [popout] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [groups, setGroups] = useState(null);
     const [lastGroups, setLastGroups] = useState([]);
@@ -56,6 +54,9 @@ const App = withAdaptivity(() => {
 
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
+
+    const {viewWidth} = useAdaptivity();
+    const isMobile = viewWidth <= ViewWidth.MOBILE;
 
     if (queryParams && Object.keys(queryParams).length > 0) {
         if (queryParams.vk_language === 'ru') {
@@ -77,14 +78,12 @@ const App = withAdaptivity(() => {
             if (type === 'vk-connect') {
                 if (typeof data === 'undefined') {
                     // outside VkMiniApp
-                    setPopout(null);
                     go(configData.routes.landing);
                 }
             }
         });
 
         async function initData() {
-            const user = await bridge.send('VKWebAppGetUserInfo');
             const data = {};
 
             try {
@@ -92,7 +91,7 @@ const App = withAdaptivity(() => {
                     keys: Object.values(configData.storage_keys)
                 });
 
-                await storageData.keys.forEach(({key, value}) => {
+                storageData.keys.forEach(({key, value}) => {
                     data[key] = value ? JSON.parse(value) : {};
                 });
 
@@ -100,32 +99,32 @@ const App = withAdaptivity(() => {
                 setAccessToken(data[configData.storage_keys.access_token]);
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
-
                     const lastGroupIds = Object.values(data[configData.storage_keys.last_groups]);
-                    fetchLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token).then(() => {
 
-                        if (queryParams.vk_group_id) {
-                            // если открыто приложение сообщества
-                            if (data[configData.storage_keys.access_token]) {
-                                fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
-                                    if (data.response) {
-                                        setGroup(data.response[0]);
-                                        go(configData.routes.pages);
-                                    } else {
-                                        handleError(strings, setSnackbar, go, {}, {
-                                            default_error_msg: 'No response get groups by id'
-                                        });
-                                    }
-                                }).catch(e => {
-                                    handleError(strings, setSnackbar, go, e, {
-                                        default_error_msg: 'Error get groups by id'
-                                    });
+                    if (queryParams.vk_group_id) {
+                        go(configData.routes.pages);
+
+                        await getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token);
+
+                        fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
+                            if (data.response) {
+                                setGroup(data.response[0]); // асинхронное получение данных сообщества
+                            } else {
+                                handleError(strings, setSnackbar, go, {}, {
+                                    default_error_msg: 'No response get groups by id'
                                 });
                             }
-                        } else {
-                            go(configData.routes.home);
-                        }
-                    });
+                        }).catch(e => {
+                            handleError(strings, setSnackbar, go, e, {
+                                default_error_msg: 'Error get groups by id'
+                            });
+                        });
+                    } else {
+                        go(configData.routes.home);
+
+                        getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token).then();
+                    }
+
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     go(configData.routes.token);
                 }
@@ -134,13 +133,9 @@ const App = withAdaptivity(() => {
                     default_error_msg: 'Error get data from Storage'
                 });
             }
-
-            setUser(user);
-            setPopout(null);
         }
 
         initData().then().catch(() => {
-            setPopout(null);
             go(configData.routes.unloaded);
         });
 
@@ -158,9 +153,11 @@ const App = withAdaptivity(() => {
 
     /**
      * Получение посещенных недавно сообществ
-     * @returns {Promise<void>}
+     * @param ids
+     * @param access_token
+     * @returns {Promise<unknown>}
      */
-    async function fetchLastGroups(ids, access_token) {
+    async function getLastGroups(ids, access_token) {
         return new Promise((resolve) => {
             if (ids && ids.length > 0) {
                 fetchGroupsById(ids, access_token).then(data => {
@@ -169,15 +166,9 @@ const App = withAdaptivity(() => {
                         resolve();
                     } else {
                         setLastGroups([]);
-                        handleError(strings, setSnackbar, go, {}, {
-                            default_error_msg: 'No response get groups by id'
-                        });
                     }
-                }).catch(e => {
+                }).catch(() => {
                     setLastGroups([]);
-                    handleError(strings, setSnackbar, go, e, {
-                        default_error_msg: 'Error get groups by id'
-                    });
                 });
             } else {
                 setLastGroups([]);
@@ -190,18 +181,19 @@ const App = withAdaptivity(() => {
      * Добавление просмотренного сообщества
      * @param added_group
      */
-    function addLastGroup(added_group) {
+    async function addLastGroup(added_group) {
         const group_ids = lastGroups.map(g => g.id);
-        const index = group_ids.indexOf(added_group.id);
 
+        const index = group_ids.indexOf(added_group.id);
         if (index > -1) {
-            // если сообщество уже есть в списке, удаляем его, чтобы потом добавить в начало
+            // если это сообщество уже есть в списке, удаляем его
             lastGroups.splice(index, 1);
         }
 
-        lastGroups.unshift(added_group);
+        lastGroups.unshift(added_group); // добавляем в начало
 
         if (lastGroups.length > configData.max_last_groups) {
+            // ограничиваем количество недавних сообществ
             lastGroups.splice(configData.max_last_groups, lastGroups.length - configData.max_last_groups);
         }
 
@@ -251,9 +243,7 @@ const App = withAdaptivity(() => {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
-        }).catch(e => {
-            console.log(e);
-        });
+        }).catch();
     };
 
     /**
@@ -350,12 +340,12 @@ const App = withAdaptivity(() => {
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
-                        <SplitCol animate={true}>
+                        <SplitCol animate={isMobile}>
                             <View activePanel={activePanel}>
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
                                 <Intro
-                                    id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                                    id={configData.routes.intro} go={go} snackbarError={snackbar}
                                     setUserStatus={setUserStatus} userStatus={userStatus} strings={strings}/>
                                 <Home
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
@@ -370,7 +360,7 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
-                                    strings={strings} setPopout={setPopout}
+                                    strings={strings}
                                     id={configData.routes.page} pageTitle={pageTitle}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
