@@ -104,5 +104,11 @@
   "network_error": "Network error",
   "user_denied": "User denied",
   "connection_lost": "Connection lost",
-  "not_all_access_rights": "Insufficient access rights"
+  "not_all_access_rights": "Insufficient access rights",
+  "help": "Help",
+  "widget": "Widget",
+  "install_widget": "Install widget",
+  "delete_widget": "Delete widget",
+  "error_widget_code": "Error in the widget code",
+  "text_not_widget_code": "Text is not widget code"
 }

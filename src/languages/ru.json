@@ -104,5 +104,11 @@
   "network_error": "Ошибка сети",
   "user_denied": "Отклонено",
   "connection_lost": "Соединение потеряно",
-  "not_all_access_rights": "Недостаточно прав доступа"
+  "not_all_access_rights": "Недостаточно прав доступа",
+  "help": "Справка",
+  "widget": "Виджет",
+  "install_widget": "Установить виджет",
+  "delete_widget": "Удалить виджет",
+  "error_widget_code": "Ошибка в коде виджета",
+  "text_not_widget_code": "Текст не является кодом виджета"
 }

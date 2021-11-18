@@ -39,7 +39,7 @@ import FormEditPage from "./components/FormEditPage";
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
     const [activeModal, setActiveModal] = useState(null);
-    const [popout] = useState(null);
+    const [popout, setPopout] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [user, setUser] = useState(null);
     const [groups, setGroups] = useState(null);
@@ -363,7 +363,7 @@ const App = withAdaptivity(() => {
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
                                 <Page
-                                    strings={strings}
+                                    strings={strings} setPopout={setPopout}
                                     id={configData.routes.page} pageTitle={pageTitle}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
                                     snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>

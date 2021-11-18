@@ -75,7 +75,9 @@ const About = ({
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{strings.saved}</Snackbar>);
+                >
+                    {strings.saved}
+                </Snackbar>);
             } else {
                 handleError(strings, setSnackbar, go, {}, {
                     data: data,
@@ -118,7 +120,9 @@ const About = ({
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{strings.allowed}</Snackbar>);
+                >
+                    {strings.allowed}
+                </Snackbar>);
             } else {
                 handleError(strings, setSnackbar, go, {}, {
                     data: data,

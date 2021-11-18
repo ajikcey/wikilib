@@ -1,15 +1,41 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Avatar, CellButton, Footer, Group, HorizontalScroll, InfoRow, Link,
-    Panel, PanelHeader, PanelHeaderBack, PanelSpinner, Placeholder,
-    Snackbar, Tabs, TabsItem, IconButton, SimpleCell, PanelHeaderContent, Spacing, usePlatform, VKCOM
+    Avatar,
+    CellButton,
+    Footer,
+    Group,
+    HorizontalScroll,
+    InfoRow,
+    Link,
+    Panel,
+    PanelHeader,
+    PanelHeaderBack,
+    PanelSpinner,
+    Placeholder,
+    Snackbar,
+    Tabs,
+    TabsItem,
+    IconButton,
+    SimpleCell,
+    PanelHeaderContent,
+    Spacing,
+    usePlatform,
+    VKCOM,
+    ActionSheet,
+    ActionSheetItem, IOS
 } from '@vkontakte/vkui';
 
 import {
-    Icon24CheckCircleOutline, Icon24Copy, Icon24ExternalLinkOutline,
-    Icon24Write, Icon28CalendarOutline, Icon28ChainOutline,
+    Icon24CheckCircleOutline,
+    Icon24Copy, Icon24DownloadCheckOutline, Icon24ErrorCircle,
+    Icon24ExternalLinkOutline, Icon24HelpOutline, Icon24LogoVk, Icon24MoreHorizontal, Icon24ServicesOutline,
+    Icon24Write,
+    Icon28CalendarOutline,
+    Icon28ChainOutline,
     Icon28CopyOutline,
+    Icon28DeleteOutline,
+    Icon28DeleteOutlineAndroid,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
 import configData from "../config.json";
@@ -32,6 +58,7 @@ const Page = ({
                   strings,
                   setModalData,
                   setActiveModal,
+                  setPopout,
                   snackbarError
               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -42,6 +69,7 @@ const Page = ({
     const [tab, setTab] = useState('info');
 
     const platform = usePlatform();
+    const menuWidgetTargetRef = React.useRef();
 
     useEffect(() => {
 
@@ -92,9 +120,6 @@ const Page = ({
         });
     }
 
-    /**
-     * Изменение настройки, кто может просматривать страницу
-     */
     const settingAccessPage = () => {
         setModalData({
             setSnackbar: setSnackbar,
@@ -104,9 +129,6 @@ const Page = ({
         setActiveModal(configData.modals.accessPage);
     }
 
-    /**
-     * Копирование ссылку на wiki-страницу
-     */
     const copy = (e) => {
         e.preventDefault();
 
@@ -119,7 +141,9 @@ const Page = ({
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
                     before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >{strings.copied_to_clipboard}</Snackbar>);
+                >
+                    {strings.copied_to_clipboard}
+                </Snackbar>);
             } else {
                 handleError(strings, setSnackbar, go, {}, {
                     data: data,
@@ -133,10 +157,6 @@ const Page = ({
         });
     }
 
-    /**
-     * Выбор версии wiki-страницы для сохранения
-     * @param item
-     */
     const selectVersion = async function (item) {
         let system_error = null;
 
@@ -175,9 +195,6 @@ const Page = ({
         setActiveModal(configData.modals.editPage);
     }
 
-    /**
-     * Редактирование wiki-страницы
-     */
     const editPage = () => {
         setModalData({
             setSnackbar: setSnackbar,
@@ -195,9 +212,6 @@ const Page = ({
         setActiveModal(configData.modals.editPage);
     }
 
-    /**
-     * Копирование wiki-страницы
-     */
     const copyPage = () => {
         setModalData({
             group: group,
@@ -206,6 +220,85 @@ const Page = ({
             setSnackbar: setSnackbar
         });
         setActiveModal(configData.modals.copyPage);
+    }
+
+    const handleErrorWidget = (e) => {
+        if (e.error_data.error_code === 2) {
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+            >
+                {strings.error_widget_code}
+            </Snackbar>);
+        } else if (e.error_data.error_reason === "security error") {
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+            >
+                {strings.access_denied}
+            </Snackbar>);
+        } else if (e.error_data.error_reason === "User denied") {
+            // отменена установка виджета
+        } else {
+            console.log(e);
+        }
+    }
+
+    const installWidget = () => {
+        if (!infoPage) return false;
+        let d = {};
+
+        if (!infoPage.source) {
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+            >
+                {strings.access_denied}
+            </Snackbar>);
+            return false;
+        }
+
+        let str = infoPage.source.replace(/(\r\n|\n|\r)/gm, ""); // remove all line breaks
+
+        try {
+            d = JSON.parse(str);
+        } catch (e) {
+            console.log(infoPage.source);
+            console.log(e);
+
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+            >
+                {strings.text_not_widget_code}
+            </Snackbar>);
+            return false;
+        }
+
+        d.group_id = group.id;
+        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", d).then(() => {
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+            >
+                {strings.saved}
+            </Snackbar>);
+        }).catch(handleErrorWidget);
+    }
+
+    const deleteWidget = () => {
+        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", {
+            "group_id": group.id,
+            "type": "text",
+            "code": "return false;"
+        }).then(() => {
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+            >
+                {strings.saved}
+            </Snackbar>);
+        }).catch(handleErrorWidget);
     }
 
     const back = () => {
@@ -238,6 +331,41 @@ const Page = ({
             });
         });
     }
+
+    const onClosePopout = () => setPopout(null);
+
+    const openMenuWidget = () => setPopout(
+        <ActionSheet
+            onClose={onClosePopout}
+            iosCloseItem={<ActionSheetItem autoclose mode="cancel">Отменить</ActionSheetItem>}
+            toggleRef={menuWidgetTargetRef}
+            popupDirection="top"
+        >
+            <ActionSheetItem
+                autoclose
+                before={<Icon24DownloadCheckOutline/>}
+                onClick={installWidget}
+            >
+                {strings.install_widget}
+            </ActionSheetItem>
+            <ActionSheetItem
+                autoclose
+                before={<Icon24HelpOutline/>}
+                href='https://vk.com/@wikilib-rabota-s-vidzhetami'
+                target='_blank'
+            >
+                {strings.help}
+            </ActionSheetItem>
+            <ActionSheetItem
+                autoclose
+                before={platform === IOS ? <Icon28DeleteOutline/> : <Icon28DeleteOutlineAndroid/>}
+                mode="destructive"
+                onClick={deleteWidget}
+            >
+                {strings.delete_widget}
+            </ActionSheetItem>
+        </ActionSheet>
+    );
 
     return (
         <Panel id={id}>
@@ -316,30 +444,41 @@ const Page = ({
                         <SimpleCell
                             indicator={nameAccess(infoPage.who_can_view, strings)}
                             onClick={settingAccessPage}
-                        >{strings.view}</SimpleCell>
+                        >
+                            {strings.view}
+                        </SimpleCell>
                         <SimpleCell
                             indicator={nameAccess(infoPage.who_can_edit, strings)}
                             onClick={settingAccessPage}
-                        >{strings.editing}</SimpleCell>
+                        >
+                            {strings.editing}
+                        </SimpleCell>
 
                         <Spacing separator size={16}/>
+
+                        <CellButton before={<Icon24Write/>} onClick={editPage}>{strings.edit}</CellButton>
+                        <CellButton before={<Icon24Copy/>} onClick={copyPage}>{strings.copy}</CellButton>
+
+                        <CellButton
+                            getRootRef={menuWidgetTargetRef}
+                            onClick={openMenuWidget}
+                            before={<Icon24ServicesOutline/>}
+                            after={<Icon24MoreHorizontal/>}
+                        >
+                            {strings.widget}
+                        </CellButton>
 
                         {(platform === VKCOM) &&
                         <SimpleCell
                             href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
-                            target='_blank' rel='noreferrer'
-                            before={<Icon24ExternalLinkOutline/>}
+                            target='_blank'
+                            before={<Icon24LogoVk/>}
+                            after={<Icon24ExternalLinkOutline/>}
                             description={'+ ' + strings.rename}
-                        >{strings.open_vk_editor}</SimpleCell>
+                        >
+                            {strings.open_vk_editor}
+                        </SimpleCell>
                         }
-                        <CellButton
-                            before={<Icon24Write/>}
-                            onClick={editPage}
-                        >{strings.edit}</CellButton>
-                        <CellButton
-                            before={<Icon24Copy/>}
-                            onClick={copyPage}
-                        >{strings.copy}</CellButton>
                     </Fragment>
                     }
                 </Fragment>
@@ -367,7 +506,14 @@ const Page = ({
                                 </SimpleCell>
                             );
                         })}
-                        <Footer>{history.length} {declOfNum(history.length, [strings.record.toLowerCase(), strings.two_records.toLowerCase(), strings.some_records.toLowerCase()])}</Footer>
+                        <Footer>
+                            {history.length}
+                            {declOfNum(history.length, [
+                                strings.record.toLowerCase(),
+                                strings.two_records.toLowerCase(),
+                                strings.some_records.toLowerCase()
+                            ])}
+                        </Footer>
                     </Fragment>
                     }
                 </Fragment>
