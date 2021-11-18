@@ -1,6 +1,6 @@
 {
-  "app_desc": "Application for working with wiki-pages in VKontakte.",
-  "acquaintance": "This is an application for working with wiki-pages in VKontakte.",
+  "app_desc": "Application for working with wiki-pages and widgets in VKontakte.",
+  "acquaintance": "This is an application for working with wiki-pages and widgets in VKontakte.",
   "unloaded_app": "Failed to load application",
   "open_app": "Open the app",
   "reload_app": "Reload",
