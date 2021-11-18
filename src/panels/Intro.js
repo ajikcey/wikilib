@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 
 import {Group, Panel, PanelHeader, Avatar, Button, Placeholder, PanelSpinner} from '@vkontakte/vkui';
 import bridge from "@vkontakte/vk-bridge";
@@ -6,15 +6,8 @@ import bridge from "@vkontakte/vk-bridge";
 import configData from "../config.json";
 import {handleError} from "../functions";
 
-const Intro = ({id, snackbarError, strings, userStatus, setUserStatus, go}) => {
-    const [user, setUser] = useState(null);
+const Intro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-
-    useEffect(() => {
-        bridge.send('VKWebAppGetUserInfo').then((user) => setUser(user)).catch();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     /**
      * Просмотр приветствия

@@ -41,6 +41,7 @@ const App = withAdaptivity(() => {
     const [activeModal, setActiveModal] = useState(null);
     const [popout] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
+    const [user, setUser] = useState(null);
     const [groups, setGroups] = useState(null);
     const [lastGroups, setLastGroups] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
@@ -127,6 +128,8 @@ const App = withAdaptivity(() => {
 
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     go(configData.routes.token);
+                } else {
+                    bridge.send('VKWebAppGetUserInfo').then((user) => setUser(user)).catch();
                 }
             } catch (e) {
                 handleError(strings, setSnackbar, go, e, {
@@ -345,7 +348,7 @@ const App = withAdaptivity(() => {
                                 <Landing
                                     id={configData.routes.landing} strings={strings}/>
                                 <Intro
-                                    id={configData.routes.intro} go={go} snackbarError={snackbar}
+                                    id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
                                     setUserStatus={setUserStatus} userStatus={userStatus} strings={strings}/>
                                 <Home
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
