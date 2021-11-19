@@ -28,8 +28,15 @@ import {
 
 import {
     Icon24CheckCircleOutline,
-    Icon24Copy, Icon24DownloadCheckOutline, Icon24ErrorCircle,
-    Icon24ExternalLinkOutline, Icon24HelpOutline, Icon24LogoVk, Icon24MoreHorizontal, Icon24ServicesOutline,
+    Icon24Copy,
+    Icon24DownloadCheckOutline,
+    Icon24ErrorCircle,
+    Icon24ExternalLinkOutline,
+    Icon24HelpOutline,
+    Icon24InfoCircleOutline,
+    Icon24LogoVk,
+    Icon24MoreHorizontal,
+    Icon24ServicesOutline,
     Icon24Write,
     Icon28CalendarOutline,
     Icon28ChainOutline,
@@ -40,6 +47,7 @@ import {
 } from "@vkontakte/icons";
 import configData from "../config.json";
 import {
+    AddToCommunity,
     calcLink,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
@@ -224,6 +232,7 @@ const Page = ({
 
     const handleErrorWidget = (e) => {
         if (e.error_data.error_code === 2) {
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
@@ -231,11 +240,14 @@ const Page = ({
                 {strings.error_widget_code}
             </Snackbar>);
         } else if (e.error_data.error_reason === "security error") {
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                action={strings.install}
+                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
             >
-                {strings.access_denied}
+                {strings.need_install_app}
             </Snackbar>);
         } else if (e.error_data.error_reason === "User denied") {
             // отменена установка виджета
@@ -249,11 +261,12 @@ const Page = ({
         let d = {};
 
         if (!infoPage.source) {
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
-                {strings.access_denied}
+                {strings.text_not_widget_code}
             </Snackbar>);
             return false;
         }
@@ -266,6 +279,7 @@ const Page = ({
             console.log(infoPage.source);
             console.log(e);
 
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
@@ -277,6 +291,7 @@ const Page = ({
 
         d.group_id = group.id;
         bridge.send("VKWebAppShowCommunityWidgetPreviewBox", d).then(() => {
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
@@ -292,6 +307,7 @@ const Page = ({
             "type": "text",
             "code": "return false;"
         }).then(() => {
+            setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}

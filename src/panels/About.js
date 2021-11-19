@@ -22,7 +22,7 @@ import {
     Icon28UsersOutline,
     Icon32SearchOutline, Icon28MessageOutline, Icon12Verified, Icon28LikeOutline
 } from "@vkontakte/icons";
-import {cutDeclNum, handleError, fetchApp} from "../functions";
+import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 
 const About = ({
                    id,
@@ -89,24 +89,6 @@ const About = ({
     }
 
     /**
-     * Добавление приложения в сообщество
-     * @returns {Promise<void>}
-     */
-    const AddToCommunity = async () => {
-        await bridge.send("VKWebAppAddToCommunity").then((data) => {
-            if (data.group_id) {
-                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
-                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
-                }
-
-                setModalData({group_id: data.group_id});
-                setActiveModal(configData.modals.redirectToCommunity);
-            }
-        }).catch(() => {
-        });
-    }
-
-    /**
      * Запросить разрешение на отправку уведомлений
      * @returns {Promise<void>}
      */
@@ -129,7 +111,8 @@ const About = ({
                     default_error_msg: 'No result VKWebAppAllowNotifications'
                 });
             }
-        }).catch();
+        }).catch(() => {
+        });
     }
 
     const back = function () {
@@ -204,7 +187,7 @@ const About = ({
                     >{strings.save_to_bookmarks}</CellButton>
                     <CellButton
                         before={<Icon28UsersOutline/>}
-                        onClick={AddToCommunity}
+                        onClick={() => AddToCommunity(setModalData, setActiveModal)}
                     >{strings.add_to_community}</CellButton>
                     <CellButton
                         before={<Icon28LikeOutline/>}

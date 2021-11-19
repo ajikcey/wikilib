@@ -68,6 +68,7 @@
   "save": "Save",
   "edit": "Edit",
   "back": "Back",
+  "install": "Install",
   "apply_this_version": "Apply this version",
   "sorting_field": "Sorting field",
   "sorting_direction": "Direction",
@@ -110,5 +111,6 @@
   "install_widget": "Install widget",
   "delete_widget": "Delete widget",
   "error_widget_code": "Error in the widget code",
-  "text_not_widget_code": "Text is not widget code"
+  "text_not_widget_code": "Text is not widget code",
+  "need_install_app": "The app needs to be installed in the community"
 }

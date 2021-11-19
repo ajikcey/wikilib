@@ -193,7 +193,7 @@ const Pages = ({
                                     <Cell
                                         key={page.id} before={<IconPage page={page}/>}
                                         indicator={<Counter>{cutNum(page.views)}</Counter>}
-                                        description={timestampToDate(page.edited) + ' ' + page.editor_name}
+                                        description={timestampToDate(page.edited) + ' ' + (page.editor_name ?? '')}
                                         onClick={() => {
                                             selectPage(page);
                                         }}

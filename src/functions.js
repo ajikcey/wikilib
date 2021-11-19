@@ -176,6 +176,9 @@ export function handleError(strings, setSnackbar, go, e, options) {
                     error_msg = strings.too_many_requests_per_second;
                 } else if (e.error_data.error_reason.error_code === 15) {
                     error_msg = strings.access_denied;
+                } else if (e.error_data.error_reason.error_code === 100 &&
+                    e.error_data.error_reason.error_msg === "One of the parameters specified was missing or invalid: you can not view source of this page") {
+                    error_msg = strings.no_access_to_page;
                 } else if (e.error_data.error_reason.error_code === 119) {
                     error_msg = strings.invalid_title;
                 } else if (e.error_data.error_reason.error_code === 140) {
@@ -401,4 +404,21 @@ export function regexpSearch(str) {
  */
 export function calcLink(page_id, group_id, protocol = false) {
     return (protocol ? 'https://' : '') + 'vk.com/page-' + group_id + '_' + page_id;
+}
+
+/**
+ * Добавление приложения в сообщество
+ */
+export function AddToCommunity (setModalData, setActiveModal) {
+    bridge.send("VKWebAppAddToCommunity").then((data) => {
+        if (data.group_id) {
+            if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'}).then();
+            }
+
+            setModalData({group_id: data.group_id});
+            setActiveModal(configData.modals.redirectToCommunity);
+        }
+    }).catch(() => {
+    });
 }
