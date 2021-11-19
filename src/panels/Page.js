@@ -278,6 +278,17 @@ const Page = ({
 
         try {
             d = JSON.parse(str);
+
+            if (typeof d !== 'object' || d === null) {
+                setSnackbar(null);
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                >
+                    {strings.text_not_widget_code}
+                </Snackbar>);
+                return false;
+            }
         } catch (e) {
             console.log(infoPage.source);
             console.log(e);
