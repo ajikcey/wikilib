@@ -107,6 +107,7 @@
   "connection_lost": "Connection lost",
   "not_all_access_rights": "Insufficient access rights",
   "help": "Help",
+  "error": "Error",
   "widget": "Widget",
   "install_widget": "Install widget",
   "delete_widget": "Delete widget",

@@ -44,6 +44,7 @@
     "sortPage": "sortPage",
     "copyPage": "copyPage",
     "editPage": "editPage",
-    "accessPage": "accessPage"
+    "accessPage": "accessPage",
+    "error": "error"
   }
 }

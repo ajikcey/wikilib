@@ -98,7 +98,7 @@ const FromEditPage = (props) => {
             >
                 <div style={{position: 'relative'}}>
                     <Textarea
-                        rows={30}
+                        rows={10}
                         name='text'
                         placeholder={props.strings.enter_text}
                         onChange={onChangeText}

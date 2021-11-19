@@ -11,7 +11,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, useAdaptivity, ViewWidth
+    ModalCard, ModalPage, useAdaptivity, ViewWidth, Textarea, FormItem
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -319,6 +319,24 @@ const App = withAdaptivity(() => {
                     modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
                     go={go} group={group} strings={strings}
                 />
+            </ModalCard>
+
+            <ModalCard
+                id={configData.modals.error}
+                onClose={onCloseModal}
+                header={strings.error}
+            >
+                <FormItem
+                    style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
+                >
+                    <div style={{position: 'relative'}}>
+                        <Textarea
+                            rows={10}
+                            name='text'
+                            value={modalData.error}
+                        />
+                    </div>
+                </FormItem>
             </ModalCard>
 
             <ModalPage

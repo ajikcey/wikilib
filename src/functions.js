@@ -196,7 +196,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
                 } else if (e.error_data.error_code === 4) {
                     error_msg = strings.user_denied;
                 } else {
-                    error_msg =  e.error_data.error_reason + ' (2-' + e.error_data.error_code + ')'; // бывает строкой
+                    error_msg = e.error_data.error_reason + ' (2-' + e.error_data.error_code + ')'; // бывает строкой
                 }
             }
         } else if (e.error_data.error_code) {
@@ -408,8 +408,10 @@ export function calcLink(page_id, group_id, protocol = false) {
 
 /**
  * Добавление приложения в сообщество
+ * @param setModalData
+ * @param setActiveModal
  */
-export function AddToCommunity (setModalData, setActiveModal) {
+export function AddToCommunity(setModalData, setActiveModal) {
     bridge.send("VKWebAppAddToCommunity").then((data) => {
         if (data.group_id) {
             if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
@@ -421,4 +423,15 @@ export function AddToCommunity (setModalData, setActiveModal) {
         }
     }).catch(() => {
     });
+}
+
+/**
+ * Открывает модальное окно с ошибкой
+ * @param e
+ * @param setModalData
+ * @param setActiveModal
+ */
+export function ShowError(e, setModalData, setActiveModal) {
+    setModalData({error: JSON.stringify(e, null, '\t')});
+    setActiveModal(configData.modals.error);
 }

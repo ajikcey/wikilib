@@ -107,6 +107,7 @@
   "connection_lost": "Соединение потеряно",
   "not_all_access_rights": "Недостаточно прав доступа",
   "help": "Справка",
+  "error": "Ошибка",
   "widget": "Виджет",
   "install_widget": "Установить виджет",
   "delete_widget": "Удалить виджет",

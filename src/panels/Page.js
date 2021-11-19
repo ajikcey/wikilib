@@ -51,7 +51,7 @@ import {
     calcLink,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
-    fetchVersion, handleError, nameAccess,
+    fetchVersion, handleError, nameAccess, ShowError,
     timestampToDate
 } from "../functions";
 import IconPage from "../components/IconPage";
@@ -231,6 +231,8 @@ const Page = ({
     }
 
     const handleErrorWidget = (e) => {
+        console.log(e);
+
         if (e.error_data.error_code === 2) {
             setSnackbar(null);
             setSnackbar(<Snackbar
@@ -252,7 +254,7 @@ const Page = ({
         } else if (e.error_data.error_reason === "User denied") {
             // отменена установка виджета
         } else {
-            console.log(e);
+            ShowError(e, setModalData, setActiveModal);
         }
     }
 
