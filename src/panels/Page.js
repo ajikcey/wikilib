@@ -241,7 +241,8 @@ const Page = ({
             >
                 {strings.error_widget_code}
             </Snackbar>);
-        } else if (e.error_data.error_reason === "security error") {
+        } else if (e.error_data.error_reason === "security error" ||
+            e.error_data.error_reason === "Invalid params") {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
