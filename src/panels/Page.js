@@ -274,7 +274,9 @@ const Page = ({
             return false;
         }
 
-        let str = infoPage.source.replace(/(\r\n|\n|\r)/gm, ""); // remove all line breaks
+        let str = infoPage.source
+            .replace(/(\r\n|\n|\r)/gm, "")
+            .replace(/\s+/gm, " ");
 
         try {
             d = JSON.parse(str);
