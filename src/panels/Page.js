@@ -21,7 +21,6 @@ import {
     PanelHeaderContent,
     Spacing,
     usePlatform,
-    VKCOM,
     ActionSheet,
     ActionSheetItem, IOS
 } from '@vkontakte/vkui';
@@ -31,12 +30,10 @@ import {
     Icon24Copy,
     Icon24DownloadCheckOutline,
     Icon24ErrorCircle,
-    Icon24ExternalLinkOutline,
     Icon24HelpOutline,
     Icon24InfoCircleOutline,
-    Icon24LogoVk,
-    Icon24MoreHorizontal,
-    Icon24ServicesOutline,
+    Icon24MoreVertical,
+    Icon24ServicesOutline, Icon24TextOutline,
     Icon24Write,
     Icon28CalendarOutline,
     Icon28ChainOutline,
@@ -218,6 +215,10 @@ const Page = ({
             who_can_edit: infoPage.who_can_edit
         });
         setActiveModal(configData.modals.editPage);
+    }
+
+    const renamePage = () => {
+        setActiveModal(configData.modals.renamePage);
     }
 
     const copyPage = () => {
@@ -470,9 +471,7 @@ const Page = ({
                                 {timestampToDate(infoPage.edited)}
                             </InfoRow>
                         </SimpleCell>
-
                         <Spacing separator size={16}/>
-
                         <SimpleCell
                             indicator={nameAccess(infoPage.who_can_view, strings)}
                             onClick={settingAccessPage}
@@ -485,32 +484,18 @@ const Page = ({
                         >
                             {strings.editing}
                         </SimpleCell>
-
                         <Spacing separator size={16}/>
-
                         <CellButton before={<Icon24Write/>} onClick={editPage}>{strings.edit}</CellButton>
+                        <CellButton before={<Icon24TextOutline/>} onClick={renamePage}>{strings.rename}</CellButton>
                         <CellButton before={<Icon24Copy/>} onClick={copyPage}>{strings.copy}</CellButton>
-
                         <CellButton
                             getRootRef={menuWidgetTargetRef}
                             onClick={openMenuWidget}
                             before={<Icon24ServicesOutline/>}
-                            after={<Icon24MoreHorizontal/>}
+                            after={<Icon24MoreVertical/>}
                         >
                             {strings.widget}
                         </CellButton>
-
-                        {(platform === VKCOM) &&
-                        <SimpleCell
-                            href={'https://vk.com/' + group.screen_name + '?w=page-' + group.id + '_' + pageTitle.id + '/market'}
-                            target='_blank'
-                            before={<Icon24LogoVk/>}
-                            after={<Icon24ExternalLinkOutline/>}
-                            description={'+ ' + strings.rename}
-                        >
-                            {strings.open_vk_editor}
-                        </SimpleCell>
-                        }
                     </Fragment>
                     }
                 </Fragment>
@@ -531,7 +516,7 @@ const Page = ({
                                     key={item.id}
                                     description={'v.' + item.id}
                                     onClick={() => {
-                                        selectVersion(item)
+                                        selectVersion(item).then();
                                     }}
                                 >
                                     {item.editor_name}

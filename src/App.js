@@ -14,7 +14,7 @@ import {
     ModalCard, ModalPage, useAdaptivity, ViewWidth, Textarea, FormItem
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
-import {Icon56CheckCircleOutline} from "@vkontakte/icons";
+import {Icon24TextOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
@@ -35,6 +35,7 @@ import FormSortPage from "./components/FormSortPage";
 import FormCopyPage from "./components/FormCopyPage";
 import Unloaded from "./panels/Unloaded";
 import FormEditPage from "./components/FormEditPage";
+import FormRenamePage from "./components/FormRenamePage";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -249,11 +250,8 @@ const App = withAdaptivity(() => {
         }).catch();
     };
 
-    /**
-     * Закрытие модального окна
-     */
     const onCloseModal = function () {
-        setActiveModal(null); // null для скрытия
+        setActiveModal(null);
     };
 
     const modal = (
@@ -271,7 +269,6 @@ const App = withAdaptivity(() => {
                     onCloseModal={onCloseModal} strings={strings} setPageTitle={setPageTitle}
                 />
             </ModalCard>
-
             <ModalCard
                 id={configData.modals.redirectToCommunity}
                 onClose={onCloseModal}
@@ -287,7 +284,6 @@ const App = withAdaptivity(() => {
                 }
             >
             </ModalCard>
-
             <ModalCard
                 id={configData.modals.accessPage}
                 onClose={onCloseModal}
@@ -298,7 +294,6 @@ const App = withAdaptivity(() => {
                     go={go} group={group} strings={strings}
                 />
             </ModalCard>
-
             <ModalCard
                 id={configData.modals.copyPage}
                 onClose={onCloseModal}
@@ -309,7 +304,6 @@ const App = withAdaptivity(() => {
                     go={go} setGroup={setGroup} strings={strings}
                 />
             </ModalCard>
-
             <ModalCard
                 id={configData.modals.editPage}
                 onClose={onCloseModal}
@@ -320,7 +314,18 @@ const App = withAdaptivity(() => {
                     go={go} group={group} strings={strings}
                 />
             </ModalCard>
-
+            <ModalCard
+                id={configData.modals.renamePage}
+                onClose={onCloseModal}
+                header={strings.rename_page}
+                icon={<Icon24TextOutline width={56} height={56}/>}
+                subheader={strings.rename_page_desc}
+            >
+                <FormRenamePage
+                    onCloseModal={onCloseModal}
+                    go={go} group={group} pageTitle={pageTitle} strings={strings}
+                />
+            </ModalCard>
             <ModalCard
                 id={configData.modals.error}
                 onClose={onCloseModal}
@@ -338,7 +343,6 @@ const App = withAdaptivity(() => {
                     </div>
                 </FormItem>
             </ModalCard>
-
             <ModalPage
                 id={configData.modals.sortPage}
                 onClose={onCloseModal}
