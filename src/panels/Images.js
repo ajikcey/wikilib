@@ -8,8 +8,14 @@ import {
     PanelHeaderBack, File, HorizontalScroll, TabsItem, Tabs, Placeholder, Button, Snackbar
 } from '@vkontakte/vkui';
 import configData from "../config.json";
-import {Icon24Camera, Icon24ErrorCircle, Icon32SearchOutline, Icon56LockOutline} from "@vkontakte/icons";
-import {fetchImages, ShowError} from "../functions";
+import {
+    Icon24Camera,
+    Icon24ErrorCircle,
+    Icon24InfoCircleOutline,
+    Icon32SearchOutline,
+    Icon56LockOutline
+} from "@vkontakte/icons";
+import {AddToCommunity, fetchImages, ShowError} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
 
 const Images = ({
@@ -41,7 +47,20 @@ const Images = ({
     const handleErrorImages = (e) => {
         console.log(e);
 
-        ShowError(e, setModalData, setActiveModal);
+        if (e.error_data.error_reason.error_code === 15 &&
+            e.error_data.error_reason.error_msg === "Access denied: app must be installed in group as community app") {
+            setSnackbar(null);
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                action={strings.install}
+                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
+            >
+                {strings.need_install_app}
+            </Snackbar>);
+        } else {
+            ShowError(e, setModalData, setActiveModal);
+        }
     }
 
 
@@ -52,10 +71,10 @@ const Images = ({
             if (data.response) {
                 setImages(data.response);
             } else {
-                setImages([]);
+                setImages({count: 0});
             }
         }).catch(e => {
-            setImages([]);
+            setImages({count: 0});
             handleErrorImages(e);
         });
     }
