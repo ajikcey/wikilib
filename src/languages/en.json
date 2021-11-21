@@ -25,6 +25,7 @@
   "developer": "Developer",
   "continue": "Continue",
   "need_token": "For the application to work, you need to give access to wiki-pages.",
+  "need_widget_token": "For this function to work, you need to grant access to the widgets.",
   "access_rights": "Access rights",
   "access_denied": "Access denied",
   "grant_access": "Grant access",
@@ -116,5 +117,7 @@
   "delete_widget": "Delete widget",
   "error_widget_code": "Error in the widget code",
   "text_not_widget_code": "Text is not widget code",
-  "need_install_app": "The app needs to be installed in the community"
+  "need_install_app": "The app needs to be installed in the community",
+  "images": "Images",
+  "not_found": "Not found"
 }

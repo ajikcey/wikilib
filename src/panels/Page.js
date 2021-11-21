@@ -26,9 +26,9 @@ import {
 } from '@vkontakte/vkui';
 
 import {
+    Icon24Attachments,
     Icon24CheckCircleOutline,
-    Icon24Copy,
-    Icon24DownloadCheckOutline,
+    Icon24Copy, Icon24Download,
     Icon24ErrorCircle,
     Icon24HelpOutline,
     Icon24InfoCircleOutline,
@@ -217,10 +217,6 @@ const Page = ({
         setActiveModal(configData.modals.editPage);
     }
 
-    const renamePage = () => {
-        setActiveModal(configData.modals.renamePage);
-    }
-
     const copyPage = () => {
         setModalData({
             group: group,
@@ -376,10 +372,17 @@ const Page = ({
         >
             <ActionSheetItem
                 autoclose
-                before={<Icon24DownloadCheckOutline/>}
+                before={<Icon24Download/>}
                 onClick={installWidget}
             >
                 {strings.install_widget}
+            </ActionSheetItem>
+            <ActionSheetItem
+                autoclose
+                before={<Icon24Attachments/>}
+                onClick={() => go(configData.routes.images)}
+            >
+                {strings.images}
             </ActionSheetItem>
             <ActionSheetItem
                 autoclose
@@ -486,7 +489,12 @@ const Page = ({
                         </SimpleCell>
                         <Spacing separator size={16}/>
                         <CellButton before={<Icon24Write/>} onClick={editPage}>{strings.edit}</CellButton>
-                        <CellButton before={<Icon24TextOutline/>} onClick={renamePage}>{strings.rename}</CellButton>
+                        <CellButton
+                            before={<Icon24TextOutline/>}
+                            onClick={() => setActiveModal(configData.modals.renamePage)}
+                        >
+                            {strings.rename}
+                        </CellButton>
                         <CellButton before={<Icon24Copy/>} onClick={copyPage}>{strings.copy}</CellButton>
                         <CellButton
                             getRootRef={menuWidgetTargetRef}

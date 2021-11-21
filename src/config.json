@@ -12,6 +12,9 @@
   "scope": [
     "pages"
   ],
+  "group_scope": [
+    "app_widget"
+  ],
   "wiki_access": {
     "all": 2,
     "member": 1,
@@ -22,6 +25,7 @@
     "desc": "desc"
   },
   "routes": {
+    "images": "images",
     "pages": "pages",
     "page": "page",
     "wiki_version": "wiki_version",
@@ -36,7 +40,8 @@
     "last_groups": "last_groups",
     "status": "status",
     "page_sort": "page_sort",
-    "access_token": "access_token"
+    "access_token": "access_token",
+    "access_group_tokens": "access_group_tokens"
   },
   "modals": {
     "redirectToCommunity": "redirectToCommunity",

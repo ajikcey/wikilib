@@ -36,6 +36,7 @@ import FormCopyPage from "./components/FormCopyPage";
 import Unloaded from "./panels/Unloaded";
 import FormEditPage from "./components/FormEditPage";
 import FormRenamePage from "./components/FormRenamePage";
+import Images from "./panels/Images";
 
 const App = withAdaptivity(() => {
     const [activePanel, setActivePanel] = useState(configData.routes.intro);
@@ -47,6 +48,8 @@ const App = withAdaptivity(() => {
     const [lastGroups, setLastGroups] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
+    const [accessGroupTokens, setAccessGroupTokens] = useState({});
+    const [accessGroupToken, setAccessGroupToken] = useState(null);
     const [group, setGroup] = useState(null);
     const [pageTitle, setPageTitle] = useState(null);
     const [modalData, setModalData] = useState({});
@@ -99,6 +102,7 @@ const App = withAdaptivity(() => {
 
                 setUserStatus(data[configData.storage_keys.status]);
                 setAccessToken(data[configData.storage_keys.access_token]);
+                setAccessGroupTokens(data[configData.storage_keys.access_group_tokens]);
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
                     const lastGroupIds = Object.values(data[configData.storage_keys.last_groups]);
@@ -106,6 +110,7 @@ const App = withAdaptivity(() => {
                     if (queryParams.vk_group_id) {
                         go(configData.routes.pages);
 
+                        // ждем получения последних групп, чтобы только после этого добавить в начало новую группу
                         await getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token);
 
                         fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
@@ -123,10 +128,8 @@ const App = withAdaptivity(() => {
                         });
                     } else {
                         go(configData.routes.home);
-
                         getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token).then();
                     }
-
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     go(configData.routes.token);
                 } else {
@@ -159,7 +162,7 @@ const App = withAdaptivity(() => {
      * Получение посещенных недавно сообществ
      * @param ids
      * @param access_token
-     * @returns {Promise<unknown>}
+     * @returns {Promise}
      */
     async function getLastGroups(ids, access_token) {
         return new Promise((resolve) => {
@@ -247,12 +250,14 @@ const App = withAdaptivity(() => {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
-        }).catch();
-    };
+        }).catch(e => {
+            console.log(e);
+        });
+    }
 
     const onCloseModal = function () {
         setActiveModal(null);
-    };
+    }
 
     const modal = (
         <ModalRoot
@@ -360,6 +365,23 @@ const App = withAdaptivity(() => {
         </ModalRoot>
     );
 
+    const addGroupToken = (groupToken) => {
+        setAccessGroupToken(groupToken);
+
+        let t = accessGroupTokens;
+        if (!t) t = {};
+        t[group.id] = groupToken;
+
+        setAccessGroupTokens(t);
+
+        bridge.send('VKWebAppStorageSet', {
+            key: configData.storage_keys.access_group_tokens,
+            value: JSON.stringify(t)
+        }).then().catch((e) => {
+            console.log(e);
+        });
+    }
+
     return (
         <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={true}>
             <AdaptivityProvider>
@@ -379,6 +401,7 @@ const App = withAdaptivity(() => {
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
                                     snackbarError={snackbar} go={go}/>
                                 <Pages
+                                    setAccessGroupToken={setAccessGroupToken} accessGroupTokens={accessGroupTokens}
                                     pageSort={pageSort} strings={strings} addLastGroup={addLastGroup}
                                     queryParams={queryParams} setModalData={setModalData}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
@@ -392,6 +415,11 @@ const App = withAdaptivity(() => {
                                 <Token
                                     id={configData.routes.token} strings={strings}
                                     fetchToken={fetchToken} snackbarError={snackbar}/>
+                                <Images
+                                    id={configData.routes.images} strings={strings} go={go} group={group}
+                                    setModalData={setModalData} setActiveModal={setActiveModal}
+                                    groupToken={accessGroupToken} addGroupToken={addGroupToken}
+                                    snackbarError={snackbar}/>
                                 <About
                                     queryParams={queryParams} strings={strings}
                                     id={configData.routes.about} go={go} snackbarError={snackbar}

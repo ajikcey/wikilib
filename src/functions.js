@@ -347,6 +347,27 @@ export function fetchApp(access_token) {
 }
 
 /**
+ * Получение изображений сообщества для виджета
+ * @param access_token
+ * @param offset
+ * @param count
+ * @param image_type
+ * @returns {Promise}
+ */
+export function fetchImages(access_token, offset, count, image_type) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "appWidgets.getGroupImages",
+        params: {
+            offset: offset,
+            count: count,
+            image_type: image_type,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Определение платформы (VKCOM, IOS, ANDROID)
  * @param params
  * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
