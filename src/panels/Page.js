@@ -149,17 +149,8 @@ const Page = ({
                 >
                     {strings.copied_to_clipboard}
                 </Snackbar>);
-            } else {
-                handleError(strings, setSnackbar, go, {}, {
-                    data: data,
-                    default_error_msg: 'No result VKWebAppCopyText'
-                });
             }
-        }).catch((e) => {
-            handleError(strings, setSnackbar, go, e, {
-                default_error_msg: 'Error VKWebAppCopyText'
-            });
-        });
+        }).catch(() => {});
     }
 
     const selectVersion = async function (item) {

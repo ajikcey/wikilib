@@ -1,21 +1,34 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Div, Group,
+    Group,
     Panel,
     PanelHeader,
     PanelSpinner,
-    PanelHeaderBack, File, HorizontalScroll, TabsItem, Tabs, Placeholder, Button, Snackbar
+    PanelHeaderBack,
+    File,
+    HorizontalScroll,
+    TabsItem,
+    Tabs,
+    Placeholder,
+    Button,
+    Snackbar,
+    SimpleCell, Avatar, IconButton, Footer, FormStatus, Spinner
 } from '@vkontakte/vkui';
 import configData from "../config.json";
 import {
-    Icon24Camera,
+    Icon24Camera, Icon24CheckCircleOutline,
     Icon24ErrorCircle,
-    Icon24InfoCircleOutline,
+    Icon24InfoCircleOutline, Icon28CopyOutline,
     Icon32SearchOutline,
     Icon56LockOutline
 } from "@vkontakte/icons";
-import {AddToCommunity, fetchImages, ShowError} from "../functions";
+import {
+    AddToCommunity, declOfNum,
+    fetchImages,
+    getGroupImageUploadServer, saveGroupImage,
+    ShowError
+} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
 
 const Images = ({
@@ -32,11 +45,26 @@ const Images = ({
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [images, setImages] = useState(null);
     const [tab, setTab] = useState(0);
+    const [loading, setLoading] = useState(false);
+
+    const _URL = window.URL || window.webkitURL;
+
+    const imageTypes = [
+        {width: 160, height: 160},
+        {width: 160, height: 240},
+        {width: 24, height: 24},
+        {width: 510, height: 128},
+        {width: 50, height: 50},
+    ];
+
+    const getImageTypeStr = (o) => {
+        return `${o.width}x${o.height}`;
+    }
 
     useEffect(() => {
 
         if (groupToken) {
-            getImages(0, 100, imageTypes[tab]).then(() => {
+            getImages(0, 100, getImageTypeStr(imageTypes[tab])).then(() => {
             });
         }
 
@@ -63,18 +91,19 @@ const Images = ({
         }
     }
 
-
     async function getImages(offset, count, image_type) {
         setImages(null);
 
-        fetchImages(groupToken.access_token, offset, count, image_type).then(data => {
+        await fetchImages(groupToken.access_token, offset, count, image_type).then(data => {
             if (data.response) {
+                data.response.items = data.response.items.reverse(); // новые изображения в начале
+
                 setImages(data.response);
             } else {
-                setImages({count: 0});
+                setImages({});
             }
         }).catch(e => {
-            setImages({count: 0});
+            setImages({});
             handleErrorImages(e);
         });
     }
@@ -83,21 +112,13 @@ const Images = ({
         go(configData.routes.page);
     }
 
-    const imageTypes = [
-        '160x160',
-        '160x240',
-        '24x24',
-        '510x128',
-        '50x50',
-    ];
-
     const changeTab = (i) => {
         setTab(i);
     }
 
     /**
      * Получение токена сообщества
-     * @returns {Promise<void>}
+     * @returns {Promise}
      */
     const fetchGroupToken = async function () {
         await bridge.send('VKWebAppGetCommunityToken', {
@@ -125,11 +146,111 @@ const Images = ({
         });
     }
 
-    const selectFile = (e) => {
-        console.log(e);
+    const uploadFile = (e) => {
+        const image_file = e.target.files[0];
+        if (!image_file) return false;
+        e.target.value = null; // сброс значения, чтобы его снова можно было выбрать
 
-        let file = e.target.files[0];
-        console.log(file);
+        const image_type = imageTypes[tab];
+        if (!image_type) return false;
+
+        let img = new Image();
+        img.src = _URL.createObjectURL(image_file);
+
+        img.onload = (e) => {
+
+            if (image_type.width * 3 !== e.target.width ||
+                image_type.height * 3 !== e.target.height) {
+
+                setSnackbar(null);
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                >
+                    {strings.wrong_image_size}
+                </Snackbar>);
+                return;
+            }
+
+            setLoading(true);
+            getGroupImageUploadServer(getImageTypeStr(image_type), groupToken.access_token).then(data => {
+                if (data.response && data.response.upload_url) {
+                    let formData = new FormData();
+                    formData.append('image', image_file);
+                    formData.append('upload_url', data.response.upload_url);
+
+                    fetch('https://senler.ru/others/proxy_vk_file.php', {
+                        method: 'POST',
+                        body: formData
+                    }).then((response) => {
+                        return response.json();
+                    }).then(data => {
+                        if (data.success) {
+                            saveGroupImage(
+                                data.vk_response.hash,
+                                data.vk_response.image,
+                                groupToken.access_token
+                            ).then(data => {
+                                images.items.unshift(data.response);
+                                images.count++;
+
+                                setLoading(false);
+                                setSnackbar(null);
+                                setSnackbar(<Snackbar
+                                    onClose={() => setSnackbar(null)}
+                                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                                >{strings.saved}</Snackbar>);
+                            }).catch((e) => {
+                                setLoading(false);
+                                ShowError(e.message, setModalData, setActiveModal);
+                            });
+                        } else {
+                            setLoading(false);
+                            ShowError(data, setModalData, setActiveModal);
+                        }
+                    }).catch(e => {
+                        setLoading(false);
+                        setSnackbar(null);
+                        setSnackbar(<Snackbar
+                            onClose={() => setSnackbar(null)}
+                            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                        >
+                            {e.message}
+                        </Snackbar>);
+                    });
+                }
+            }).catch(e => {
+                setLoading(false);
+                ShowError(e, setModalData, setActiveModal);
+            });
+        }
+    }
+
+    const copy = (e, image) => {
+        e.stopPropagation();
+
+        bridge.send("VKWebAppCopyText", {text: image.id}).then((data) => {
+            if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'}).then();
+                }
+
+                setSnackbar(<Snackbar
+                    onClose={() => setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >
+                    {strings.copied_to_clipboard}
+                </Snackbar>);
+            }
+        }).catch(() => {
+        });
+    }
+
+    const show = (e, image) => {
+        e.stopPropagation();
+
+        setModalData({image: image});
+        setActiveModal(configData.modals.image);
     }
 
     return (
@@ -152,6 +273,7 @@ const Images = ({
                     </Placeholder>
                 </Fragment>
                 }
+
                 {!!groupToken &&
                 <Fragment>
                     <Tabs>
@@ -159,35 +281,71 @@ const Images = ({
                             {imageTypes.map((type, i) => {
                                 return (
                                     <TabsItem
+                                        disabled={loading}
                                         key={i}
                                         onClick={() => changeTab(i)}
                                         selected={tab === i}
                                     >
-                                        {type}
+                                        {getImageTypeStr(type)}
                                     </TabsItem>
                                 );
                             })}
                         </HorizontalScroll>
                     </Tabs>
 
-                    <Div>
-                        <File
-                            mode="secondary"
-                            before={<Icon24Camera/>}
-                            controlSize="l"
-                            onChange={selectFile}
-                            accept="image/x-png, image/gif, image/jpeg"
+                    <FormStatus
+                        header={strings.upload_image}
+                        style={{margin: '10px 0'}}
+                    >
+                        Необходимо загружать изображения в утроенном размере
+                        (например, для картинки с конечным размером
+                        160x160 нужно загружать изображение размером 480x480).
+
+                        <div
+                            style={{marginTop: 12}}
                         >
-                            Загрузить фото
-                        </File>
-                    </Div>
+                            <File
+                                mode="primary"
+                                before={loading ? <Spinner style={{marginLeft: 6}}/> : <Icon24Camera/>}
+                                controlSize="l"
+                                onChange={uploadFile}
+                                disabled={loading}
+                                accept="image/x-png, image/gif, image/jpeg"
+                            >
+                                {!loading && strings.select}
+                            </File>
+                        </div>
+                    </FormStatus>
 
                     {(!images) && <PanelSpinner/>}
                     {images &&
                     <Fragment>
-                        {(images.count < 1) &&
+                        {(!images.count) &&
                         <Fragment>
                             <Placeholder icon={<Icon32SearchOutline/>}>{strings.not_found}</Placeholder>
+                        </Fragment>
+                        }
+                        {(!!images.count) &&
+                        <Fragment>
+                            {images.items.map((item) => {
+                                return (
+                                    <SimpleCell
+                                        key={item.id}
+                                        before={<Avatar mode="image" size={48} src={item.images[2].url}/>}
+                                        after={<IconButton
+                                            onClick={(e) => copy(e, item)}><Icon28CopyOutline/></IconButton>}
+                                        description={item.type}
+                                        onClick={(e) => show(e, item)}
+                                    >
+                                        {item.id}
+                                    </SimpleCell>
+                                );
+                            })}
+                            <Footer>{images.count} {declOfNum(images.count, [
+                                strings.image.toLowerCase(),
+                                strings.two_images.toLowerCase(),
+                                strings.some_images.toLowerCase()
+                            ])}</Footer>
                         </Fragment>
                         }
                     </Fragment>

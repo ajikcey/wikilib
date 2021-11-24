@@ -51,6 +51,7 @@
     "editPage": "editPage",
     "renamePage": "renamePage",
     "accessPage": "accessPage",
-    "error": "error"
+    "error": "error",
+    "image": "image"
   }
 }

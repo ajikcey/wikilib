@@ -211,7 +211,11 @@ const Pages = ({
                                 );
                             })}
                         </List>
-                        <Footer>{pageCount} {declOfNum(pageCount, [strings.page.toLowerCase(), strings.two_pages.toLowerCase(), strings.some_pages.toLowerCase()])}</Footer>
+                        <Footer>{pageCount} {declOfNum(pageCount, [
+                            strings.page.toLowerCase(),
+                            strings.two_pages.toLowerCase(),
+                            strings.some_pages.toLowerCase()
+                        ])}</Footer>
                     </Fragment>
                     }
                 </Group>

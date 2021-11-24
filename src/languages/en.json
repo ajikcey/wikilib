@@ -72,6 +72,9 @@
   "edit": "Edit",
   "back": "Back",
   "install": "Install",
+  "upload": "Upload",
+  "select": "Select",
+  "upload_image": "Upload image",
   "go": "Go",
   "apply_this_version": "Apply this version",
   "sorting_field": "Sorting field",
@@ -119,5 +122,9 @@
   "text_not_widget_code": "Text is not widget code",
   "need_install_app": "The app needs to be installed in the community",
   "images": "Images",
+  "image": "Image",
+  "two_images": "Images",
+  "some_images": "Images",
+  "wrong_image_size": "Wrong image size",
   "not_found": "Not found"
 }

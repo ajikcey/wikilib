@@ -332,6 +332,13 @@ const App = withAdaptivity(() => {
                 />
             </ModalCard>
             <ModalCard
+                id={configData.modals.image}
+                onClose={onCloseModal}
+            >
+                {modalData.image && <img
+                    alt='' src={modalData.image.images[2].url}/>}
+            </ModalCard>
+            <ModalCard
                 id={configData.modals.error}
                 onClose={onCloseModal}
                 header={strings.error}

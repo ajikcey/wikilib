@@ -126,6 +126,42 @@ export function fetchVersion(version_id, group_id, access_token) {
 }
 
 /**
+ * Получение адреса для загрузки фотографии в коллекцию сообщества для виджетов
+ * @param image_type
+ * @param access_token
+ * @returns {Promise}
+ */
+export function getGroupImageUploadServer(image_type, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "appWidgets.getGroupImageUploadServer",
+        params: {
+            image_type: image_type,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
+ * Сохранение изображения в коллекцию сообщества для виджетов приложений сообществ после загрузки на сервер
+ * @param hash
+ * @param image
+ * @param access_token
+ * @returns {Promise}
+ */
+export function saveGroupImage(hash, image, access_token) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "appWidgets.saveGroupImage",
+        params: {
+            hash: hash,
+            image: image,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
  * Получение данных пользователей
  * @param user_ids
  * @param access_token
