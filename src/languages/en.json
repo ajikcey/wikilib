@@ -120,6 +120,7 @@
   "delete_widget": "Delete widget",
   "error_widget_code": "Error in the widget code",
   "text_not_widget_code": "Text is not widget code",
+  "invalid_widget_type": "Invalid widget type",
   "need_install_app": "The app needs to be installed in the community",
   "images": "Images",
   "image": "Image",

@@ -76,6 +76,18 @@ const Page = ({
     const platform = usePlatform();
     const menuWidgetTargetRef = React.useRef();
 
+    const widgetTypes = {
+        "text": {name: "Текст"},
+        "list": {name: "Список"},
+        "table": {name: "Таблица"},
+        "tiles": {name: "Плитка"},
+        "compact_list": {name: "Компактный список"},
+        "cover_list": {name: "Список изображений"},
+        "match": {name: "Матч"},
+        "matches": {name: "Список матчей"},
+        "donation": {name: "Пожертвование"},
+    };
+
     useEffect(() => {
 
         getPageData().then();
@@ -249,56 +261,32 @@ const Page = ({
 
     const installWidget = () => {
         if (!infoPage) return false;
-        let d = {};
+        let widgetData = {
+            group_id: group.id
+        };
+        let widgetArr = infoPage.source.split('\n');
 
-        if (!infoPage.source) {
+        widgetData.type = widgetArr.shift();
+        if (!widgetData.type || !widgetTypes[widgetData.type]) {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
             >
-                {strings.text_not_widget_code}
+                {strings.invalid_widget_type}
             </Snackbar>);
             return false;
         }
 
-        let str = infoPage.source
-            .replace(/(\r\n|\n|\r)/gm, "")
+        widgetData.code = widgetArr.join('\n')
             .replace(/\s+/gm, " ");
 
-        try {
-            d = JSON.parse(str);
-
-            if (typeof d !== 'object' || d === null) {
-                setSnackbar(null);
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-                >
-                    {strings.text_not_widget_code}
-                </Snackbar>);
-                return false;
-            }
-        } catch (e) {
-            console.log(infoPage.source);
-            console.log(e);
-
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                {strings.text_not_widget_code}
-            </Snackbar>);
-            return false;
-        }
-
-        d.group_id = group.id;
-        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", d).then(() => {
+        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", widgetData).then(() => {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                action={<Link target="_blank" href={`https://vk.com/club${group.id}`}>{strings.open_community}</Link>}
             >
                 {strings.saved}
             </Snackbar>);
@@ -315,6 +303,7 @@ const Page = ({
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                action={<Link target="_blank" href={`https://vk.com/club${group.id}`}>{strings.open_community}</Link>}
             >
                 {strings.saved}
             </Snackbar>);
