@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 
 import {
-    Group,
+    Div, Group,
     Panel,
     PanelHeader,
     PanelSpinner,
@@ -293,29 +293,30 @@ const Images = ({
                         </HorizontalScroll>
                     </Tabs>
 
-                    <FormStatus
-                        header={strings.upload_image}
-                        style={{margin: '10px 0'}}
-                    >
-                        Необходимо загружать изображения в утроенном размере
-                        (например, для картинки с конечным размером
-                        160x160 нужно загружать изображение размером 480x480).
-
-                        <div
-                            style={{marginTop: 12}}
+                    <Div>
+                        <FormStatus
+                            header={strings.upload_image}
                         >
-                            <File
-                                mode="primary"
-                                before={loading ? <Spinner style={{marginLeft: 6}}/> : <Icon24Camera/>}
-                                controlSize="l"
-                                onChange={uploadFile}
-                                disabled={loading}
-                                accept="image/x-png, image/gif, image/jpeg"
+                            Необходимо загружать изображения в утроенном размере
+                            (например, для картинки с конечным размером
+                            160x160 нужно загружать изображение размером 480x480).
+
+                            <div
+                                style={{marginTop: 12}}
                             >
-                                {!loading && strings.select}
-                            </File>
-                        </div>
-                    </FormStatus>
+                                <File
+                                    mode="primary"
+                                    before={loading ? <Spinner style={{marginLeft: 6}}/> : <Icon24Camera/>}
+                                    controlSize="l"
+                                    onChange={uploadFile}
+                                    disabled={loading}
+                                    accept="image/x-png, image/gif, image/jpeg"
+                                >
+                                    {!loading && strings.select}
+                                </File>
+                            </div>
+                        </FormStatus>
+                    </Div>
 
                     {(!images) && <PanelSpinner/>}
                     {images &&
