@@ -389,6 +389,23 @@ const App = withAdaptivity(() => {
         });
     }
 
+    const removeGroupToken = () => {
+        setAccessGroupToken(null);
+
+        let t = accessGroupTokens;
+        if (!t) t = {};
+        delete t[group.id];
+
+        setAccessGroupTokens(t);
+
+        bridge.send('VKWebAppStorageSet', {
+            key: configData.storage_keys.access_group_tokens,
+            value: JSON.stringify(t)
+        }).then().catch((e) => {
+            console.log(e);
+        });
+    }
+
     return (
         <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={true}>
             <AdaptivityProvider>
@@ -426,7 +443,7 @@ const App = withAdaptivity(() => {
                                     id={configData.routes.images} strings={strings} go={go} group={group}
                                     setModalData={setModalData} setActiveModal={setActiveModal}
                                     groupToken={accessGroupToken} addGroupToken={addGroupToken}
-                                    snackbarError={snackbar}/>
+                                    removeGroupToken={removeGroupToken} snackbarError={snackbar}/>
                                 <About
                                     queryParams={queryParams} strings={strings}
                                     id={configData.routes.about} go={go} snackbarError={snackbar}

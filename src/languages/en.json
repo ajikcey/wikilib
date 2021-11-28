@@ -90,6 +90,7 @@
   "enter_text": "Enter text",
   "invalid_title": "Invalid title",
   "page_exists": "Page with the same name already exists",
+  "empty_page": "Empty page",
   "page_not_found": "Page not found",
   "no_access_to_page": "No access to the page",
   "info": "Information",
@@ -116,6 +117,8 @@
   "help": "Help",
   "error": "Error",
   "widget": "Widget",
+  "widget_type": "Widget type",
+  "type": "Type",
   "install_widget": "Install widget",
   "delete_widget": "Delete widget",
   "error_widget_code": "Error in the widget code",
@@ -127,5 +130,13 @@
   "two_images": "Images",
   "some_images": "Images",
   "wrong_image_size": "Wrong image size",
-  "not_found": "Not found"
+  "not_found": "Not found",
+  "list": "List",
+  "table": "Table",
+  "tiles": "Tiles",
+  "compact_list": "Compact list",
+  "cover_list": "Cover list",
+  "match": "Match",
+  "matches": "Matches",
+  "donation": "Donation"
 }

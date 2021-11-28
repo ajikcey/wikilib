@@ -1,5 +1,5 @@
 import configData from "../config.json";
-import {Button, Caption, FormItem, FormLayout, Input} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../functions";
 
@@ -9,13 +9,21 @@ import {fetchPage, fetchPages, handleError, savePage} from "../functions";
  * @constructor
  */
 const FormAddPage = (props) => {
+    const widgetTypes = Object.keys(configData.widget_types);
+
     const [title, setTitle] = useState("");
+    const [type, setType] = useState(0);
+    const [widgetType, setWidgetType] = useState(widgetTypes[0]);
     const [titleError, setTitleError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const TYPE_EMPTY_PAGE = 0;
+    const TYPE_WIDGET = 1;
 
     const onSubmit = async (e) => {
         e.preventDefault();
         let system_error = null;
+        let page_text = "";
 
         if (titleError) return;
 
@@ -63,9 +71,18 @@ const FormAddPage = (props) => {
             return;
         }
 
-        await savePage(null, props.group.id, props.accessToken.access_token, result.title, "").then(async data => {
-            if (data.response) {
+        if (type === TYPE_WIDGET) {
+            if (configData.widget_types[widgetType]) {
+                page_text = widgetType + "\n" + configData.widget_types[widgetType].template;
+            } else {
+                setLoading(false);
+                setTitleError({error_msg: props.strings.page_exists});
+                return;
+            }
+        }
 
+        await savePage(null, props.group.id, props.accessToken.access_token, result.title, page_text).then(async data => {
+            if (data.response) {
                 await fetchPage(data.response, props.group.id, 0, props.accessToken.access_token).then(data => {
                     if (data.response) {
                         props.setPageTitle(data.response);
@@ -102,10 +119,6 @@ const FormAddPage = (props) => {
         props.onCloseModal();
     }
 
-    /**
-     * Изменение названия
-     * @param e
-     */
     const onChangeTitle = (e) => {
         setTitle(e.currentTarget.value);
 
@@ -116,11 +129,19 @@ const FormAddPage = (props) => {
         }
     }
 
+    const onChangeType = (value) => {
+        setType(+value);
+    }
+
+    const onChangeWidgetType = (e) => {
+        setWidgetType(e.currentTarget.value);
+    }
+
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
                 top={props.strings.page_title}
-                style={{paddingLeft: 0, paddingRight: 0}}
+                style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}
                 status={titleError ? 'error' : ''}
                 bottom={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -136,13 +157,50 @@ const FormAddPage = (props) => {
                     maxLength={configData.max_length_title}
                 />
             </FormItem>
+            <FormItem
+                style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}
+                status={titleError ? 'error' : ''}
+            >
+                <SliderSwitch
+                    activeValue={0}
+                    onSwitch={onChangeType}
+                    options={[
+                        {
+                            name: props.strings.empty_page,
+                            value: TYPE_EMPTY_PAGE,
+                        },
+                        {
+                            name: props.strings.widget,
+                            value: TYPE_WIDGET,
+                        },
+                    ]}
+                />
+            </FormItem>
+            <FormItem
+                top={props.strings.widget_type}
+                status={titleError ? 'error' : ''}
+                style={{paddingLeft: 0, paddingRight: 0}}
+            >
+                <NativeSelect
+                    onChange={onChangeWidgetType}
+                    disabled={type !== TYPE_WIDGET}
+                >
+                    {Object.keys(configData.widget_types).map((item, key) => {
+                        return (
+                            <option key={key} value={item}>{props.strings[item]}</option>
+                        );
+                    })}
+                </NativeSelect>
+            </FormItem>
             <Button
                 loading={loading}
                 type='submit'
                 size="l"
                 mode="primary"
                 stretched
-            >{props.strings.create}</Button>
+            >
+                {props.strings.create}
+            </Button>
         </FormLayout>
     );
 }

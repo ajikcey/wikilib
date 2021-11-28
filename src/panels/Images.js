@@ -39,6 +39,7 @@ const Images = ({
                     setModalData,
                     setActiveModal,
                     snackbarError,
+                    removeGroupToken,
                     groupToken,
                     addGroupToken
                 }) => {
@@ -75,8 +76,11 @@ const Images = ({
     const handleErrorImages = (e) => {
         console.log(e);
 
-        if (e.error_data.error_reason.error_code === 15 &&
+        if (e.error_data.error_reason.error_code === 27) {
+            removeGroupToken();
+        } else if (e.error_data.error_reason.error_code === 15 &&
             e.error_data.error_reason.error_msg === "Access denied: app must be installed in group as community app") {
+
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -101,6 +105,7 @@ const Images = ({
                 setImages(data.response);
             } else {
                 setImages({});
+                handleErrorImages(data);
             }
         }).catch(e => {
             setImages({});
@@ -254,7 +259,7 @@ const Images = ({
     }
 
     return (
-        <Panel id={id}>
+        <Panel id={id} centered={!groupToken}>
             <PanelHeader
                 mode="secondary"
                 left={<PanelHeaderBack onClick={back}/>}

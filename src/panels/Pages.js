@@ -169,7 +169,7 @@ const Pages = ({
                 <Group>
                     <Header
                         mode="primary"
-                        indicator={pages ? pages.length : 0}
+                        indicator={pages ? pages.length : ""}
                     >{strings.wiki_pages}</Header>
 
                     <Search

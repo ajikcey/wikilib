@@ -115,7 +115,7 @@ const Home = ({
             />
 
             <Group>
-                <Header mode="primary" indicator={groups ? groups.count : 0}>{strings.all_communities}</Header>
+                <Header mode="primary" indicator={groups ? groups.count : ""}>{strings.all_communities}</Header>
                 <Search
                     placeholder={strings.community_search}
                     onChange={onChangeSearch}

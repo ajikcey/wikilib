@@ -76,20 +76,7 @@ const Page = ({
     const platform = usePlatform();
     const menuWidgetTargetRef = React.useRef();
 
-    const widgetTypes = {
-        "text": {name: "Текст"},
-        "list": {name: "Список"},
-        "table": {name: "Таблица"},
-        "tiles": {name: "Плитка"},
-        "compact_list": {name: "Компактный список"},
-        "cover_list": {name: "Список изображений"},
-        "match": {name: "Матч"},
-        "matches": {name: "Список матчей"},
-        "donation": {name: "Пожертвование"},
-    };
-
     useEffect(() => {
-
         getPageData().then();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -266,8 +253,8 @@ const Page = ({
         };
         let widgetArr = infoPage.source.split('\n');
 
-        widgetData.type = widgetArr.shift();
-        if (!widgetData.type || !widgetTypes[widgetData.type]) {
+        widgetData.type = widgetArr.shift().trim();
+        if (!widgetData.type || !configData.widget_types[widgetData.type]) {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
@@ -279,7 +266,9 @@ const Page = ({
         }
 
         widgetData.code = widgetArr.join('\n')
-            .replace(/\s+/gm, " ");
+            .replace(/\s+/gm, " ")
+            .replace(/\[\[(video[^\]]+)]]/gm, "https://vk.com/$1") // replace video links
+            .replace(/\[(https:\/\/[^\]]+)]/gm, "$1"); // replace links
 
         bridge.send("VKWebAppShowCommunityWidgetPreviewBox", widgetData).then(() => {
             setSnackbar(null);
