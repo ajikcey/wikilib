@@ -45,7 +45,8 @@ const App = withAdaptivity(() => {
     const [userStatus, setUserStatus] = useState(null);
     const [user, setUser] = useState(null);
     const [groups, setGroups] = useState(null);
-    const [lastGroups, setLastGroups] = useState([]);
+    let [lastGroups, setLastGroups] = useState([]);
+    const [lastGroupIds, setLastGroupIds] = useState([]);
     const [snackbar, setSnackbar] = useState(false);
     const [accessToken, setAccessToken] = useState(null);
     const [accessGroupTokens, setAccessGroupTokens] = useState({});
@@ -105,13 +106,10 @@ const App = withAdaptivity(() => {
                 setAccessGroupTokens(data[configData.storage_keys.access_group_tokens]);
 
                 if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
-                    const lastGroupIds = Object.values(data[configData.storage_keys.last_groups]);
+                    setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
 
                     if (queryParams.vk_group_id) {
                         go(configData.routes.pages);
-
-                        // ждем получения последних групп, чтобы только после этого добавить в начало новую группу
-                        await getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token);
 
                         fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
                             if (data.response) {
@@ -128,7 +126,6 @@ const App = withAdaptivity(() => {
                         });
                     } else {
                         go(configData.routes.home);
-                        getLastGroups(lastGroupIds, data[configData.storage_keys.access_token].access_token).then();
                     }
                 } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
                     go(configData.routes.token);
@@ -159,36 +156,38 @@ const App = withAdaptivity(() => {
     };
 
     /**
-     * Получение посещенных недавно сообществ
-     * @param ids
      * @param access_token
      * @returns {Promise}
      */
-    async function getLastGroups(ids, access_token) {
-        return new Promise((resolve) => {
-            if (ids && ids.length > 0) {
-                fetchGroupsById(ids, access_token).then(data => {
-                    if (data.response) {
-                        setLastGroups(data.response);
-                        resolve();
-                    } else {
-                        setLastGroups([]);
-                    }
-                }).catch(() => {
-                    setLastGroups([]);
-                });
-            } else {
-                setLastGroups([]);
+    async function getLastGroups(access_token) {
+        return new Promise((resolve, reject) => {
+            // отсутствуют недавние сообщества
+            if (!lastGroupIds || lastGroupIds.length < 1) {
                 resolve();
+                return;
             }
+
+            // сообщества уже получены
+            if (lastGroups && lastGroups.length > 0) {
+                resolve();
+                return;
+            }
+
+            fetchGroupsById(lastGroupIds, access_token).then(async data => {
+                if (data.response) {
+                    setLastGroups(data.response);
+                    lastGroups = data.response; // работает только такой способ
+                    resolve();
+                } else {
+                    reject();
+                }
+            }).catch((e) => {
+                reject(e);
+            });
         });
     }
 
-    /**
-     * Добавление просмотренного сообщества
-     * @param added_group
-     */
-    async function addLastGroup(added_group) {
+    function addLastGroup(added_group) {
         const group_ids = lastGroups.map(g => g.id);
 
         const index = group_ids.indexOf(added_group.id);
@@ -207,7 +206,19 @@ const App = withAdaptivity(() => {
         bridge.send('VKWebAppStorageSet', {
             key: configData.storage_keys.last_groups,
             value: JSON.stringify(lastGroups.map(g => g.id))
-        }).then().catch();
+        }).then().catch((e) => {
+            console.log(e);
+        });
+    }
+
+    function clearLastGroups() {
+        setLastGroups([]);
+        setLastGroupIds([]);
+
+        bridge.send('VKWebAppStorageSet', {
+            key: configData.storage_keys.last_groups,
+            value: JSON.stringify([])
+        }).then().catch(e => console.log(e));
     }
 
     /**
@@ -421,13 +432,13 @@ const App = withAdaptivity(() => {
                                 <Home
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                                     groups={groups} setGroups={setGroups} strings={strings}
-                                    lastGroups={lastGroups} setLastGroups={setLastGroups}
+                                    lastGroups={lastGroups} clearLastGroups={clearLastGroups}
                                     id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
-                                    snackbarError={snackbar} go={go}/>
+                                    snackbarError={snackbar} go={go} getLastGroups={getLastGroups}/>
                                 <Pages
                                     setAccessGroupToken={setAccessGroupToken} accessGroupTokens={accessGroupTokens}
                                     pageSort={pageSort} strings={strings} addLastGroup={addLastGroup}
-                                    queryParams={queryParams} setModalData={setModalData}
+                                    queryParams={queryParams} setModalData={setModalData} getLastGroups={getLastGroups}
                                     id={configData.routes.pages} group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
                                     setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>

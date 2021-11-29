@@ -3,8 +3,6 @@ import {
 } from '@vkontakte/vkui';
 import {Icon16Clear} from "@vkontakte/icons";
 import {Fragment} from "react";
-import bridge from "@vkontakte/vk-bridge";
-import configData from "../config.json";
 
 /**
  * @param props
@@ -18,12 +16,7 @@ const HorizontalScrollGroups = (props) => {
      * Очистка недавно просмотренных сообществ
      */
     const clearLast = () => {
-        props.setLastGroups([]);
-
-        bridge.send('VKWebAppStorageSet', {
-            key: configData.storage_keys.last_groups,
-            value: JSON.stringify([])
-        }).then().catch(e => console.log(e));
+        props.clearLastGroups();
     }
 
     return (

@@ -33,7 +33,8 @@ const Home = ({
                   setGroups,
                   snackbarError,
                   lastGroups,
-                  setLastGroups,
+                  getLastGroups,
+                  clearLastGroups,
                   groupOffset, setGroupOffset
               }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
@@ -43,6 +44,10 @@ const Home = ({
     let groupCount = 0;
 
     useEffect(() => {
+        getLastGroups(accessToken.access_token).then().catch((e) => {
+            console.log(e);
+        });
+
         if (!groups) {
             moreGroups().then();
         }
@@ -108,7 +113,7 @@ const Home = ({
             </PanelHeader>
 
             <HorizontalScrollGroups
-                setLastGroups={setLastGroups}
+                clearLastGroups={clearLastGroups}
                 selectGroup={selectGroup}
                 lastGroups={lastGroups}
                 strings={strings}

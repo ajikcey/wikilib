@@ -120,7 +120,7 @@ const About = ({
     }
 
     return (
-        <Panel id={id}>
+        <Panel id={id} centered={!app}>
             <PanelHeader
                 mode="secondary"
                 left={<PanelHeaderBack onClick={back}/>}

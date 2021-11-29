@@ -22,11 +22,6 @@ const Landing = ({id, strings}) => {
                                 {strings.open_app}
                             </Button>
                         </Div>
-                        <Div>
-                            <Button href={configData.community_url} mode='tertiary' size='l'>
-                                {strings.open_community}
-                            </Button>
-                        </Div>
                     </Div>
                 </Group>
             </Fragment>

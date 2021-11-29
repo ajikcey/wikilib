@@ -34,6 +34,7 @@ const Pages = ({
                    setActiveModal,
                    setModalData,
                    snackbarError,
+                   getLastGroups,
                    addLastGroup,
                    pages,
                    setPages
@@ -44,11 +45,8 @@ const Pages = ({
     let pageCount = 0;
 
     useEffect(() => {
-        /**
-         * Получение wiki-страниц сообщества
-         * @returns {Promise<void>}
-         */
-        async function fetchGroupPages() {
+
+        function fetchGroupPages() {
             fetchPages(group.id, accessToken.access_token).then(data => {
                 if (data.response) {
 
@@ -91,9 +89,14 @@ const Pages = ({
         }
 
         if (group) {
-            fetchGroupPages().then(() => {
+            // после получения данных сообщества, чтобы не было "слишком много запросов в секунду"
+            getLastGroups(accessToken.access_token).then(() => {
                 addLastGroup(group);
-            }).catch();
+            }).catch((e) => {
+                console.log(e);
+            });
+
+            fetchGroupPages();
 
             if (accessGroupTokens[group.id]) {
                 setAccessGroupToken(accessGroupTokens[group.id]);
@@ -138,7 +141,7 @@ const Pages = ({
     }
 
     return (
-        <Panel id={id}>
+        <Panel id={id} centered={!group || group.deactivated}>
             {(!group) && <PanelSpinner/>}
 
             {group &&
