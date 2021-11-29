@@ -228,8 +228,17 @@ const Page = ({
             >
                 {strings.error_widget_code}
             </Snackbar>);
-        } else if (e.error_data.error_reason === "security error" ||
-            e.error_data.error_reason === "Invalid params") {
+        } else if (e.error_data.error_reason === "security error") {
+            setSnackbar(null);
+            setSnackbar(<Snackbar
+                onClose={() => setSnackbar(null)}
+                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                action={strings.install}
+                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
+            >
+                {strings.need_install_app}
+            </Snackbar>);
+        } else if (e.error_data.error_reason === "Invalid params") {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}

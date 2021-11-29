@@ -122,6 +122,7 @@
   "install_widget": "Install widget",
   "delete_widget": "Delete widget",
   "error_widget_code": "Error in the widget code",
+  "widget_invalid_params": "An error in the widget code or the application is not installed",
   "text_not_widget_code": "Text is not widget code",
   "invalid_widget_type": "Invalid widget type",
   "need_install_app": "The app needs to be installed in the community",
