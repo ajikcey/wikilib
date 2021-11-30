@@ -430,7 +430,7 @@ const App = withAdaptivity(() => {
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                                     groups={groups} setGroups={setGroups} strings={strings}
                                     lastGroups={lastGroups} clearLastGroups={clearLastGroups}
-                                    setGroup={setGroup} accessToken={accessToken}
+                                    setGroup={setGroup} accessToken={accessToken} setPages={setPages}
                                     snackbarError={snackbar} go={go} getLastGroups={getLastGroups}/>
                                 <PanelGroup
                                     id={PANEL_GROUP}

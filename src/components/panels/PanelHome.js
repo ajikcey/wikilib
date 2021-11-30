@@ -26,18 +26,19 @@ import {useRouter} from "@happysanta/router";
 import {PAGE_ABOUT, PAGE_GROUP} from "../../index";
 
 const PanelHome = ({
-                  id,
-                  accessToken,
-                  strings,
-                  setGroup,
-                  groups,
-                  setGroups,
-                  snackbarError,
-                  lastGroups,
-                  getLastGroups,
-                  clearLastGroups,
-                  groupOffset, setGroupOffset
-              }) => {
+                       id,
+                       accessToken,
+                       strings,
+                       setPages,
+                       setGroup,
+                       groups,
+                       setGroups,
+                       snackbarError,
+                       lastGroups,
+                       getLastGroups,
+                       clearLastGroups,
+                       groupOffset, setGroupOffset
+                   }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
     const [end, setEnd] = useState(true);
@@ -46,8 +47,10 @@ const PanelHome = ({
     let groupCount = 0;
 
     useEffect(() => {
+        setPages(null); // reset
+
         getLastGroups(accessToken.access_token).then().catch((e) => {
-            console.log(e);
+            console.log('getLastGroups', e);
         });
 
         if (!groups) {

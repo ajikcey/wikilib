@@ -47,8 +47,6 @@ const PanelGroup = ({
     let pageCount = 0;
 
     useEffect(() => {
-        setPages(null); // reset
-
         if (group) {
             // после получения данных сообщества, чтобы не было "слишком много запросов в секунду"
             getLastGroups(accessToken.access_token).then(() => {
