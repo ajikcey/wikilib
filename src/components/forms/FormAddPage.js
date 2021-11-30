@@ -1,7 +1,9 @@
-import configData from "../config.json";
+import configData from "../../config.json";
 import {Button, Caption, FormItem, FormLayout, Input, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {fetchPage, fetchPages, handleError, savePage} from "../functions";
+import {fetchPage, fetchPages, handleError, savePage} from "../../functions";
+import {useRouter} from "@happysanta/router";
+import {PAGE_WIKI} from "../../index";
 
 /**
  * Форма создания wiki-страницы
@@ -16,6 +18,8 @@ const FormAddPage = (props) => {
     const [widgetType, setWidgetType] = useState(widgetTypes[0]);
     const [titleError, setTitleError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const TYPE_EMPTY_PAGE = 0;
     const TYPE_WIDGET = 1;
@@ -59,9 +63,9 @@ const FormAddPage = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
@@ -109,14 +113,14 @@ const FormAddPage = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
-        props.go(configData.routes.page);
-        props.onCloseModal();
+        router.popPage();
+        router.pushPage(PAGE_WIKI);
     }
 
     const onChangeTitle = (e) => {

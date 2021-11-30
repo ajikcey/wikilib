@@ -2,17 +2,19 @@ import React from 'react';
 
 import {Group, Panel, PanelHeader, Button, Placeholder} from '@vkontakte/vkui';
 import {Icon24WarningTriangleOutline} from "@vkontakte/icons";
-import configData from "../config.json";
+import configData from "../../config.json";
+import {ShowError} from "../../functions";
+import {useRouter} from "@happysanta/router";
 
-const Unloaded = ({id, strings}) => {
+const PanelUnloaded = ({id, init, strings, setModalData}) => {
+    const router = useRouter();
 
-    /**
-     * Просмотр приветствия
-     * @returns {Promise<void>}
-     */
-    const viewIntro = async function () {
-        document.location.reload();
-    };
+    const reload = () => {
+        init().then().catch(e => {
+            console.log('reload', e);
+            ShowError(e, setModalData, router);
+        });
+    }
 
     return (
         <Panel id={id} centered={true}>
@@ -21,12 +23,11 @@ const Unloaded = ({id, strings}) => {
             >
                 {configData.name}
             </PanelHeader>
-
             <Group>
                 <Placeholder
                     style={{maxWidth: 620}}
                     icon={<Icon24WarningTriangleOutline/>}
-                    action={<Button mode='secondary' onClick={viewIntro}>{strings.reload_app}</Button>}
+                    action={<Button mode='secondary' onClick={() => reload()}>{strings.reload_app}</Button>}
                 >
                     {strings.unloaded_app}
                 </Placeholder>
@@ -35,4 +36,4 @@ const Unloaded = ({id, strings}) => {
     )
 }
 
-export default Unloaded;
+export default PanelUnloaded;

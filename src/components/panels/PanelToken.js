@@ -3,9 +3,9 @@ import React from 'react';
 import {Button, Group, Panel, PanelHeader, Placeholder} from '@vkontakte/vkui';
 import {Icon56LockOutline} from '@vkontakte/icons';
 
-import configData from "../config.json";
+import configData from "../../config.json";
 
-const Token = ({id, fetchToken, strings, snackbarError}) => {
+const PanelToken = ({id, fetchToken, strings, snackbarError}) => {
 
     return (
         <Panel id={id} centered={true}>
@@ -29,4 +29,4 @@ const Token = ({id, fetchToken, strings, snackbarError}) => {
     )
 }
 
-export default Token;
+export default PanelToken;

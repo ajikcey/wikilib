@@ -3,11 +3,15 @@ import React, {Fragment, useState} from 'react';
 import {Group, Panel, PanelHeader, Avatar, Button, Placeholder, PanelSpinner} from '@vkontakte/vkui';
 import bridge from "@vkontakte/vk-bridge";
 
-import configData from "../config.json";
-import {handleError} from "../functions";
+import configData from "../../config.json";
+import {handleError} from "../../functions";
+import {PAGE_TOKEN} from "../../index";
+import {useRouter} from "@happysanta/router";
 
-const Intro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}) => {
+const PanelIntro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
+
+    const router = useRouter();
 
     /**
      * Просмотр приветствия
@@ -21,9 +25,9 @@ const Intro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}
             });
 
             setUserStatus({hasSeenIntro: true});
-            go(configData.routes.token);
+            router.replacePage(PAGE_TOKEN);
         } catch (e) {
-            handleError(strings, setSnackbar, go, e, {
+            handleError(strings, setSnackbar, router, e, {
                 default_error_msg: 'Error with sending data to Storage'
             });
         }
@@ -58,4 +62,4 @@ const Intro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}
     )
 }
 
-export default Intro;
+export default PanelIntro;

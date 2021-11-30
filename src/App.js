@@ -18,29 +18,52 @@ import {Icon24TextOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
 
 import './App.css';
 
-import Home from './panels/Home';
-import Intro from './panels/Intro';
-import Landing from './panels/Landing';
-
+import PanelHome from './components/panels/PanelHome';
+import PanelIntro from './components/panels/PanelIntro';
+import PanelLanding from './components/panels/PanelLanding';
 import configData from "./config.json";
-import Token from "./panels/Token";
-import Pages from "./panels/Pages";
-import About from "./panels/About";
-import Page from "./panels/Page";
+import PanelToken from "./components/panels/PanelToken";
+import PanelAbout from "./components/panels/PanelAbout";
 import {definePlatform, fetchGroupsById, getStrings, handleError} from "./functions";
-import FormAddPage from "./components/FormAddPage";
-import FormEditAccess from "./components/FormEditAccess";
+import FormAddPage from "./components/forms/FormAddPage";
+import FormEditAccess from "./components/forms/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
-import FormSortPage from "./components/FormSortPage";
-import FormCopyPage from "./components/FormCopyPage";
-import Unloaded from "./panels/Unloaded";
-import FormEditPage from "./components/FormEditPage";
-import FormRenamePage from "./components/FormRenamePage";
-import Images from "./panels/Images";
+import FormSortPage from "./components/forms/FormSortPage";
+import FormCopyPage from "./components/forms/FormCopyPage";
+import PanelUnloaded from "./components/panels/PanelUnloaded";
+import FormEditPage from "./components/forms/FormEditPage";
+import FormRenamePage from "./components/forms/FormRenamePage";
+import PanelImages from "./components/panels/PanelImages";
+import {useLocation, useRouter} from "@happysanta/router";
+import {
+    MODAL_ACCESS_PAGE,
+    MODAL_ADD_PAGE,
+    MODAL_COPY_PAGE,
+    MODAL_EDIT_PAGE,
+    MODAL_ERROR,
+    MODAL_GROUP,
+    MODAL_IMAGE,
+    MODAL_RENAME_PAGE,
+    MODAL_SORT_PAGE,
+    PAGE_GROUP,
+    PAGE_HOME,
+    PAGE_TOKEN,
+    PAGE_UNLOADED,
+    PANEL_ABOUT,
+    PANEL_GROUP,
+    PANEL_HOME,
+    PANEL_IMAGES,
+    PANEL_LANDING,
+    PANEL_MAIN,
+    PANEL_TOKEN,
+    PANEL_UNLOADED,
+    PANEL_WIKI,
+    VIEW_MAIN
+} from "./index";
+import PanelGroup from "./components/panels/PanelGroup";
+import PanelWiki from "./components/panels/PanelWiki";
 
 const App = withAdaptivity(() => {
-    const [activePanel, setActivePanel] = useState(configData.routes.intro);
-    const [activeModal, setActiveModal] = useState(null);
     const [popout, setPopout] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [user, setUser] = useState(null);
@@ -58,6 +81,8 @@ const App = withAdaptivity(() => {
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
 
+    const location = useLocation();
+    const router = useRouter();
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
 
@@ -72,93 +97,70 @@ const App = withAdaptivity(() => {
         }
     }
 
-    if (bridge.supports('VKWebAppResizeWindow')) {
-        bridge.send("VKWebAppResizeWindow", {
-            "width": window.innerWidth,
-            "height": Math.min(Math.max(window.screen.availHeight - 250, configData.window_min_height), configData.window_max_height)
-        }).then();
-    }
-
     useEffect(() => {
-        bridge.subscribe(({detail: {type, data}}) => {
-            if (type === 'vk-connect') {
-                if (typeof data === 'undefined') {
-                    // outside VkMiniApp
-                    go(configData.routes.landing);
-                }
-            }
-        });
 
-        async function initData() {
-            const data = {};
-
-            try {
-                const storageData = await bridge.send('VKWebAppStorageGet', {
-                    keys: Object.values(configData.storage_keys)
-                });
-
-                storageData.keys.forEach(({key, value}) => {
-                    data[key] = value ? JSON.parse(value) : {};
-                });
-
-                setUserStatus(data[configData.storage_keys.status]);
-                setAccessToken(data[configData.storage_keys.access_token]);
-                setAccessGroupTokens(data[configData.storage_keys.access_group_tokens]);
-
-                if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
-                    setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
-
-                    if (queryParams.vk_group_id) {
-                        go(configData.routes.pages);
-
-                        fetchGroupsById([queryParams.vk_group_id], data[configData.storage_keys.access_token].access_token).then(data => {
-                            if (data.response) {
-                                setGroup(data.response[0]); // асинхронное получение данных сообщества
-                            } else {
-                                handleError(strings, setSnackbar, go, {}, {
-                                    default_error_msg: 'No response get groups by id'
-                                });
-                            }
-                        }).catch(e => {
-                            handleError(strings, setSnackbar, go, e, {
-                                default_error_msg: 'Error get groups by id'
-                            });
-                        });
-                    } else {
-                        go(configData.routes.home);
-                    }
-                } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
-                    go(configData.routes.token);
-                } else {
-                    bridge.send('VKWebAppGetUserInfo').then((user) => setUser(user)).catch();
-                }
-            } catch (e) {
-                handleError(strings, setSnackbar, go, e, {
-                    default_error_msg: 'Error get data from Storage'
-                });
-            }
-        }
-
-        initData().then().catch(() => {
-            go(configData.routes.unloaded);
+        init().then().catch(e => {
+            console.log('init', e);
+            router.replacePage(PAGE_UNLOADED);
         });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    /**
-     * Переход на другую панель
-     * @param panel
-     */
+    async function init() {
+        const data = {};
+
+        const storageData = await bridge.send('VKWebAppStorageGet', {
+            keys: Object.values(configData.storage_keys)
+        });
+
+        storageData.keys.forEach(({key, value}) => {
+            data[key] = value ? JSON.parse(value) : {};
+        });
+
+        setUserStatus(data[configData.storage_keys.status]);
+        setAccessToken(data[configData.storage_keys.access_token]);
+        setAccessGroupTokens(data[configData.storage_keys.access_group_tokens]);
+
+        if (data[configData.storage_keys.status] && data[configData.storage_keys.status].tokenReceived) {
+            setLastGroupIds(Object.values(data[configData.storage_keys.last_groups]));
+
+            if (queryParams.vk_group_id) {
+                router.replacePage(PAGE_GROUP);
+
+                fetchGroupsById(
+                    [queryParams.vk_group_id],
+                    data[configData.storage_keys.access_token].access_token
+                ).then(data => {
+                    if (data.response) {
+                        setGroup(data.response[0]); // асинхронное получение данных сообщества
+                    } else {
+                        handleError(strings, setSnackbar, router, {}, {
+                            default_error_msg: 'No response get groups by id'
+                        });
+                    }
+                }).catch(e => {
+                    handleError(strings, setSnackbar, router, e, {
+                        default_error_msg: 'Error get groups by id'
+                    });
+                });
+            } else {
+                router.replacePage(PAGE_HOME);
+            }
+        } else if (data[configData.storage_keys.status] && data[configData.storage_keys.status].hasSeenIntro) {
+            router.replacePage(PAGE_TOKEN);
+        } else {
+            bridge.send('VKWebAppGetUserInfo').then((user) => setUser(user)).catch();
+        }
+    }
+
     const go = panel => {
+        console.log(panel);
+
         setSnackbar(false);
-        setActivePanel(panel);
+        router.pushPage(panel);
     };
 
-    /**
-     * @param access_token
-     * @returns {Promise}
-     */
     async function getLastGroups(access_token) {
         return new Promise((resolve, reject) => {
             // отсутствуют недавние сообщества
@@ -207,7 +209,7 @@ const App = withAdaptivity(() => {
             key: configData.storage_keys.last_groups,
             value: JSON.stringify(lastGroups.map(g => g.id))
         }).then().catch((e) => {
-            console.log(e);
+            console.log('VKWebAppStorageSet', e);
         });
     }
 
@@ -218,13 +220,9 @@ const App = withAdaptivity(() => {
         bridge.send('VKWebAppStorageSet', {
             key: configData.storage_keys.last_groups,
             value: JSON.stringify([])
-        }).then().catch(e => console.log(e));
+        }).then().catch(e => console.log('VKWebAppStorageSet', e));
     }
 
-    /**
-     * Получение токена пользователя
-     * @returns {Promise<void>}
-     */
     const fetchToken = async function () {
         await bridge.send('VKWebAppGetAuthToken', {
             app_id: configData.app_id,
@@ -232,11 +230,11 @@ const App = withAdaptivity(() => {
         }).then(data => {
             try {
                 if (!data.access_token) {
-                    handleError(strings, setSnackbar, go, {}, {
+                    handleError(strings, setSnackbar, router, {}, {
                         default_error_msg: 'No access token'
                     });
                 } else if (data.scope !== configData.scope.join(',')) {
-                    handleError(strings, setSnackbar, go, {}, {
+                    handleError(strings, setSnackbar, router, {}, {
                         default_error_msg: strings.not_all_access_rights
                     });
                 } else {
@@ -254,40 +252,36 @@ const App = withAdaptivity(() => {
                         value: JSON.stringify(userStatus)
                     });
 
-                    go(configData.routes.home); // route after get token
+                    router.replacePage(PAGE_HOME);
                 }
             } catch (e) {
-                handleError(strings, setSnackbar, go, e, {
+                handleError(strings, setSnackbar, router, e, {
                     default_error_msg: 'Error with sending data to Storage'
                 });
             }
         }).catch(e => {
-            console.log(e);
+            console.log('fetchToken', e);
         });
-    }
-
-    const onCloseModal = function () {
-        setActiveModal(null);
     }
 
     const modal = (
         <ModalRoot
-            activeModal={activeModal}
-            onClose={onCloseModal}
+            activeModal={location.getModalId()}
+            onClose={() => router.popPage()}
         >
             <ModalCard
-                id={configData.modals.addPage}
-                onClose={onCloseModal}
+                id={MODAL_ADD_PAGE}
+                onClose={() => router.popPage()}
                 header={strings.create_page}
             >
                 <FormAddPage
                     modalData={modalData} go={go} accessToken={accessToken} group={group}
-                    onCloseModal={onCloseModal} strings={strings} setPageTitle={setPageTitle}
+                    strings={strings} setPageTitle={setPageTitle}
                 />
             </ModalCard>
             <ModalCard
-                id={configData.modals.redirectToCommunity}
-                onClose={onCloseModal}
+                id={MODAL_GROUP}
+                onClose={() => router.popPage()}
                 icon={<Icon56CheckCircleOutline fill='var(--dynamic_green)'/>}
                 header={strings.app_installed}
                 subheader={strings.app_installed_subheader}
@@ -301,57 +295,57 @@ const App = withAdaptivity(() => {
             >
             </ModalCard>
             <ModalCard
-                id={configData.modals.accessPage}
-                onClose={onCloseModal}
+                id={MODAL_ACCESS_PAGE}
+                onClose={() => router.popPage()}
                 header={strings.accessing_page}
             >
                 <FormEditAccess
-                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    modalData={modalData} accessToken={accessToken}
                     go={go} group={group} strings={strings}
                 />
             </ModalCard>
             <ModalCard
-                id={configData.modals.copyPage}
-                onClose={onCloseModal}
+                id={MODAL_COPY_PAGE}
+                onClose={() => router.popPage()}
                 header={strings.copy_page}
             >
                 <FormCopyPage
-                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    modalData={modalData} accessToken={accessToken}
                     go={go} setGroup={setGroup} strings={strings}
                 />
             </ModalCard>
             <ModalCard
-                id={configData.modals.editPage}
-                onClose={onCloseModal}
+                className="ModalCardFullWidth"
+                id={MODAL_EDIT_PAGE}
+                onClose={() => router.popPage()}
                 header={strings.edit_page}
             >
                 <FormEditPage
-                    modalData={modalData} accessToken={accessToken} onCloseModal={onCloseModal}
+                    modalData={modalData} accessToken={accessToken}
                     go={go} group={group} strings={strings}
                 />
             </ModalCard>
             <ModalCard
-                id={configData.modals.renamePage}
-                onClose={onCloseModal}
+                id={MODAL_RENAME_PAGE}
+                onClose={() => router.popPage()}
                 header={strings.rename_page}
                 icon={<Icon24TextOutline width={56} height={56}/>}
                 subheader={strings.rename_page_desc}
             >
                 <FormRenamePage
-                    onCloseModal={onCloseModal}
                     go={go} group={group} pageTitle={pageTitle} strings={strings}
                 />
             </ModalCard>
             <ModalCard
-                id={configData.modals.image}
-                onClose={onCloseModal}
+                id={MODAL_IMAGE}
+                onClose={() => router.popPage()}
             >
                 {modalData.image && <img
                     alt='' src={modalData.image.images[2].url}/>}
             </ModalCard>
             <ModalCard
-                id={configData.modals.error}
-                onClose={onCloseModal}
+                id={MODAL_ERROR}
+                onClose={() => router.popPage()}
                 header={strings.error}
             >
                 <FormItem
@@ -367,17 +361,17 @@ const App = withAdaptivity(() => {
                 </FormItem>
             </ModalCard>
             <ModalPage
-                id={configData.modals.sortPage}
-                onClose={onCloseModal}
+                id={MODAL_SORT_PAGE}
+                onClose={() => router.popPage()}
                 header={<AppModalPageHeader
-                    onClose={onCloseModal}
+                    onClose={() => router.popPage()}
                     onSubmitFormId='formSortPage'
                 >
                     {strings.sorting}</AppModalPageHeader>}
             >
                 <FormSortPage
                     modalData={modalData} pageSort={pageSort} setPageSort={setPageSort} strings={strings}
-                    onCloseModal={onCloseModal} pages={pages} setPages={setPages}
+                    pages={pages} setPages={setPages}
                 />
             </ModalPage>
         </ModalRoot>
@@ -423,45 +417,55 @@ const App = withAdaptivity(() => {
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
                         <SplitCol animate={isMobile}>
-                            <View activePanel={activePanel}>
-                                <Landing
-                                    id={configData.routes.landing} strings={strings}/>
-                                <Intro
-                                    id={configData.routes.intro} go={go} snackbarError={snackbar} user={user}
+                            <View id={VIEW_MAIN} activePanel={location.getViewActivePanel(VIEW_MAIN)}>
+                                <PanelLanding
+                                    id={PANEL_LANDING}
+                                    strings={strings}/>
+                                <PanelIntro
+                                    id={PANEL_MAIN}
+                                    go={go} snackbarError={snackbar} user={user}
                                     setUserStatus={setUserStatus} userStatus={userStatus} strings={strings}/>
-                                <Home
+                                <PanelHome
+                                    id={PANEL_HOME}
                                     groupOffset={groupOffset} setGroupOffset={setGroupOffset}
                                     groups={groups} setGroups={setGroups} strings={strings}
                                     lastGroups={lastGroups} clearLastGroups={clearLastGroups}
-                                    id={configData.routes.home} setGroup={setGroup} accessToken={accessToken}
+                                    setGroup={setGroup} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} getLastGroups={getLastGroups}/>
-                                <Pages
+                                <PanelGroup
+                                    id={PANEL_GROUP}
                                     setAccessGroupToken={setAccessGroupToken} accessGroupTokens={accessGroupTokens}
                                     pageSort={pageSort} strings={strings} addLastGroup={addLastGroup}
                                     queryParams={queryParams} setModalData={setModalData} getLastGroups={getLastGroups}
-                                    id={configData.routes.pages} group={group} accessToken={accessToken}
+                                    group={group} accessToken={accessToken}
                                     snackbarError={snackbar} go={go} setPageTitle={setPageTitle}
-                                    setPages={setPages} pages={pages} setActiveModal={setActiveModal}/>
-                                <Page
+                                    setPages={setPages} pages={pages}/>
+                                <PanelWiki
+                                    id={PANEL_WIKI}
                                     strings={strings} setPopout={setPopout}
-                                    id={configData.routes.page} pageTitle={pageTitle}
+                                    pageTitle={pageTitle}
                                     setModalData={setModalData} accessToken={accessToken} group={group}
-                                    snackbarError={snackbar} go={go} setActiveModal={setActiveModal}/>
-                                <Token
-                                    id={configData.routes.token} strings={strings}
+                                    snackbarError={snackbar} go={go}/>
+                                <PanelToken
+                                    id={PANEL_TOKEN}
+                                    strings={strings}
                                     fetchToken={fetchToken} snackbarError={snackbar}/>
-                                <Images
-                                    id={configData.routes.images} strings={strings} go={go} group={group}
-                                    setModalData={setModalData} setActiveModal={setActiveModal}
+                                <PanelImages
+                                    id={PANEL_IMAGES}
+                                    strings={strings} go={go} group={group}
+                                    setModalData={setModalData}
                                     groupToken={accessGroupToken} addGroupToken={addGroupToken}
                                     removeGroupToken={removeGroupToken} snackbarError={snackbar}/>
-                                <About
+                                <PanelAbout
+                                    id={PANEL_ABOUT}
                                     queryParams={queryParams} strings={strings}
-                                    id={configData.routes.about} go={go} snackbarError={snackbar}
+                                    go={go} snackbarError={snackbar}
                                     setModalData={setModalData}
-                                    accessToken={accessToken} setActiveModal={setActiveModal}/>
-                                <Unloaded
-                                    strings={strings} id={configData.routes.unloaded}/>
+                                    accessToken={accessToken}/>
+                                <PanelUnloaded
+                                    id={PANEL_UNLOADED}
+                                    setModalData={setModalData}
+                                    init={init} strings={strings}/>
                             </View>
                         </SplitCol>
                     </SplitLayout>

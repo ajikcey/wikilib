@@ -13,7 +13,6 @@ import {
     PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, SimpleCell
 } from '@vkontakte/vkui';
 
-import configData from "../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon28BookmarkOutline,
@@ -22,19 +21,20 @@ import {
     Icon28UsersOutline,
     Icon32SearchOutline, Icon28MessageOutline, Icon12Verified, Icon28LikeOutline
 } from "@vkontakte/icons";
-import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
+import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../../functions";
+import {useRouter} from "@happysanta/router";
 
-const About = ({
+const PanelAbout = ({
                    id,
-                   go,
                    snackbarError,
                    accessToken,
                    setModalData,
-                   setActiveModal,
                    strings
                }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [app, setApp] = useState(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         fetchApp(accessToken.access_token).then(data => {
@@ -45,7 +45,7 @@ const About = ({
             } else {
                 setApp({});
 
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No response get app'
                 });
@@ -53,7 +53,7 @@ const About = ({
         }).catch(e => {
             setApp({});
 
-            handleError(strings, setSnackbar, go, e, {
+            handleError(strings, setSnackbar, router, e, {
                 default_error_msg: 'Error get app'
             });
         });
@@ -79,7 +79,7 @@ const About = ({
                     {strings.saved}
                 </Snackbar>);
             } else {
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No result AddToFavorites'
                 });
@@ -106,7 +106,7 @@ const About = ({
                     {strings.allowed}
                 </Snackbar>);
             } else {
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No result VKWebAppAllowNotifications'
                 });
@@ -115,15 +115,11 @@ const About = ({
         });
     }
 
-    const back = function () {
-        go(configData.routes.home);
-    }
-
     return (
         <Panel id={id} centered={!app}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
+                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
             </PanelHeader>
 
@@ -187,7 +183,7 @@ const About = ({
                     >{strings.save_to_bookmarks}</CellButton>
                     <CellButton
                         before={<Icon28UsersOutline/>}
-                        onClick={() => AddToCommunity(setModalData, setActiveModal)}
+                        onClick={() => AddToCommunity(setModalData, router)}
                     >{strings.add_to_community}</CellButton>
                     <CellButton
                         before={<Icon28LikeOutline/>}
@@ -217,4 +213,4 @@ const About = ({
     )
 }
 
-export default About;
+export default PanelAbout;

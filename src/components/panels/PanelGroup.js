@@ -9,19 +9,21 @@ import {
     PanelHeaderBack, PanelHeaderContent, PanelSpinner,
     Placeholder,
     Search,
-    Counter, Button
+    Counter
 } from '@vkontakte/vkui';
 
-import configData from "../config.json";
+import configData from "../../config.json";
 import {
     Icon24Filter,
     Icon28AddOutline,
     Icon32SearchOutline, Icon48BlockOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../functions";
-import IconPage from "../components/IconPage";
+import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../../functions";
+import IconPage from "../IconPage";
+import {useFirstPageCheck, useRouter} from "@happysanta/router";
+import {MODAL_ADD_PAGE, MODAL_SORT_PAGE, PAGE_HOME, PAGE_WIKI} from "../../index";
 
-const Pages = ({
+const PanelGroup = ({
                    id,
                    setAccessGroupToken,
                    accessGroupTokens,
@@ -29,9 +31,7 @@ const Pages = ({
                    group,
                    pageSort,
                    strings,
-                   go,
                    setPageTitle,
-                   setActiveModal,
                    setModalData,
                    snackbarError,
                    getLastGroups,
@@ -42,58 +42,19 @@ const Pages = ({
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [search, setSearch] = useState('');
 
+    const router = useRouter();
+    const isFirstPage = useFirstPageCheck();
     let pageCount = 0;
 
     useEffect(() => {
-
-        function fetchGroupPages() {
-            fetchPages(group.id, accessToken.access_token).then(data => {
-                if (data.response) {
-
-                    let f = '';
-
-                    if (pageSort.field === 1) {
-                        f = 'edited';
-                    } else if (pageSort.field === 2) {
-                        f = 'views';
-                    } else {
-                        f = 'created';
-                    }
-
-                    data.response.sort((a, b) => {
-                        if (a[f] > b[f]) {
-                            return (pageSort.direction === configData.directions.asc ? 1 : -1);
-                        }
-                        if (a[f] < b[f]) {
-                            return (pageSort.direction === configData.directions.asc ? -1 : 1);
-                        }
-                        return 0;
-                    });
-
-                    setPages(data.response);
-                } else {
-                    setPages([]);
-
-                    handleError(strings, setSnackbar, go, {}, {
-                        data: data,
-                        default_error_msg: 'No response get pages'
-                    });
-                }
-            }).catch(e => {
-                setPages([]);
-
-                handleError(strings, setSnackbar, go, e, {
-                    default_error_msg: 'Error get pages'
-                });
-            });
-        }
+        setPages(null); // reset
 
         if (group) {
             // после получения данных сообщества, чтобы не было "слишком много запросов в секунду"
             getLastGroups(accessToken.access_token).then(() => {
                 addLastGroup(group);
             }).catch((e) => {
-                console.log(e);
+                console.log('getLastGroups', e);
             });
 
             fetchGroupPages();
@@ -108,28 +69,58 @@ const Pages = ({
         // eslint-disable-next-line
     }, [group]); // ждем получение группы из родительского потока
 
-    /**
-     * Выбор wiki-страницы для показа информации
-     * @param item
-     */
-    const selectPage = function (item) {
-        setPageTitle(item);
-        go(configData.routes.page);
+    function fetchGroupPages() {
+        fetchPages(group.id, accessToken.access_token).then(data => {
+            if (data.response) {
+
+                let f = '';
+
+                if (pageSort.field === 1) {
+                    f = 'edited';
+                } else if (pageSort.field === 2) {
+                    f = 'views';
+                } else {
+                    f = 'created';
+                }
+
+                data.response.sort((a, b) => {
+                    if (a[f] > b[f]) {
+                        return (pageSort.direction === configData.directions.asc ? 1 : -1);
+                    }
+                    if (a[f] < b[f]) {
+                        return (pageSort.direction === configData.directions.asc ? -1 : 1);
+                    }
+                    return 0;
+                });
+
+                setPages(data.response);
+            } else {
+                setPages([]);
+
+                handleError(strings, setSnackbar, router, {}, {
+                    data: data,
+                    default_error_msg: 'No response get pages'
+                });
+            }
+        }).catch(e => {
+            setPages([]);
+
+            handleError(strings, setSnackbar, router, e, {
+                default_error_msg: 'Error get pages'
+            });
+        });
     }
 
-    /**
-     * Создание wiki-страницы
-     */
+    const selectPage = function (item) {
+        setPageTitle(item);
+        router.pushPage(PAGE_WIKI);
+    }
+
     const addPage = function () {
         setModalData({
             setSnackbar: setSnackbar,
         });
-        setActiveModal(configData.modals.addPage);
-    }
-
-    const back = function () {
-        setPages(null);
-        go(configData.routes.home);
+        router.pushModal(MODAL_ADD_PAGE);
     }
 
     const onChangeSearch = (e) => {
@@ -137,7 +128,7 @@ const Pages = ({
     }
 
     const onFiltersClick = () => {
-        setActiveModal(configData.modals.sortPage);
+        router.pushModal(MODAL_SORT_PAGE);
     }
 
     return (
@@ -148,10 +139,14 @@ const Pages = ({
             <Fragment>
                 <PanelHeader
                     mode="secondary"
-                    left={<PanelHeaderBack onClick={back}/>}
+                    left={<PanelHeaderBack onClick={() => isFirstPage ? router.replacePage(PAGE_HOME) : router.popPage()}/>}
                 >
                     <PanelHeaderContent
-                        status={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
+                        status={cutDeclNum(group.members_count, [
+                            strings.member.toLowerCase(),
+                            strings.two_members.toLowerCase(),
+                            strings.some_members.toLowerCase()
+                        ])}
                         before={<Avatar size={36} src={group.photo_100}/>}
                     >
                         {group.name}
@@ -162,7 +157,6 @@ const Pages = ({
                     <Placeholder
                         icon={<Icon48BlockOutline style={{color: 'var(--destructive)'}}/>}
                         header={strings.access_denied}
-                        action={<Button size="l" onClick={back}>{strings.back}</Button>}
                     >
                         {strings.group_deactivated}
                     </Placeholder>
@@ -231,4 +225,4 @@ const Pages = ({
     )
 }
 
-export default Pages;
+export default PanelGroup;

@@ -3,6 +3,10 @@
     background: var(--background_highlighted);
 }
 
+body::-webkit-scrollbar {
+    width: 0;
+}
+
 ::-webkit-scrollbar-thumb {
     background: var(--background_highlighted);
     border-radius: 5px;
@@ -28,6 +32,6 @@
     box-sizing: border-box;
 }
 
-#editPage.vkuiModalCard--vkcom .vkuiModalCard__in {
+.ModalCardFullWidth.vkuiModalCard--vkcom .vkuiModalCard__in {
     max-width: 88%;
 }

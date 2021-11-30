@@ -5,6 +5,7 @@ import {Icon24ErrorCircle} from "@vkontakte/icons";
 import LocalizedStrings from "react-localization";
 import en from "./languages/en.json";
 import ru from "./languages/ru.json";
+import {MODAL_ERROR, MODAL_GROUP, PAGE_TOKEN} from "./index";
 
 /**
  * Склонение слов в зависимости от числового значения
@@ -183,15 +184,15 @@ export function fetchUsers(user_ids, access_token) {
  * Обработка ошибок
  * @param strings
  * @param setSnackbar
- * @param go
+ * @param router
  * @param e
  * @param options
  */
-export function handleError(strings, setSnackbar, go, e, options) {
+export function handleError(strings, setSnackbar, router, e, options) {
     let error_msg = options.default_error_msg;
 
     if (e) {
-        console.log(e);
+        console.log('handleError', e);
     }
 
     if (options.data) {
@@ -206,7 +207,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
         if (e.error_data.error_reason) {
             if (typeof e.error_data.error_reason === 'object') {
                 if (e.error_data.error_reason.error_code === 5) {
-                    go(configData.routes.token);
+                    router.replacePage(PAGE_TOKEN);
                     return;
                 } else if (e.error_data.error_reason.error_code === 6) {
                     error_msg = strings.too_many_requests_per_second;
@@ -237,7 +238,7 @@ export function handleError(strings, setSnackbar, go, e, options) {
             }
         } else if (e.error_data.error_code) {
             if (e.error_data.error_code === 5) {
-                go(configData.routes.token);
+                router.replacePage(PAGE_TOKEN);
                 return;
             } else if (e.error_data.error_code === 6) {
                 error_msg = strings.too_many_requests_per_second;
@@ -466,9 +467,9 @@ export function calcLink(page_id, group_id, protocol = false) {
 /**
  * Добавление приложения в сообщество
  * @param setModalData
- * @param setActiveModal
+ * @param router
  */
-export function AddToCommunity(setModalData, setActiveModal) {
+export function AddToCommunity(setModalData, router) {
     bridge.send("VKWebAppAddToCommunity").then((data) => {
         if (data.group_id) {
             if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
@@ -476,7 +477,7 @@ export function AddToCommunity(setModalData, setActiveModal) {
             }
 
             setModalData({group_id: data.group_id});
-            setActiveModal(configData.modals.redirectToCommunity);
+            router.pushModal(MODAL_GROUP);
         }
     }).catch(() => {
     });
@@ -486,9 +487,9 @@ export function AddToCommunity(setModalData, setActiveModal) {
  * Открывает модальное окно с ошибкой
  * @param e
  * @param setModalData
- * @param setActiveModal
+ * @param router
  */
-export function ShowError(e, setModalData, setActiveModal) {
+export function ShowError(e, setModalData, router) {
     setModalData({error: JSON.stringify(e, null, '\t')});
-    setActiveModal(configData.modals.error);
+    router.pushModal(MODAL_ERROR);
 }

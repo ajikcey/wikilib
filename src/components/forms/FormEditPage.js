@@ -1,4 +1,4 @@
-import configData from "../config.json";
+import configData from "../../config.json";
 import {Icon24CheckCircleOutline, Icon24ExternalLinkOutline} from "@vkontakte/icons";
 import {
     Div, Button,
@@ -11,7 +11,8 @@ import {
     VKCOM
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {handleError, savePage} from "../functions";
+import {handleError, savePage} from "../../functions";
+import {useRouter} from "@happysanta/router";
 
 /**
  * Форма редактирования wiki-страницы
@@ -23,6 +24,7 @@ const FromEditPage = (props) => {
     const [textError, setTextError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const router = useRouter();
     const platform = usePlatform();
 
     const onSubmit = async (e) => {
@@ -53,9 +55,9 @@ const FromEditPage = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
@@ -66,7 +68,7 @@ const FromEditPage = (props) => {
             before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
         >{props.strings.saved}</Snackbar>);
 
-        props.onCloseModal();
+        router.popPage();
         props.modalData.setTab('info');
     }
 

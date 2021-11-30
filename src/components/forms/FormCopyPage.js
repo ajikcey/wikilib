@@ -7,8 +7,10 @@ import {
     Spacing
 } from "@vkontakte/vkui";
 import React, {useEffect, useState} from "react";
-import {fetchGroups, fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../functions";
-import configData from "../config.json";
+import {fetchGroups, fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../../functions";
+import configData from "../../config.json";
+import {PAGE_GROUP} from "../../index";
+import {useRouter} from "@happysanta/router";
 
 /**
  * Форма копирования wiki-страницы
@@ -21,6 +23,8 @@ const FormCopyPage = (props) => {
     const [titleError, setTitleError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [groups, setGroups] = useState({items: [props.modalData.group], count: 1});
+
+    const router = useRouter();
 
     const onSubmit = async (e) => {
         let system_error = null;
@@ -63,9 +67,9 @@ const FormCopyPage = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
@@ -94,9 +98,9 @@ const FormCopyPage = (props) => {
                     });
 
                     if (system_error) {
-                        handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+                        handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
                         setLoading(false);
-                        props.onCloseModal();
+                        router.popPage();
                         return;
                     }
                 }
@@ -127,14 +131,14 @@ const FormCopyPage = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
-        props.go(configData.routes.pages);
-        props.onCloseModal();
+        router.popPage();
+        router.pushPage(PAGE_GROUP);
     };
 
     const onChangeTitle = (e) => {

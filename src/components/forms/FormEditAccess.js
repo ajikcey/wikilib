@@ -1,9 +1,10 @@
-import configData from "../config.json";
+import configData from "../../config.json";
 import {Icon24CheckCircleOutline} from "@vkontakte/icons";
 import {Button, FormItem, FormLayout, Radio, Snackbar} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import {handleError, nameAccess} from "../functions";
+import {handleError, nameAccess} from "../../functions";
 import bridge from "@vkontakte/vk-bridge";
+import {useRouter} from "@happysanta/router";
 
 /**
  * Форма редактирования настроек доступа wiki-страницы
@@ -14,6 +15,8 @@ const FormEditAccess = (props) => {
     const [who_can_view, setWho_can_view] = useState(props.modalData.infoPage.who_can_view);
     const [who_can_edit, setWho_can_edit] = useState(props.modalData.infoPage.who_can_edit);
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const onSubmit = async function (e) {
         let system_error = null;
@@ -52,13 +55,13 @@ const FormEditAccess = (props) => {
         });
 
         if (system_error) {
-            handleError(props.strings, props.modalData.setSnackbar, props.go, system_error[0], system_error[1]);
+            handleError(props.strings, props.modalData.setSnackbar, router, system_error[0], system_error[1]);
             setLoading(false);
-            props.onCloseModal();
+            router.popPage();
             return;
         }
 
-        props.onCloseModal();
+        router.popPage();
         props.modalData.setSnackbar(null);
         props.modalData.setSnackbar(<Snackbar
             onClose={() => props.modalData.setSnackbar(null)}

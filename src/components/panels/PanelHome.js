@@ -19,14 +19,15 @@ import {
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
-import configData from "../config.json";
-import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../functions";
-import HorizontalScrollGroups from "../components/HorizontalScrollGroups";
+import configData from "../../config.json";
+import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../../functions";
+import HorizontalScrollGroups from "../HorizontalScrollGroups";
+import {useRouter} from "@happysanta/router";
+import {PAGE_ABOUT, PAGE_GROUP} from "../../index";
 
-const Home = ({
+const PanelHome = ({
                   id,
                   accessToken,
-                  go,
                   strings,
                   setGroup,
                   groups,
@@ -41,6 +42,7 @@ const Home = ({
     const [search, setSearch] = useState('');
     const [end, setEnd] = useState(true);
 
+    const router = useRouter();
     let groupCount = 0;
 
     useEffect(() => {
@@ -77,24 +79,20 @@ const Home = ({
                     setEnd(true);
                 }
             } else {
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     default_error_msg: 'No response get groups'
                 });
             }
         }).catch(e => {
-            handleError(strings, setSnackbar, go, e, {
+            handleError(strings, setSnackbar, router, e, {
                 default_error_msg: 'Error get groups'
             });
         });
     }
 
-    /**
-     * Выбор сообщества для показа wiki-страниц
-     * @param item
-     */
     const selectGroup = (item) => {
         setGroup(item);
-        go(configData.routes.pages);
+        router.pushPage(PAGE_GROUP);
     }
 
     const onChangeSearch = (e) => {
@@ -106,7 +104,7 @@ const Home = ({
             <PanelHeader
                 mode="secondary"
                 left={<PanelHeaderButton><Icon28InfoOutline onClick={() => {
-                    go(configData.routes.about)
+                    router.pushPage(PAGE_ABOUT)
                 }}/></PanelHeaderButton>}
             >
                 {configData.name}
@@ -120,7 +118,11 @@ const Home = ({
             />
 
             <Group>
-                <Header mode="primary" indicator={groups ? groups.count : ""}>{strings.all_communities}</Header>
+                <Header
+                    mode="primary" indicator={groups ? groups.count : ""}
+                >
+                    {strings.all_communities}
+                </Header>
                 <Search
                     placeholder={strings.community_search}
                     onChange={onChangeSearch}
@@ -146,7 +148,11 @@ const Home = ({
                                 <Cell
                                     key={group.id} before={<Avatar size={48} src={group.photo_100}/>}
                                     badge={group.verified ? <Icon12Verified/> : null}
-                                    description={cutDeclNum(group.members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
+                                    description={cutDeclNum(group.members_count, [
+                                        strings.member.toLowerCase(),
+                                        strings.two_members.toLowerCase(),
+                                        strings.some_members.toLowerCase()
+                                    ])}
                                     onClick={() => {
                                         selectGroup(group)
                                     }}
@@ -155,7 +161,11 @@ const Home = ({
                         })}
                     </List>
                     {(end) &&
-                    <Footer>{groupCount} {declOfNum(groupCount, [strings.community.toLowerCase(), strings.two_communities.toLowerCase(), strings.some_communities.toLowerCase()])}</Footer>
+                    <Footer>{groupCount} {declOfNum(groupCount, [
+                        strings.community.toLowerCase(),
+                        strings.two_communities.toLowerCase(),
+                        strings.some_communities.toLowerCase()
+                    ])}</Footer>
                     }
                     {(!end) &&
                     <Div>
@@ -176,4 +186,4 @@ const Home = ({
     )
 }
 
-export default Home;
+export default PanelHome;

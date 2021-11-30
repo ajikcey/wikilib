@@ -1,6 +1,7 @@
 import {Button, FormItem, FormLayout, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import configData from "../config.json";
+import configData from "../../config.json";
+import {useRouter} from "@happysanta/router";
 
 /**
  * Форма редактирования настроек сортировки wiki-страницы
@@ -10,6 +11,8 @@ import configData from "../config.json";
 const FormEditAccess = (props) => {
     const [field, setField] = useState(props.pageSort.field);
     const [direction, setDirection] = useState(props.pageSort.direction);
+
+    const router = useRouter();
 
     /**
      * Сохранение настроек
@@ -45,7 +48,7 @@ const FormEditAccess = (props) => {
         });
 
         props.setPages(props.pages);
-        props.onCloseModal();
+        router.popPage();
     };
 
     const onChangeField = function (e) {

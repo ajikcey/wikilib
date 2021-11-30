@@ -2,9 +2,9 @@ import React, {Fragment} from 'react';
 import {Group, Div, Panel, Button} from '@vkontakte/vkui';
 import {Icon48Services} from "@vkontakte/icons";
 
-import configData from "../config.json";
+import configData from "../../config.json";
 
-const Landing = ({id, strings}) => {
+const PanelLanding = ({id, strings}) => {
     return (
         <Panel id={id} centered={true}>
             <Fragment>
@@ -15,7 +15,7 @@ const Landing = ({id, strings}) => {
                         </div>
 
                         <h2>{configData.name}</h2>
-                        <h3>{strings.app_desc}</h3>
+                        <p>{strings.app_desc}</p>
 
                         <Div>
                             <Button href={'https://vk.com/app' + configData.app_id} mode='commerce' size='l'>
@@ -29,4 +29,4 @@ const Landing = ({id, strings}) => {
     )
 };
 
-export default Landing;
+export default PanelLanding;

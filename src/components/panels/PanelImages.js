@@ -15,7 +15,7 @@ import {
     Snackbar,
     SimpleCell, Avatar, IconButton, Footer, FormStatus, Spinner
 } from '@vkontakte/vkui';
-import configData from "../config.json";
+import configData from "../../config.json";
 import {
     Icon24Camera, Icon24CheckCircleOutline,
     Icon24ErrorCircle,
@@ -28,16 +28,16 @@ import {
     fetchImages,
     getGroupImageUploadServer, saveGroupImage,
     ShowError
-} from "../functions";
+} from "../../functions";
 import bridge from "@vkontakte/vk-bridge";
+import {useRouter} from "@happysanta/router";
+import {MODAL_IMAGE} from "../../index";
 
-const Images = ({
+const PanelImages = ({
                     id,
                     strings,
-                    go,
                     group,
                     setModalData,
-                    setActiveModal,
                     snackbarError,
                     removeGroupToken,
                     groupToken,
@@ -48,6 +48,7 @@ const Images = ({
     const [tab, setTab] = useState(0);
     const [loading, setLoading] = useState(false);
 
+    const router = useRouter();
     const _URL = window.URL || window.webkitURL;
 
     const imageTypes = [
@@ -86,12 +87,12 @@ const Images = ({
                 onClose={() => setSnackbar(null)}
                 before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
                 action={strings.install}
-                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
+                onActionClick={() => AddToCommunity(setModalData, router)}
             >
                 {strings.need_install_app}
             </Snackbar>);
         } else {
-            ShowError(e, setModalData, setActiveModal);
+            ShowError(e, setModalData, router);
         }
     }
 
@@ -111,10 +112,6 @@ const Images = ({
             setImages({});
             handleErrorImages(e);
         });
-    }
-
-    const back = () => {
-        go(configData.routes.page);
     }
 
     const changeTab = (i) => {
@@ -207,11 +204,11 @@ const Images = ({
                                 >{strings.saved}</Snackbar>);
                             }).catch((e) => {
                                 setLoading(false);
-                                ShowError(e.message, setModalData, setActiveModal);
+                                ShowError(e.message, setModalData, router);
                             });
                         } else {
                             setLoading(false);
-                            ShowError(data, setModalData, setActiveModal);
+                            ShowError(data, setModalData, router);
                         }
                     }).catch(e => {
                         setLoading(false);
@@ -226,7 +223,7 @@ const Images = ({
                 }
             }).catch(e => {
                 setLoading(false);
-                ShowError(e, setModalData, setActiveModal);
+                ShowError(e, setModalData, router);
             });
         }
     }
@@ -255,14 +252,14 @@ const Images = ({
         e.stopPropagation();
 
         setModalData({image: image});
-        setActiveModal(configData.modals.image);
+        router.pushModal(MODAL_IMAGE);
     }
 
     return (
         <Panel id={id} centered={!groupToken}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
+                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 {strings.images}
             </PanelHeader>
@@ -364,4 +361,4 @@ const Images = ({
     )
 }
 
-export default Images;
+export default PanelImages;

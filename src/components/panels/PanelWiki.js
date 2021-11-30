@@ -42,7 +42,7 @@ import {
     Icon28DeleteOutlineAndroid,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import configData from "../config.json";
+import configData from "../../config.json";
 import {
     AddToCommunity,
     calcLink,
@@ -50,19 +50,19 @@ import {
     fetchUsers,
     fetchVersion, handleError, nameAccess, ShowError,
     timestampToDate
-} from "../functions";
-import IconPage from "../components/IconPage";
+} from "../../functions";
+import IconPage from "../IconPage";
 import bridge from "@vkontakte/vk-bridge";
+import {useRouter} from "@happysanta/router";
+import {MODAL_ACCESS_PAGE, MODAL_COPY_PAGE, MODAL_EDIT_PAGE, MODAL_RENAME_PAGE, PAGE_IMAGES} from "../../index";
 
-const Page = ({
+const PanelWiki = ({
                   id,
                   accessToken,
                   pageTitle,
-                  go,
                   group,
                   strings,
                   setModalData,
-                  setActiveModal,
                   setPopout,
                   snackbarError
               }) => {
@@ -73,6 +73,7 @@ const Page = ({
     const [history, setHistory] = useState(null);
     const [tab, setTab] = useState('info');
 
+    const router = useRouter();
     const platform = usePlatform();
     const menuWidgetTargetRef = React.useRef();
 
@@ -95,13 +96,13 @@ const Page = ({
                             setEditor(data.response[0]); // creator_id == editor_id
                         }
                     } else {
-                        handleError(strings, setSnackbar, go, {}, {
+                        handleError(strings, setSnackbar, router, {}, {
                             data: data,
                             default_error_msg: 'No response get users'
                         });
                     }
                 }).catch(e => {
-                    handleError(strings, setSnackbar, go, e, {
+                    handleError(strings, setSnackbar, router, e, {
                         default_error_msg: 'Error get users'
                     });
                 });
@@ -110,7 +111,7 @@ const Page = ({
             } else {
                 setInfoPage({});
 
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No response get page'
                 });
@@ -118,7 +119,7 @@ const Page = ({
         }).catch(e => {
             setInfoPage({});
 
-            handleError(strings, setSnackbar, go, e, {
+            handleError(strings, setSnackbar, router, e, {
                 default_error_msg: 'Error get page'
             });
         });
@@ -130,7 +131,7 @@ const Page = ({
             setInfoPage: setInfoPage,
             infoPage: infoPage,
         });
-        setActiveModal(configData.modals.accessPage);
+        router.pushModal(MODAL_ACCESS_PAGE);
     }
 
     const copy = (e) => {
@@ -183,11 +184,11 @@ const Page = ({
         });
 
         if (system_error) {
-            handleError(strings, setSnackbar, go, system_error[0], system_error[1]);
+            handleError(strings, setSnackbar, router, system_error[0], system_error[1]);
             return;
         }
 
-        setActiveModal(configData.modals.editPage);
+        router.pushModal(MODAL_EDIT_PAGE);
     }
 
     const editPage = () => {
@@ -204,7 +205,7 @@ const Page = ({
             who_can_view: infoPage.who_can_view,
             who_can_edit: infoPage.who_can_edit
         });
-        setActiveModal(configData.modals.editPage);
+        router.pushModal(MODAL_EDIT_PAGE);
     }
 
     const copyPage = () => {
@@ -214,7 +215,7 @@ const Page = ({
             text: infoPage.source,
             setSnackbar: setSnackbar
         });
-        setActiveModal(configData.modals.copyPage);
+        router.pushModal(MODAL_COPY_PAGE);
     }
 
     const handleErrorWidget = (e) => {
@@ -234,7 +235,7 @@ const Page = ({
                 onClose={() => setSnackbar(null)}
                 before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
                 action={strings.install}
-                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
+                onActionClick={() => AddToCommunity(setModalData, router)}
             >
                 {strings.need_install_app}
             </Snackbar>);
@@ -244,14 +245,14 @@ const Page = ({
                 onClose={() => setSnackbar(null)}
                 before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
                 action={strings.install}
-                onActionClick={() => AddToCommunity(setModalData, setActiveModal)}
+                onActionClick={() => AddToCommunity(setModalData, router)}
             >
                 {strings.need_install_app}
             </Snackbar>);
         } else if (e.error_data.error_reason === "User denied") {
             // отменена установка виджета
         } else {
-            ShowError(e, setModalData, setActiveModal);
+            ShowError(e, setModalData, router);
         }
     }
 
@@ -308,10 +309,6 @@ const Page = ({
         }).catch(handleErrorWidget);
     }
 
-    const back = () => {
-        go(configData.routes.pages);
-    }
-
     const tabInfo = () => {
         setTab('info');
     }
@@ -325,7 +322,7 @@ const Page = ({
             } else {
                 setHistory([]);
 
-                handleError(strings, setSnackbar, go, {}, {
+                handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No response get history'
                 });
@@ -333,7 +330,7 @@ const Page = ({
         }).catch(e => {
             setHistory([]);
 
-            handleError(strings, setSnackbar, go, e, {
+            handleError(strings, setSnackbar, router, e, {
                 default_error_msg: 'Error get history'
             });
         });
@@ -358,7 +355,7 @@ const Page = ({
             <ActionSheetItem
                 autoclose
                 before={<Icon24Attachments/>}
-                onClick={() => go(configData.routes.images)}
+                onClick={() => router.pushPage(PAGE_IMAGES)}
             >
                 {strings.images}
             </ActionSheetItem>
@@ -385,7 +382,7 @@ const Page = ({
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={back}/>}
+                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 <PanelHeaderContent
                     status={pageTitle.title}
@@ -469,7 +466,7 @@ const Page = ({
                         <CellButton before={<Icon24Write/>} onClick={editPage}>{strings.edit}</CellButton>
                         <CellButton
                             before={<Icon24TextOutline/>}
-                            onClick={() => setActiveModal(configData.modals.renamePage)}
+                            onClick={() => router.pushModal(MODAL_RENAME_PAGE)}
                         >
                             {strings.rename}
                         </CellButton>
@@ -527,4 +524,4 @@ const Page = ({
     )
 }
 
-export default Page;
+export default PanelWiki;
