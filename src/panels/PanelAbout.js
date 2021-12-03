@@ -21,7 +21,7 @@ import {
     Icon28UsersOutline,
     Icon32SearchOutline, Icon28MessageOutline, Icon12Verified, Icon28LikeOutline
 } from "@vkontakte/icons";
-import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../../functions";
+import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
 
 const PanelAbout = ({
@@ -122,7 +122,6 @@ const PanelAbout = ({
                 left={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
             </PanelHeader>
-
             {(!app) && <PanelSpinner/>}
             {(app && !app.items) &&
             <Placeholder icon={<Icon32SearchOutline/>}>{strings.information_not_found}</Placeholder>}

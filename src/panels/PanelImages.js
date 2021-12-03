@@ -15,7 +15,7 @@ import {
     Snackbar,
     SimpleCell, Avatar, IconButton, Footer, FormStatus, Spinner
 } from '@vkontakte/vkui';
-import configData from "../../config.json";
+import configData from "../config.json";
 import {
     Icon24Camera, Icon24CheckCircleOutline,
     Icon24ErrorCircle,
@@ -28,10 +28,10 @@ import {
     fetchImages,
     getGroupImageUploadServer, saveGroupImage,
     ShowError
-} from "../../functions";
+} from "../functions";
 import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
-import {MODAL_IMAGE} from "../../index";
+import {MODAL_IMAGE} from "../index";
 
 const PanelImages = ({
                     id,

@@ -1,23 +1,14 @@
 import {Button, FormItem, FormLayout, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
-import configData from "../../config.json";
 import {useRouter} from "@happysanta/router";
+import {ASC, DESC} from "../../index";
 
-/**
- * Форма редактирования настроек сортировки wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FormEditAccess = (props) => {
     const [field, setField] = useState(props.pageSort.field);
     const [direction, setDirection] = useState(props.pageSort.direction);
 
     const router = useRouter();
 
-    /**
-     * Сохранение настроек
-     * @param e
-     */
     const onSubmit = function (e) {
         e.preventDefault();
 
@@ -39,10 +30,10 @@ const FormEditAccess = (props) => {
 
         props.pages.sort((a, b) => {
             if (a[f] > b[f]) {
-                return (direction === configData.directions.asc ? 1 : -1);
+                return (direction === ASC ? 1 : -1);
             }
             if (a[f] < b[f]) {
-                return (direction === configData.directions.asc ? -1 : 1);
+                return (direction === ASC ? -1 : 1);
             }
             return 0;
         });
@@ -73,10 +64,10 @@ const FormEditAccess = (props) => {
                 <SliderSwitch
                     onSwitch={onSwitchDirection}
                     name='direction'
-                    activeValue={direction === configData.directions.asc ? configData.directions.asc : configData.directions.desc}
+                    activeValue={direction === ASC ?? DESC}
                     options={[
-                        {value: configData.directions.desc, name: props.strings.descending},
-                        {value: configData.directions.asc, name: props.strings.ascending},
+                        {value: DESC, name: props.strings.descending},
+                        {value: ASC, name: props.strings.ascending},
                     ]}
                 />
             </FormItem>

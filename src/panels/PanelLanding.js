@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import {Group, Div, Panel, Button} from '@vkontakte/vkui';
 import {Icon48Services} from "@vkontakte/icons";
 
-import configData from "../../config.json";
+import configData from "../config.json";
 
 const PanelLanding = ({id, strings}) => {
     return (

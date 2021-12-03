@@ -2,8 +2,8 @@ import React from 'react';
 
 import {Group, Panel, PanelHeader, Button, Placeholder} from '@vkontakte/vkui';
 import {Icon24WarningTriangleOutline} from "@vkontakte/icons";
-import configData from "../../config.json";
-import {ShowError} from "../../functions";
+import configData from "../config.json";
+import {ShowError} from "../functions";
 import {useRouter} from "@happysanta/router";
 
 const PanelUnloaded = ({id, init, strings, setModalData}) => {
@@ -18,11 +18,7 @@ const PanelUnloaded = ({id, init, strings, setModalData}) => {
 
     return (
         <Panel id={id} centered={true}>
-            <PanelHeader
-                mode="secondary"
-            >
-                {configData.name}
-            </PanelHeader>
+            <PanelHeader mode="secondary">{configData.name}</PanelHeader>
             <Group>
                 <Placeholder
                     style={{maxWidth: 620}}

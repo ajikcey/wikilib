@@ -3,24 +3,20 @@ import React, {Fragment, useState} from 'react';
 import {Group, Panel, PanelHeader, Avatar, Button, Placeholder, PanelSpinner} from '@vkontakte/vkui';
 import bridge from "@vkontakte/vk-bridge";
 
-import configData from "../../config.json";
-import {handleError} from "../../functions";
-import {PAGE_TOKEN} from "../../index";
+import configData from "../config.json";
+import {handleError} from "../functions";
+import {PAGE_TOKEN, STORAGE_STATUS} from "../index";
 import {useRouter} from "@happysanta/router";
 
-const PanelIntro = ({id, snackbarError, strings, userStatus, user, setUserStatus, go}) => {
+const PanelIntro = ({id, snackbarError, strings, userStatus, user, setUserStatus}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
 
     const router = useRouter();
 
-    /**
-     * Просмотр приветствия
-     * @returns {Promise<void>}
-     */
     const viewIntro = async function () {
         try {
             await bridge.send('VKWebAppStorageSet', {
-                key: configData.storage_keys.status,
+                key: STORAGE_STATUS,
                 value: JSON.stringify({hasSeenIntro: true})
             });
 
@@ -36,15 +32,9 @@ const PanelIntro = ({id, snackbarError, strings, userStatus, user, setUserStatus
     return (
         <Panel id={id} centered={true}>
             {(!user && !userStatus) && <PanelSpinner/>}
-
             {(user && (!userStatus || !userStatus.hasSeenIntro)) &&
             <Fragment>
-                <PanelHeader
-                    mode="secondary"
-                >
-                    {configData.name}
-                </PanelHeader>
-
+                <PanelHeader mode="secondary">{configData.name}</PanelHeader>
                 <Group>
                     <Placeholder
                         style={{maxWidth: 620}}

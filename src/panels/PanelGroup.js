@@ -12,16 +12,16 @@ import {
     Counter
 } from '@vkontakte/vkui';
 
-import configData from "../../config.json";
+import configData from "../config.json";
 import {
     Icon24Filter,
     Icon28AddOutline,
     Icon32SearchOutline, Icon48BlockOutline,
 } from "@vkontakte/icons";
-import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../../functions";
-import IconPage from "../IconPage";
+import {cutDeclNum, cutNum, declOfNum, fetchPages, handleError, regexpSearch, timestampToDate} from "../functions";
+import IconPage from "../components/IconPage";
 import {useFirstPageCheck, useRouter} from "@happysanta/router";
-import {MODAL_ADD_PAGE, MODAL_SORT_PAGE, PAGE_HOME, PAGE_WIKI} from "../../index";
+import {ASC, MODAL_ADD_PAGE, MODAL_SORT_PAGE, PAGE_HOME, PAGE_WIKI} from "../index";
 
 const PanelGroup = ({
                    id,
@@ -83,10 +83,10 @@ const PanelGroup = ({
 
                 data.response.sort((a, b) => {
                     if (a[f] > b[f]) {
-                        return (pageSort.direction === configData.directions.asc ? 1 : -1);
+                        return (pageSort.direction === ASC ? 1 : -1);
                     }
                     if (a[f] < b[f]) {
-                        return (pageSort.direction === configData.directions.asc ? -1 : 1);
+                        return (pageSort.direction === ASC ? -1 : 1);
                     }
                     return 0;
                 });

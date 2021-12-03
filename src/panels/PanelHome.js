@@ -19,11 +19,11 @@ import {
     Icon28InfoOutline, Icon36Users
 } from '@vkontakte/icons';
 
-import configData from "../../config.json";
-import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../../functions";
-import HorizontalScrollGroups from "../HorizontalScrollGroups";
+import configData from "../config.json";
+import {cutDeclNum, declOfNum, fetchGroups, handleError, regexpSearch} from "../functions";
+import HorizontalScrollGroups from "../components/HorizontalScrollGroups";
 import {useRouter} from "@happysanta/router";
-import {PAGE_ABOUT, PAGE_GROUP} from "../../index";
+import {PAGE_ABOUT, PAGE_GROUP} from "../index";
 
 const PanelHome = ({
                        id,

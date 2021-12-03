@@ -8,11 +8,6 @@ import {
 } from '@vkontakte/vkui';
 import {Fragment} from "react";
 
-/**
- * @param props
- * @returns {JSX.Element}
- * @constructor
- */
 const AppModalPageHeader = (props) => {
     const platform = usePlatform();
     const {viewWidth} = useAdaptivity();

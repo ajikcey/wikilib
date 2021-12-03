@@ -38,7 +38,17 @@ export const MODAL_GROUP = 'modal_group';
 export const MODAL_ERROR = 'modal_error';
 export const MODAL_IMAGE = 'modal_image';
 
+export const POPOUT_MENU_WIDGET = 'popout_menu_widget';
+
 export const VIEW_MAIN = 'view_main';
+
+export const ASC = "ASC";
+export const DESC = "DESC";
+
+export const STORAGE_LAST_GROUP = "last_groups";
+export const STORAGE_STATUS = "status";
+export const STORAGE_ACCESS_TOKEN = "access_token";
+export const STORAGE_ACCESS_GROUP_TOKENS = "access_group_tokens";
 
 const routes = {
     [PAGE_MAIN]: new Page(PANEL_MAIN, VIEW_MAIN),

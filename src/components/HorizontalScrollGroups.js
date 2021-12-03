@@ -3,11 +3,6 @@ import {
 } from '@vkontakte/vkui';
 import {Icon16Clear} from "@vkontakte/icons";
 
-/**
- * @param props
- * @returns {JSX.Element}
- * @constructor
- */
 const HorizontalScrollGroups = (props) => {
     const SCROLL_OFFSET = 320;
 

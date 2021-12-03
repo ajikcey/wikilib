@@ -20,52 +20,47 @@ import {
     SimpleCell,
     PanelHeaderContent,
     Spacing,
-    usePlatform,
-    ActionSheet,
-    ActionSheetItem, IOS
 } from '@vkontakte/vkui';
 
 import {
-    Icon24Attachments,
     Icon24CheckCircleOutline,
-    Icon24Copy, Icon24Download,
-    Icon24ErrorCircle,
-    Icon24HelpOutline,
-    Icon24InfoCircleOutline,
+    Icon24Copy,
     Icon24MoreVertical,
     Icon24ServicesOutline, Icon24TextOutline,
     Icon24Write,
     Icon28CalendarOutline,
     Icon28ChainOutline,
     Icon28CopyOutline,
-    Icon28DeleteOutline,
-    Icon28DeleteOutlineAndroid,
     Icon32SearchOutline,
 } from "@vkontakte/icons";
-import configData from "../../config.json";
 import {
-    AddToCommunity,
     calcLink,
     declOfNum, fetchHistory, fetchPage,
     fetchUsers,
-    fetchVersion, handleError, nameAccess, ShowError,
+    fetchVersion, handleError, nameAccess,
     timestampToDate
-} from "../../functions";
-import IconPage from "../IconPage";
+} from "../functions";
+import IconPage from "../components/IconPage";
 import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
-import {MODAL_ACCESS_PAGE, MODAL_COPY_PAGE, MODAL_EDIT_PAGE, MODAL_RENAME_PAGE, PAGE_IMAGES} from "../../index";
+import {
+    MODAL_ACCESS_PAGE,
+    MODAL_COPY_PAGE,
+    MODAL_EDIT_PAGE,
+    MODAL_RENAME_PAGE,
+    POPOUT_MENU_WIDGET
+} from "../index";
 
 const PanelWiki = ({
-                  id,
-                  accessToken,
-                  pageTitle,
-                  group,
-                  strings,
-                  setModalData,
-                  setPopout,
-                  snackbarError
-              }) => {
+                       id,
+                       accessToken,
+                       pageTitle,
+                       group,
+                       strings,
+                       setModalData,
+                       setPopoutData,
+                       snackbarError
+                   }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [infoPage, setInfoPage] = useState(null);
     const [creator, setCreator] = useState(null);
@@ -74,7 +69,6 @@ const PanelWiki = ({
     const [tab, setTab] = useState('info');
 
     const router = useRouter();
-    const platform = usePlatform();
     const menuWidgetTargetRef = React.useRef();
 
     useEffect(() => {
@@ -150,7 +144,8 @@ const PanelWiki = ({
                     {strings.copied_to_clipboard}
                 </Snackbar>);
             }
-        }).catch(() => {});
+        }).catch(() => {
+        });
     }
 
     const selectVersion = async function (item) {
@@ -218,97 +213,6 @@ const PanelWiki = ({
         router.pushModal(MODAL_COPY_PAGE);
     }
 
-    const handleErrorWidget = (e) => {
-        console.log(e);
-
-        if (e.error_data.error_code === 2) {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                {strings.error_widget_code}
-            </Snackbar>);
-        } else if (e.error_data.error_reason === "security error") {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
-                action={strings.install}
-                onActionClick={() => AddToCommunity(setModalData, router)}
-            >
-                {strings.need_install_app}
-            </Snackbar>);
-        } else if (e.error_data.error_reason === "Invalid params") {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
-                action={strings.install}
-                onActionClick={() => AddToCommunity(setModalData, router)}
-            >
-                {strings.widget_invalid_params}
-            </Snackbar>);
-        } else if (e.error_data.error_reason === "User denied") {
-            // отменена установка виджета
-        } else {
-            ShowError(e, setModalData, router);
-        }
-    }
-
-    const installWidget = () => {
-        if (!infoPage) return false;
-        let widgetData = {
-            group_id: group.id
-        };
-        let widgetArr = infoPage.source.split('\n');
-
-        widgetData.type = widgetArr.shift().trim();
-        if (!widgetData.type || !configData.widget_types[widgetData.type]) {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
-            >
-                {strings.invalid_widget_type}
-            </Snackbar>);
-            return false;
-        }
-
-        widgetData.code = widgetArr.join('\n')
-            .replace(/\s+/gm, " ")
-            .replace(/\[\[(video[^\]]+)]]/gm, "https://vk.com/$1") // replace video links
-            .replace(/\[(https:\/\/[^\]]+)]/gm, "$1"); // replace links
-
-        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", widgetData).then(() => {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank" href={`https://vk.com/club${group.id}`}>{strings.open_community}</Link>}
-            >
-                {strings.saved}
-            </Snackbar>);
-        }).catch(handleErrorWidget);
-    }
-
-    const deleteWidget = () => {
-        bridge.send("VKWebAppShowCommunityWidgetPreviewBox", {
-            "group_id": group.id,
-            "type": "text",
-            "code": "return false;"
-        }).then(() => {
-            setSnackbar(null);
-            setSnackbar(<Snackbar
-                onClose={() => setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank" href={`https://vk.com/club${group.id}`}>{strings.open_community}</Link>}
-            >
-                {strings.saved}
-            </Snackbar>);
-        }).catch(handleErrorWidget);
-    }
-
     const tabInfo = () => {
         setTab('info');
     }
@@ -336,47 +240,14 @@ const PanelWiki = ({
         });
     }
 
-    const onClosePopout = () => setPopout(null);
-
-    const openMenuWidget = () => setPopout(
-        <ActionSheet
-            onClose={onClosePopout}
-            iosCloseItem={<ActionSheetItem autoclose mode="cancel">Отменить</ActionSheetItem>}
-            toggleRef={menuWidgetTargetRef}
-            popupDirection="top"
-        >
-            <ActionSheetItem
-                autoclose
-                before={<Icon24Download/>}
-                onClick={installWidget}
-            >
-                {strings.install_widget}
-            </ActionSheetItem>
-            <ActionSheetItem
-                autoclose
-                before={<Icon24Attachments/>}
-                onClick={() => router.pushPage(PAGE_IMAGES)}
-            >
-                {strings.images}
-            </ActionSheetItem>
-            <ActionSheetItem
-                autoclose
-                before={<Icon24HelpOutline/>}
-                href='https://vk.com/@wikilib-rabota-s-vidzhetami'
-                target='_blank'
-            >
-                {strings.help}
-            </ActionSheetItem>
-            <ActionSheetItem
-                autoclose
-                before={platform === IOS ? <Icon28DeleteOutline/> : <Icon28DeleteOutlineAndroid/>}
-                mode="destructive"
-                onClick={deleteWidget}
-            >
-                {strings.delete_widget}
-            </ActionSheetItem>
-        </ActionSheet>
-    );
+    const openMenuWidget = () => {
+        setPopoutData({
+            toggleRef: menuWidgetTargetRef,
+            infoPage: infoPage,
+            setSnackbar: setSnackbar,
+        });
+        router.replacePopup(POPOUT_MENU_WIDGET);
+    }
 
     return (
         <Panel id={id}>
