@@ -247,7 +247,7 @@ const PanelWiki = ({
                 action={strings.install}
                 onActionClick={() => AddToCommunity(setModalData, router)}
             >
-                {strings.need_install_app}
+                {strings.widget_invalid_params}
             </Snackbar>);
         } else if (e.error_data.error_reason === "User denied") {
             // отменена установка виджета
