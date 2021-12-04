@@ -4,13 +4,13 @@ import {
 } from '@vkontakte/vkui';
 import React from "react";
 import {
-    Icon24Attachments, Icon24CheckCircleOutline,
+    Icon24Attachments, Icon24CheckCircleOutline, Icon24ClockOutline,
     Icon24Download, Icon24ErrorCircle,
     Icon24HelpOutline, Icon24InfoCircleOutline,
     Icon28DeleteOutline,
     Icon28DeleteOutlineAndroid
 } from "@vkontakte/icons";
-import {PAGE_IMAGES, POPOUT_SCREEN_SPINNER} from "../../index";
+import {PAGE_IMAGES, PAGE_TIME, POPOUT_SCREEN_SPINNER} from "../../index";
 import configData from "../../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {AddToCommunity, ShowError} from "../../functions";
@@ -146,6 +146,13 @@ const PopoutMenuWidget = (props) => {
                 onClick={() => router.pushPage(PAGE_IMAGES)}
             >
                 {props.strings.images}
+            </ActionSheetItem>
+            <ActionSheetItem
+                autoclose
+                before={<Icon24ClockOutline/>}
+                onClick={() => router.pushPage(PAGE_TIME)}
+            >
+                {props.strings.unix_time}
             </ActionSheetItem>
             <ActionSheetItem
                 autoclose

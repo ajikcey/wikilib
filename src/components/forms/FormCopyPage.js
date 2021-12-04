@@ -1,13 +1,14 @@
 import {
-    Button, Caption,
+    Avatar,
+    Button, Caption, CustomSelectOption,
     FormItem,
     FormLayout,
     Input,
-    NativeSelect,
+    Select,
     Spacing
 } from "@vkontakte/vkui";
 import React, {useEffect, useState} from "react";
-import {fetchGroups, fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../../functions";
+import {cutDeclNum, fetchGroups, fetchGroupsById, fetchPage, fetchPages, handleError, savePage} from "../../functions";
 import configData from "../../config.json";
 import {PAGE_GROUP} from "../../index";
 import {useRouter} from "@happysanta/router";
@@ -174,7 +175,6 @@ const FormCopyPage = (props) => {
                 style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}
             >
                 <Input
-                    tabIndex={1}
                     onChange={onChangeTitle}
                     value={title}
                     autoFocus={true}
@@ -184,22 +184,27 @@ const FormCopyPage = (props) => {
             <FormItem
                 top={props.strings.community}
                 style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}>
-                <NativeSelect
-                    tabIndex={2}
+                <Select
                     onChange={onChangeGroup}
                     defaultValue={props.modalData.group.id}
-                >
-                    {groups && groups.items && groups.items.map((group, index) => {
-                        return (
-                            <option
-                                key={index}
-                                value={group.id}
-                            >
-                                {group.name}
-                            </option>
-                        );
-                    })}
-                </NativeSelect>
+                    options={groups && groups.items && groups.items.map((group) => ({
+                        value: group.id,
+                        label: group.name,
+                        avatar: group.photo_100,
+                        description: cutDeclNum(group.members_count, [
+                            props.strings.member.toLowerCase(),
+                            props.strings.two_members.toLowerCase(),
+                            props.strings.some_members.toLowerCase()
+                        ]),
+                    }))}
+                    renderOption={({option, ...restProps}) => (
+                        <CustomSelectOption
+                            {...restProps}
+                            before={<Avatar size={32} src={option.avatar}/>}
+                            description={option.description}
+                        />
+                    )}
+                />
             </FormItem>
 
             <Spacing size={16}/>

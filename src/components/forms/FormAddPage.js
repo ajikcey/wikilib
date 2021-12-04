@@ -1,5 +1,5 @@
 import configData from "../../config.json";
-import {Button, Caption, FormItem, FormLayout, Input, Link, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input, Link, Select, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../../functions";
 import {useRouter} from "@happysanta/router";
@@ -126,14 +126,6 @@ const FormAddPage = (props) => {
         }
     }
 
-    const onChangeType = (value) => {
-        setType(+value);
-    }
-
-    const onChangeWidgetType = (e) => {
-        setWidgetType(+e.currentTarget.value);
-    }
-
     return (
         <FormLayout onSubmit={onSubmit}>
             <FormItem
@@ -160,7 +152,7 @@ const FormAddPage = (props) => {
             >
                 <SliderSwitch
                     activeValue={0}
-                    onSwitch={onChangeType}
+                    onSwitch={(v) => setType(+v)}
                     options={[
                         {
                             name: props.strings.empty_page,
@@ -183,16 +175,12 @@ const FormAddPage = (props) => {
                 status={titleError ? 'error' : ''}
                 style={{paddingLeft: 0, paddingRight: 0}}
             >
-                <NativeSelect
-                    onChange={onChangeWidgetType}
+                <Select
+                    onChange={(e) => setWidgetType(+e.currentTarget.value)}
                     disabled={type !== TYPE_WIDGET}
-                >
-                    {configData.widget_types.map((item, key) => {
-                        return (
-                            <option key={key} value={key}>{item.name}</option>
-                        );
-                    })}
-                </NativeSelect>
+                    defaultValue={widgetType}
+                    options={configData.widget_types.map((item, key) => ({value: key, label: item.name}))}
+                />
             </FormItem>
             <Button
                 loading={loading}

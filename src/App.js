@@ -54,7 +54,7 @@ import {
     PANEL_HOME,
     PANEL_IMAGES,
     PANEL_LANDING,
-    PANEL_MAIN,
+    PANEL_MAIN, PANEL_TIME,
     PANEL_TOKEN,
     PANEL_UNLOADED,
     PANEL_WIKI,
@@ -68,6 +68,7 @@ import {
 import PanelGroup from "./panels/PanelGroup";
 import PanelWiki from "./panels/PanelWiki";
 import PopoutMenuWidget from "./components/popouts/PopoutMenuWidget";
+import PanelTime from "./panels/PanelTime";
 
 const App = withAdaptivity(() => {
     const [userStatus, setUserStatus] = useState(null);
@@ -470,6 +471,9 @@ const App = withAdaptivity(() => {
                                     setModalData={setModalData}
                                     groupToken={accessGroupToken} addGroupToken={addGroupToken}
                                     removeGroupToken={removeGroupToken} snackbarError={snackbar}/>
+                                <PanelTime
+                                    id={PANEL_TIME}
+                                    strings={strings} snackbarError={snackbar}/>
                                 <PanelAbout
                                     id={PANEL_ABOUT}
                                     queryParams={queryParams} strings={strings}

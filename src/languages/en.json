@@ -75,6 +75,7 @@
   "upload": "Upload",
   "select": "Select",
   "upload_image": "Upload image",
+  "upload_image_descr": "It is necessary to upload images in triple size (for example, for a picture with a final size of 160x160, you need to upload an image of 480x480).",
   "go": "Go",
   "apply_this_version": "Apply this version",
   "sorting_field": "Sorting field",
@@ -132,5 +133,9 @@
   "two_images": "Images",
   "some_images": "Images",
   "wrong_image_size": "Wrong image size",
-  "not_found": "Not found"
+  "not_found": "Not found",
+  "unix_time": "Unix-время",
+  "unix_time_descr": "This time can be used in the widget code.",
+  "read_more": "Read more",
+  "refresh": "Refresh"
 }

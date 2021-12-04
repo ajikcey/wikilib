@@ -34,15 +34,15 @@ import {useRouter} from "@happysanta/router";
 import {MODAL_IMAGE} from "../index";
 
 const PanelImages = ({
-                    id,
-                    strings,
-                    group,
-                    setModalData,
-                    snackbarError,
-                    removeGroupToken,
-                    groupToken,
-                    addGroupToken
-                }) => {
+                         id,
+                         strings,
+                         group,
+                         setModalData,
+                         snackbarError,
+                         removeGroupToken,
+                         groupToken,
+                         addGroupToken
+                     }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [images, setImages] = useState(null);
     const [tab, setTab] = useState(0);
@@ -299,24 +299,17 @@ const PanelImages = ({
                         <FormStatus
                             header={strings.upload_image}
                         >
-                            Необходимо загружать изображения в утроенном размере
-                            (например, для картинки с конечным размером
-                            160x160 нужно загружать изображение размером 480x480).
-
-                            <div
-                                style={{marginTop: 12}}
+                            <div style={{marginBottom: 12}}>{strings.upload_image_descr}</div>
+                            <File
+                                mode="primary"
+                                before={loading ? <Spinner style={{marginLeft: 6}}/> : <Icon24Camera/>}
+                                controlSize="l"
+                                onChange={uploadFile}
+                                disabled={loading}
+                                accept="image/x-png, image/gif, image/jpeg"
                             >
-                                <File
-                                    mode="primary"
-                                    before={loading ? <Spinner style={{marginLeft: 6}}/> : <Icon24Camera/>}
-                                    controlSize="l"
-                                    onChange={uploadFile}
-                                    disabled={loading}
-                                    accept="image/x-png, image/gif, image/jpeg"
-                                >
-                                    {!loading && strings.select}
-                                </File>
-                            </div>
+                                {!loading && strings.select}
+                            </File>
                         </FormStatus>
                     </Div>
 

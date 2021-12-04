@@ -16,6 +16,7 @@ export const PAGE_GROUP = '/group';
 export const PAGE_WIKI = '/wiki';
 export const PAGE_TOKEN = '/token';
 export const PAGE_IMAGES = '/images';
+export const PAGE_TIME = '/time';
 export const PAGE_UNLOADED = '/unloaded';
 
 export const PANEL_MAIN = 'panel_main';
@@ -26,6 +27,7 @@ export const PANEL_GROUP = 'panel_group';
 export const PANEL_WIKI = 'panel_wiki';
 export const PANEL_TOKEN = 'panel_token';
 export const PANEL_IMAGES = 'panel_images';
+export const PANEL_TIME = 'panel_time';
 export const PANEL_UNLOADED = 'panel_unloaded';
 
 export const MODAL_ADD_PAGE = 'modal_add_page';
@@ -60,6 +62,7 @@ const routes = {
     [PAGE_WIKI]: new Page(PANEL_WIKI, VIEW_MAIN),
     [PAGE_TOKEN]: new Page(PANEL_TOKEN, VIEW_MAIN),
     [PAGE_IMAGES]: new Page(PANEL_IMAGES, VIEW_MAIN),
+    [PAGE_TIME]: new Page(PANEL_TIME, VIEW_MAIN),
     [PAGE_UNLOADED]: new Page(PANEL_UNLOADED, VIEW_MAIN),
 };
 

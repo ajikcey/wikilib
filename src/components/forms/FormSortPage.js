@@ -1,4 +1,4 @@
-import {Button, FormItem, FormLayout, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
+import {Button, FormItem, FormLayout, Select, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {useRouter} from "@happysanta/router";
 import {ASC, DESC} from "../../index";
@@ -53,18 +53,23 @@ const FormEditAccess = (props) => {
     return (
         <FormLayout id='formSortPage' onSubmit={onSubmit}>
             <FormItem top={props.strings.sorting_field}>
-                <NativeSelect name='field' onChange={onChangeField} defaultValue={field}>
-                    <option value={0}>{props.strings.sort_by_creation_date}</option>
-                    <option value={1}>{props.strings.sort_by_editing_date}</option>
-                    <option value={2}>{props.strings.sort_by_views}</option>
-                    <option value={3}>{props.strings.sort_by_title}</option>
-                </NativeSelect>
+                <Select
+                    name='field'
+                    onChange={onChangeField}
+                    defaultValue={field}
+                    options={[
+                        {value: 0, label: props.strings.sort_by_creation_date},
+                        {value: 1, label: props.strings.sort_by_editing_date},
+                        {value: 2, label: props.strings.sort_by_views},
+                        {value: 3, label: props.strings.sort_by_title},
+                    ]}
+                />
             </FormItem>
             <FormItem top={props.strings.sorting_direction}>
                 <SliderSwitch
                     onSwitch={onSwitchDirection}
                     name='direction'
-                    activeValue={direction === ASC ?? DESC}
+                    activeValue={direction === ASC ? ASC : DESC}
                     options={[
                         {value: DESC, name: props.strings.descending},
                         {value: ASC, name: props.strings.ascending},
