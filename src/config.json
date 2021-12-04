@@ -65,7 +65,7 @@
     {
       "key": "donation",
       "name": "Donation",
-      "template": "return {\"title\": \"Поддержать\",\"title_url\": \"vk.com\",\"title_counter\": 3,\"button_url\": \"vk.com\",\"text\": \"На помощь бездомным животным\",\"text_url\": \"vk.com\",\"currency\": \"RUB\",\"date\": {\"start\": 1515590460,\"end\": 1515590460 + (60 * 60 * 24 * 3)},\"goal\": 80000,\"funded\": 7000,\"backers\": 20,\"more\": \"Перейти в приложение\",\"more_url\": \"vk.com\"};"
+      "template": "return {\"title\": \"Поддержать\",\"title_url\": \"vk.com\",\"title_counter\": 3,\"button_url\": \"vk.com\",\"text\": \"На помощь бездомным животным\",\"text_url\": \"vk.com\",\"currency\": \"RUB\",\"goal\": 80000,\"funded\": 7000,\"backers\": 20,\"more\": \"Перейти в приложение\",\"more_url\": \"vk.com\"};"
     }
   ]
 }

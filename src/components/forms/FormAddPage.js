@@ -131,7 +131,7 @@ const FormAddPage = (props) => {
     }
 
     const onChangeWidgetType = (e) => {
-        setWidgetType(e.currentTarget.value);
+        setWidgetType(+e.currentTarget.value);
     }
 
     return (
