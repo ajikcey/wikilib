@@ -6,6 +6,7 @@
   "max_length_text": 16300,
   "window_max_height": 8050,
   "window_min_height": 670,
+  "widget_update_timeout": 10000,
   "vk_api_version": "5.131",
   "scope": [
     "pages"

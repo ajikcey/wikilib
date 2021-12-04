@@ -11,7 +11,7 @@ import {
     withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, useAdaptivity, ViewWidth, Textarea, FormItem
+    ModalCard, ModalPage, useAdaptivity, ViewWidth, Textarea, FormItem, ScreenSpinner
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon24TextOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -58,7 +58,7 @@ import {
     PANEL_TOKEN,
     PANEL_UNLOADED,
     PANEL_WIKI,
-    POPOUT_MENU_WIDGET,
+    POPOUT_MENU_WIDGET, POPOUT_SCREEN_SPINNER,
     STORAGE_ACCESS_GROUP_TOKENS,
     STORAGE_ACCESS_TOKEN,
     STORAGE_LAST_GROUP,
@@ -387,6 +387,8 @@ const App = withAdaptivity(() => {
                 group={group} popoutData={popoutData}
                 setModalData={setModalData} strings={strings}
             />;
+        } else if (location.getPopupId() === POPOUT_SCREEN_SPINNER) {
+            return <ScreenSpinner/>;
         }
     })();
 

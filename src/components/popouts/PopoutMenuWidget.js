@@ -10,7 +10,7 @@ import {
     Icon28DeleteOutline,
     Icon28DeleteOutlineAndroid
 } from "@vkontakte/icons";
-import {PAGE_IMAGES} from "../../index";
+import {PAGE_IMAGES, POPOUT_SCREEN_SPINNER} from "../../index";
 import configData from "../../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {AddToCommunity, ShowError} from "../../functions";
@@ -47,15 +47,21 @@ const PopoutMenuWidget = (props) => {
             .replace(/\[(https:\/\/[^\]]+)]/gm, "$1"); // replace links
 
         bridge.send("VKWebAppShowCommunityWidgetPreviewBox", widgetData).then(() => {
-            props.popoutData.setSnackbar(null);
-            props.popoutData.setSnackbar(<Snackbar
-                onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank"
-                              href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
-            >
-                {props.strings.saved}
-            </Snackbar>);
+            router.replacePopup(POPOUT_SCREEN_SPINNER);
+
+            setTimeout(() => {
+                router.replacePopup(null);
+
+                props.popoutData.setSnackbar(null);
+                props.popoutData.setSnackbar(<Snackbar
+                    onClose={() => props.popoutData.setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    action={<Link target="_blank"
+                                  href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
+                >
+                    {props.strings.saved}
+                </Snackbar>);
+            }, configData.widget_update_timeout);
         }).catch(handleErrorWidget);
     }
 
@@ -65,15 +71,20 @@ const PopoutMenuWidget = (props) => {
             "type": "text",
             "code": "return false;"
         }).then(() => {
-            props.popoutData.setSnackbar(null);
-            props.popoutData.setSnackbar(<Snackbar
-                onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank"
-                              href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
-            >
-                {props.strings.saved}
-            </Snackbar>);
+            router.replacePopup(POPOUT_SCREEN_SPINNER);
+
+            setTimeout(() => {
+                router.replacePopup(null);
+                props.popoutData.setSnackbar(null);
+                props.popoutData.setSnackbar(<Snackbar
+                    onClose={() => props.popoutData.setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    action={<Link target="_blank"
+                                  href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
+                >
+                    {props.strings.saved}
+                </Snackbar>);
+            }, configData.widget_update_timeout);
         }).catch(handleErrorWidget);
     }
 

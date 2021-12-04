@@ -39,6 +39,7 @@ export const MODAL_ERROR = 'modal_error';
 export const MODAL_IMAGE = 'modal_image';
 
 export const POPOUT_MENU_WIDGET = 'popout_menu_widget';
+export const POPOUT_SCREEN_SPINNER = 'popout_screen_spinner';
 
 export const VIEW_MAIN = 'view_main';
 
