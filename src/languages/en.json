@@ -132,13 +132,5 @@
   "two_images": "Images",
   "some_images": "Images",
   "wrong_image_size": "Wrong image size",
-  "not_found": "Not found",
-  "list": "List",
-  "table": "Table",
-  "tiles": "Tiles",
-  "compact_list": "Compact list",
-  "cover_list": "Cover list",
-  "match": "Match",
-  "matches": "Matches",
-  "donation": "Donation"
+  "not_found": "Not found"
 }

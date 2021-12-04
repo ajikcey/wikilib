@@ -21,33 +21,51 @@
   "storage_keys": {
 
   },
-  "widget_types": {
-    "text": {
+  "widget_types": [
+    {
+      "key": "text",
+      "name": "Text",
       "template": "return {\"title\": \"Цитата дня\",\"title_url\": \"vk.com\",\"title_counter\": 42,\"more\": \"Читать все цитаты\",\"more_url\": \"vk.com\",\"text\": \"«Нам нужно гордиться»\",\"descr\": \"Дэвид Кэмерон о победе сторонников выхода страны\\n из Евросоюза на референдуме\"};"
     },
-    "list": {
+    {
+      "key": "list",
+      "name": "List",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"Рестораны\",\"rows\": [{\"title\": \"Корюшка\",\"title_url\": \"vk.com\",\"button\": \"Забронировать стол\",\"button_url\": \"vk.com\",\"icon_id\": \"id\" + user.id,\"address\": \"Петропавловская крепость, д. 3\",\"time\": \"Каждый день с 12:00 до 1:00\",\"text\": \"Если бы Петр I решил построить ресторан, это была бы «Корюшка» — заведение с видом на стрелку Васильевского острова, прямо у Петропавловской вблизи шумных вод Невы.\"}, {\"title\": \"Food Park\",\"title_url\": \"vk.com\",\"button\": \"Забронировать стол\",\"button_url\": \"vk.com\",\"icon_id\": \"id\" + user.id,\"address\": \"Александровский парк, д. 4/3, лит. А\",\"time\": \"Каждый день с 12:00 до 1:00\",\"text\": \"Давно ли вы красиво, с чувством и толком ели в парке? Главное украшение Александровского парка — Food Park приглашает на еду со всех концов света на четвертый этаж ТРЦ «Великан».\"}]};"
     },
-    "table": {
+    {
+      "key": "table",
+      "name": "Table",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"My Table\",\"title_url\": \"vk.com\",\"title_counter\": 31,\"more\": \"Посмотреть все результаты\",\"more_url\": \"vk.com\",\"head\": [{\"text\": \"Название первой колонки\"}, {\"text\": \"Название второй колонки\",\"align\": \"center\"}],\"body\": [[{\"text\": \"Это первая ячейка первой строки\",\"icon_id\": \"id\" + user.id},{\"text\": \"Это вторая ячейка первой строки\",\"url\": \"vk.com\"}],[{\"text\": \"Это первая ячейка второй строки\",\"icon_id\": \"id\" + user.id},{\"text\": \"Это вторая ячейка второй строки\",\"url\": \"vk.com\"}]]};"
     },
-    "tiles": {
+    {
+      "key": "tiles",
+      "name": "Tiles",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"Фильмы\",\"tiles\": [{\"title\": \"Доктор Стрэндж\",\"descr\": \"Фэнтези\",\"link\": \"Купить билеты\",\"icon_id\": \"id\" + user.id,\"link_url\": \"vk.com\",\"url\": \"vk.com\"}, {\"title\": \"Фантастические твари\",\"descr\": \"Фэнтези\",\"link\": \"Купить билеты\",\"icon_id\": \"id\" + user.id,\"link_url\": \"vk.com\",\"url\": \"vk.com\"}, {\"title\": \"Прибытие\",\"descr\": \"Триллер\",\"icon_id\": \"id\" + user.id,\"link_url\": \"vk.com\",\"url\": \"vk.com\"}]};"
     },
-    "compact_list": {
+    {
+      "key": "compact_list",
+      "name": "Compact list",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"Рестораны\",\"rows\": [{\"title\": \"Корюшка\",\"title_url\": \"vk.com\",\"button\": \"Забронировать стол\",\"button_url\": \"vk.com\",\"icon_id\": \"id\" + user.id,\"address\": \"Петропавловская крепость, д. 3\",\"time\": \"Каждый день с 12:00 до 1:00\",\"text\": \"Если бы Петр I решил построить ресторан, это была бы «Корюшка» — заведение с видом на стрелку Васильевского острова, прямо у Петропавловской вблизи шумных вод Невы.\"}, {\"title\": \"Food Park\",\"title_url\": \"vk.com\",\"button\": \"Забронировать стол\",\"button_url\": \"vk.com\",\"icon_id\": \"id\" + user.id,\"address\": \"Александровский парк, д. 4/3, лит. А\",\"time\": \"Каждый день с 12:00 до 1:00\",\"text\": \"Давно ли вы красиво, с чувством и толком ели в парке? Главное украшение Александровского парка — Food Park приглашает на еду со всех концов света на четвертый этаж ТРЦ «Великан».\"}]};"
     },
-    "cover_list": {
+    {
+      "key": "cover_list",
+      "name": "Cover list",
       "template": "return {\"title\": \"Рестораны\",\"rows\": [{\"title\": \"Корюшка\",\"button\": \"Забронировать\",\"descr\": \"Петропавловская крепость, д. 3\",\"cover_id\": \"\",\"url\": \"vk.com\",\"button_url\": \"vk.com\"}]};"
     },
-    "match": {
+    {
+      "key": "match",
+      "name": "Match",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"My Match\",\"title_url\": \"vk.com\",\"more\": \"Перейти к трансляции\",\"more_url\": \"vk.com\",\"match\": {\"state\": \"Идёт первый тайм\",\"team_a\": {\"name\": \"Зенит\",\"descr\": \"Санкт-Петербург\",\"icon_id\": \"id\" + user.id},\"team_b\": {\"name\": \"Спартак\",\"descr\": \"Москва\",\"icon_id\": \"id\" + user.id},\"score\": {\"team_a\": 2,\"team_b\": 0},\"events\": {\"team_a\": [{\"event\": \"Иванов\",\"minute\": \"3\"},{\"event\": \"Петров\",\"minute\": \"5\"}],\"team_b\": [{\"event\": \"Сидоров\",\"minute\": \"2\"}]}}};"
     },
-    "matches": {
+    {
+      "key": "matches",
+      "name": "Matches",
       "template": "var user = API.users.get({\"user_ids\": Args.uid})[0]; return {\"title\": \"My Matches\",\"title_url\": \"vk.com\",\"more\": \"Весь список\",\"more_url\": \"vk.com\",\"matches\": [{\"icon_id\": \"id\" + user.id,\"team_a\": {\"name\": \"Зенит\",\"icon_id\": \"id\" + user.id},\"team_b\": {\"name\": \"Спартак\",\"icon_id\": \"id\" + user.id},\"score\": {\"team_a\": 2,\"team_b\": 0}},{\"icon_id\": \"id\" + user.id,\"state\": \"Завершён\",\"team_a\": {\"name\": \"ЦСКА\",\"icon_id\": \"id\" + user.id},\"team_b\": {\"name\": \"Рубин\",\"icon_id\": \"id\" + user.id},\"score\": {\"team_a\": 1,\"team_b\": 1}}]};"
     },
-    "donation": {
+    {
+      "key": "donation",
+      "name": "Donation",
       "template": "return {\"title\": \"Поддержать\",\"title_url\": \"vk.com\",\"title_counter\": 3,\"button_url\": \"vk.com\",\"text\": \"На помощь бездомным животным\",\"text_url\": \"vk.com\",\"currency\": \"RUB\",\"date\": {\"start\": 1515590460,\"end\": 1515590460 + (60 * 60 * 24 * 3)},\"goal\": 80000,\"funded\": 7000,\"backers\": 20,\"more\": \"Перейти в приложение\",\"more_url\": \"vk.com\"};"
     }
-  }
+  ]
 }

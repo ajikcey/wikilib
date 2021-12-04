@@ -14,11 +14,6 @@ import React, {useState} from "react";
 import {handleError, savePage} from "../../functions";
 import {useRouter} from "@happysanta/router";
 
-/**
- * Форма редактирования wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FromEditPage = (props) => {
     const [text, setText] = useState(props.modalData.source);
     const [textError, setTextError] = useState(null);

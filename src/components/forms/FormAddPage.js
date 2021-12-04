@@ -1,21 +1,15 @@
 import configData from "../../config.json";
-import {Button, Caption, FormItem, FormLayout, Input, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
+import {Button, Caption, FormItem, FormLayout, Input, Link, NativeSelect, SliderSwitch} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../../functions";
 import {useRouter} from "@happysanta/router";
 import {PAGE_WIKI} from "../../index";
+import {Icon16HelpOutline} from "@vkontakte/icons";
 
-/**
- * Форма создания wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FormAddPage = (props) => {
-    const widgetTypes = Object.keys(configData.widget_types);
-
     const [title, setTitle] = useState("");
     const [type, setType] = useState(0);
-    const [widgetType, setWidgetType] = useState(widgetTypes[0]);
+    const [widgetType, setWidgetType] = useState(0);
     const [titleError, setTitleError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -77,7 +71,7 @@ const FormAddPage = (props) => {
 
         if (type === TYPE_WIDGET) {
             if (configData.widget_types[widgetType]) {
-                page_text = widgetType + "\n" + configData.widget_types[widgetType].template;
+                page_text = configData.widget_types[widgetType].key + "\n" + configData.widget_types[widgetType].template;
             } else {
                 setLoading(false);
                 setTitleError({error_msg: props.strings.page_exists});
@@ -119,8 +113,7 @@ const FormAddPage = (props) => {
             return;
         }
 
-        router.popPage();
-        router.pushPage(PAGE_WIKI);
+        router.replacePage(PAGE_WIKI);
     }
 
     const onChangeTitle = (e) => {
@@ -181,7 +174,12 @@ const FormAddPage = (props) => {
                 />
             </FormItem>
             <FormItem
-                top={props.strings.widget_type}
+                top={
+                    <div>
+                        {props.strings.widget_type}
+                        <Link href="https://vk.com/dev/objects/appWidget" target="_blank"><Icon16HelpOutline/></Link>
+                    </div>
+                }
                 status={titleError ? 'error' : ''}
                 style={{paddingLeft: 0, paddingRight: 0}}
             >
@@ -189,9 +187,9 @@ const FormAddPage = (props) => {
                     onChange={onChangeWidgetType}
                     disabled={type !== TYPE_WIDGET}
                 >
-                    {Object.keys(configData.widget_types).map((item, key) => {
+                    {configData.widget_types.map((item, key) => {
                         return (
-                            <option key={key} value={item}>{props.strings[item]}</option>
+                            <option key={key} value={key}>{item.name}</option>
                         );
                     })}
                 </NativeSelect>

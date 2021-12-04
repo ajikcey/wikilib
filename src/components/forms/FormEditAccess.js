@@ -6,11 +6,6 @@ import {handleError, nameAccess} from "../../functions";
 import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
 
-/**
- * Форма редактирования настроек доступа wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FormEditAccess = (props) => {
     const [who_can_view, setWho_can_view] = useState(props.modalData.infoPage.who_can_view);
     const [who_can_edit, setWho_can_edit] = useState(props.modalData.infoPage.who_can_edit);

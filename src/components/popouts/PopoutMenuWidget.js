@@ -28,7 +28,9 @@ const PopoutMenuWidget = (props) => {
         let widgetArr = props.popoutData.infoPage.source.split('\n');
 
         widgetData.type = widgetArr.shift().trim();
-        if (!widgetData.type || !configData.widget_types[widgetData.type]) {
+        if (!configData.widget_types.find(obj => {
+            return obj.key === widgetData.type
+        })) {
             props.popoutData.setSnackbar(null);
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
@@ -49,7 +51,8 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank" href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
+                action={<Link target="_blank"
+                              href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
             >
                 {props.strings.saved}
             </Snackbar>);
@@ -66,7 +69,8 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
                 before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                action={<Link target="_blank" href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
+                action={<Link target="_blank"
+                              href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
             >
                 {props.strings.saved}
             </Snackbar>);

@@ -12,11 +12,6 @@ import configData from "../../config.json";
 import {PAGE_GROUP} from "../../index";
 import {useRouter} from "@happysanta/router";
 
-/**
- * Форма копирования wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FormCopyPage = (props) => {
     const [groupId, setGroupId] = useState(props.modalData.group.id);
     const [title, setTitle] = useState(props.modalData.title);
@@ -137,8 +132,7 @@ const FormCopyPage = (props) => {
             return;
         }
 
-        router.popPage();
-        router.pushPage(PAGE_GROUP);
+        router.replacePage(PAGE_GROUP);
     };
 
     const onChangeTitle = (e) => {

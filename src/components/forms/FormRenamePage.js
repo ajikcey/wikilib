@@ -7,11 +7,6 @@ import {
 } from "@vkontakte/vkui";
 import React from "react";
 
-/**
- * Форма переименования wiki-страницы
- * @returns {JSX.Element}
- * @constructor
- */
 const FromRenamePage = (props) => {
     const platform = usePlatform();
 
