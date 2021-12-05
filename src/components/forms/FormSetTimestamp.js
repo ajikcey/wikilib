@@ -19,8 +19,8 @@ const FromSetTimestamp = (props) => {
             return;
         }
 
-        props.modalData.setTimestamp(formProps.timestamp);
-        props.modalData.setTimezone(formProps.timezone);
+        props.modalData.setTimezone(formProps.timezone); // before
+        props.modalData.setTimestamp(formProps.timestamp); // last
         router.popPage();
     }
 
