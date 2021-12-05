@@ -192,16 +192,14 @@ const PanelTime = ({id, strings, setModalData, snackbarError}) => {
                         />
                     </FormItem>
                 </FormLayoutGroup>
-                <FormItem>
-                    <Button mode="tertiary" onClick={refresh}>
-                        {strings.current_time}
-                    </Button>
-                    <Button
-                        style={{marginLeft: 8}}
-                        mode="tertiary" onClick={reset}>
+                <Div style={{display: 'flex'}}>
+                    <Button size="l" stretched mode="secondary" onClick={reset}>
                         {strings.reset_time}
                     </Button>
-                </FormItem>
+                    <Button style={{marginLeft: 8}} stretched size="l" mode="secondary" onClick={refresh}>
+                        {strings.current_time}
+                    </Button>
+                </Div>
             </Group>
             {snackbar}
         </Panel>
