@@ -43,7 +43,7 @@ const PanelTime = ({id, strings, setModalData, snackbarError}) => {
         return Math.floor(date.getTime() / 1000).toString();
     }
 
-    const setTimestamp = (sec) => {
+    const setTimestamp = (sec, timezone) => {
         sec = sec * 1000;
         sec += timezone * 3600 * 1000;
 
