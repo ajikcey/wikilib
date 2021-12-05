@@ -39,6 +39,7 @@ export const MODAL_SORT_PAGE = 'modal_sort_page';
 export const MODAL_GROUP = 'modal_group';
 export const MODAL_ERROR = 'modal_error';
 export const MODAL_IMAGE = 'modal_image';
+export const MODAL_TIMESTAMP = 'modal_timestamp';
 
 export const POPOUT_MENU_WIDGET = 'popout_menu_widget';
 export const POPOUT_SCREEN_SPINNER = 'popout_screen_spinner';

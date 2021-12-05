@@ -1,22 +1,22 @@
 import React, {useEffect, useState} from 'react';
 
 import {
-    Button, DatePicker,
+    Button, Div,
     FormItem, FormLayoutGroup,
-    Gradient,
-    Group, Link,
+    Group, Input, Link,
     Panel,
     PanelHeader,
     PanelHeaderBack, Select, Snackbar, Text, Title
 } from '@vkontakte/vkui';
 import {useRouter} from "@happysanta/router";
 import configData from "../config.json";
-import {Icon16HelpOutline, Icon24CheckCircleOutline, Icon28CopyOutline} from "@vkontakte/icons";
+import {Icon20HelpOutline, Icon24CheckCircleOutline} from "@vkontakte/icons";
 import bridge from "@vkontakte/vk-bridge";
+import {MODAL_TIMESTAMP} from "../index";
 
-const PanelTime = ({id, strings, snackbarError}) => {
+const PanelTime = ({id, strings, setModalData, snackbarError}) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
-    const [timezoneOffset, setTimezoneOffset] = useState(0);
+    const [timezone, setTimezone] = useState(0);
     const [year, setYear] = useState(0);
     const [month, setMonth] = useState(0);
     const [day, setDay] = useState(0);
@@ -25,18 +25,36 @@ const PanelTime = ({id, strings, snackbarError}) => {
     const [second, setSecond] = useState(0);
 
     const router = useRouter();
-    const current_date = new Date();
 
     useEffect(() => {
-        refresh();
+        let date = new Date();
+
+        setTimezone(-date.getTimezoneOffset() / 60);
+        setYear(date.getFullYear());
+        setMonth(date.getMonth());
+        setDay(date.getDate());
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const calcTimestamp = () => {
-        let d = new Date(Date.UTC(year, month, day, hour, minute, second));
-        d.setTime(d.getTime() - timezoneOffset * 3600 * 1000)
-        return Math.floor(d.getTime() / 1000).toString();
+        let date = new Date(Date.UTC(year, month, day, hour, minute, second));
+        date.setTime(date.getTime() - timezone * 3600 * 1000);
+        return Math.floor(date.getTime() / 1000).toString();
+    }
+
+    const setTimestamp = (sec) => {
+        sec = sec * 1000;
+        sec += timezone * 3600 * 1000;
+
+        let date = new Date(+sec);
+
+        setYear(date.getUTCFullYear());
+        setMonth(date.getUTCMonth());
+        setDay(date.getUTCDate());
+        setHour(date.getUTCHours());
+        setMinute(date.getUTCMinutes());
+        setSecond(date.getUTCSeconds());
     }
 
     const copy = (e) => {
@@ -63,13 +81,28 @@ const PanelTime = ({id, strings, snackbarError}) => {
     const refresh = () => {
         let date = new Date();
 
-        setTimezoneOffset(-date.getTimezoneOffset() / 60);
+        setTimezone(-date.getTimezoneOffset() / 60);
         setYear(date.getFullYear());
         setMonth(date.getMonth());
         setDay(date.getDate());
         setHour(date.getHours());
         setMinute(date.getMinutes());
         setSecond(date.getSeconds());
+    }
+
+    const reset = () => {
+        setHour(0);
+        setMinute(0);
+        setSecond(0);
+    }
+
+    const find_date = () => {
+        setModalData({
+            setTimestamp: setTimestamp,
+            setTimezone: setTimezone,
+            timezone: timezone,
+        });
+        router.pushModal(MODAL_TIMESTAMP);
     }
 
     return (
@@ -80,102 +113,93 @@ const PanelTime = ({id, strings, snackbarError}) => {
             >
                 {strings.unix_time}
             </PanelHeader>
-            <Gradient style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                padding: 32,
-            }}>
-                <Title style={{marginBottom: 8, marginTop: 20}} level="2" weight="medium">
-                    {calcTimestamp()}
-                    <Link><Icon28CopyOutline onClick={copy}/></Link>
-                </Title>
-                <Text style={{marginBottom: 24, color: 'var(--text_secondary)'}}>
-                    {strings.unix_time_descr}
-                    <Link href="https://vk.com/@wikilib-unixtime" target="_blank"><Icon16HelpOutline/></Link>
-                </Text>
-            </Gradient>
             <Group>
-                <FormItem top="Дата">
-                    <DatePicker
-                        defaultValue={{
-                            day: current_date.getDate(),
-                            month: current_date.getMonth() + 1,
-                            year: current_date.getFullYear()
-                        }}
-                        min={{
-                            day: current_date.getDate(),
-                            month: current_date.getMonth() + 1,
-                            year: current_date.getFullYear()
-                        }}
-                        onDateChange={(value) => {
-                            setYear(value.year);
-                            setMonth(value.month);
-                            setDay(value.day);
-                        }}
-                    />
-                </FormItem>
+                <Div style={{textAlign: "center"}}>
+                    <Title style={{marginBottom: 8, marginTop: 20}} level="2" weight="medium">
+                        {calcTimestamp()}
+                        <Link href="https://vk.com/@wikilib-unixtime" target="_blank"><Icon20HelpOutline/></Link>
+                    </Title>
+                    <Text style={{marginBottom: 24, color: 'var(--text_secondary)'}}>
+                        {strings.unix_time_descr}
+                    </Text>
+                </Div>
+                <Div style={{display: 'flex'}}>
+                    <Button
+                        size="l"
+                        stretched
+                        mode="secondary"
+                        style={{marginRight: 8}}
+                        onClick={find_date}
+                    >
+                        {strings.find_date}
+                    </Button>
+                    <Button size="l" stretched onClick={copy}>{strings.copy}</Button>
+                </Div>
+            </Group>
+            <Group>
                 <FormLayoutGroup mode="horizontal">
-                    <FormItem top="Часы">
+                    <FormItem top={strings.timezone}>
+                        <Select
+                            value={timezone}
+                            onChange={(e) => setTimezone(+e.currentTarget.value)}
+                            options={configData.timezones.map((item) => ({value: item.offset, label: item.name}))}
+                        />
+                    </FormItem>
+                    <FormItem top={strings.date}>
+                        <Input
+                            type="date"
+                            value={year + '-' + `${month + 1}`.padStart(2, '0') + '-' + `${day}`.padStart(2, '0')}
+                            onChange={(e) => {
+                                let matches = e.currentTarget.value.split('-');
+                                console.log(matches);
+
+                                setYear(+matches[0]);
+                                setMonth(+matches[1] - 1);
+                                setDay(+matches[2]);
+                            }}
+                        />
+                    </FormItem>
+                </FormLayoutGroup>
+                <FormLayoutGroup mode="horizontal">
+                    <FormItem top={strings.hours}>
                         <Select
                             value={hour}
-                            onChange={(e) => {
-                                setHour(+e.currentTarget.value);
-                                calcTimestamp();
-                            }}
+                            onChange={(e) => setHour(+e.currentTarget.value)}
                             options={Array(24).fill(1).map((el, i) => ({
                                 value: i,
-                                label: `${i}`.padStart(2, '0'),
+                                label: `${i}`,
                             }))}
                         />
                     </FormItem>
-                    <FormItem top="Минуты">
+                    <FormItem top={strings.minutes}>
                         <Select
                             value={minute}
-                            onChange={(e) => {
-                                setMinute(+e.currentTarget.value);
-                                calcTimestamp();
-                            }}
+                            onChange={(e) => setMinute(+e.currentTarget.value)}
                             options={Array(60).fill(1).map((el, i) => ({
                                 value: i,
-                                label: `${i}`.padStart(2, '0'),
+                                label: `${i}`,
                             }))}
                         />
                     </FormItem>
-                    <FormItem top="Секунды">
+                    <FormItem top={strings.seconds}>
                         <Select
                             value={second}
-                            onChange={(e) => {
-                                setSecond(+e.currentTarget.value);
-                                calcTimestamp();
-                            }}
+                            onChange={(e) => setSecond(+e.currentTarget.value)}
                             options={Array(60).fill(1).map((el, i) => ({
                                 value: i,
-                                label: `${i}`.padStart(2, '0'),
+                                label: `${i}`,
                             }))}
                         />
                     </FormItem>
                 </FormLayoutGroup>
-                <FormItem top="Часовой пояс">
-                    <Select
-                        value={timezoneOffset}
-                        onChange={(e) => {
-                            setTimezoneOffset(+e.currentTarget.value);
-                            calcTimestamp();
-                        }}
-                        options={configData.timezones.map((item) => ({value: item.offset, label: item.name}))}
-                    />
-                </FormItem>
                 <FormItem>
+                    <Button mode="tertiary" onClick={refresh}>
+                        {strings.current_time}
+                    </Button>
                     <Button
-                        mode="secondary"
-                        size="m"
-                        stretched
-                        onClick={refresh}
-                    >
-                        {strings.refresh}
+                        style={{marginLeft: 8}}
+                        mode="tertiary" onClick={reset}>
+                        {strings.reset_time}
                     </Button>
                 </FormItem>
             </Group>

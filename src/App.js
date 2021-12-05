@@ -44,7 +44,7 @@ import {
     MODAL_GROUP,
     MODAL_IMAGE,
     MODAL_RENAME_PAGE,
-    MODAL_SORT_PAGE,
+    MODAL_SORT_PAGE, MODAL_TIMESTAMP,
     PAGE_GROUP,
     PAGE_HOME,
     PAGE_TOKEN,
@@ -69,6 +69,7 @@ import PanelGroup from "./panels/PanelGroup";
 import PanelWiki from "./panels/PanelWiki";
 import PopoutMenuWidget from "./components/popouts/PopoutMenuWidget";
 import PanelTime from "./panels/PanelTime";
+import FormSetTimestamp from "./components/forms/FormSetTimestamp";
 
 const App = withAdaptivity(() => {
     const [userStatus, setUserStatus] = useState(null);
@@ -349,6 +350,15 @@ const App = withAdaptivity(() => {
                     alt='' src={modalData.image.images[2].url}/>}
             </ModalCard>
             <ModalCard
+                id={MODAL_TIMESTAMP}
+                onClose={() => router.popPage()}
+                header={strings.find_date}
+            >
+                <FormSetTimestamp
+                    modalData={modalData} strings={strings}
+                />
+            </ModalCard>
+            <ModalCard
                 id={MODAL_ERROR}
                 onClose={() => router.popPage()}
                 header={strings.error}
@@ -473,6 +483,7 @@ const App = withAdaptivity(() => {
                                     removeGroupToken={removeGroupToken} snackbarError={snackbar}/>
                                 <PanelTime
                                     id={PANEL_TIME}
+                                    setModalData={setModalData}
                                     strings={strings} snackbarError={snackbar}/>
                                 <PanelAbout
                                     id={PANEL_ABOUT}

@@ -89,6 +89,7 @@
   "sort_by_title": "By title",
   "enter_title": "Enter title",
   "enter_text": "Enter text",
+  "enter": "Enter",
   "invalid_title": "Invalid title",
   "page_exists": "Page with the same name already exists",
   "empty_page": "Empty page",
@@ -137,5 +138,18 @@
   "unix_time": "Unix-время",
   "unix_time_descr": "This time can be used in the widget code.",
   "read_more": "Read more",
-  "refresh": "Refresh"
+  "refresh": "Refresh",
+  "timezone": "Timezone",
+  "seconds": "Seconds",
+  "minutes": "Minutes",
+  "hours": "Hours",
+  "date": "Date",
+  "day": "Day",
+  "month": "Month",
+  "year": "Year",
+  "time_change": "Time change",
+  "current_time": "Current time",
+  "reset": "Reset",
+  "find_date": "Find out the date",
+  "reset_time": "Reset time"
 }
