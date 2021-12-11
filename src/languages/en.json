@@ -151,5 +151,10 @@
   "current_time": "Current time",
   "reset": "Reset",
   "find_date": "Find out the date",
-  "reset_time": "Reset time"
+  "reset_time": "Reset time",
+  "determine_id": "Determine ID",
+  "determine_id_descr": "Determine the type of object (user, community, application) and its identifier by link from VKontakte.",
+  "enter_link": "Enter link",
+  "invalid_link": "Invalid link",
+  "close": "Close"
 }

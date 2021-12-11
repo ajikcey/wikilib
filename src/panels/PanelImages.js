@@ -317,9 +317,7 @@ const PanelImages = ({
                     {images &&
                     <Fragment>
                         {(!images.count) &&
-                        <Fragment>
-                            <Placeholder icon={<Icon32SearchOutline/>}>{strings.not_found}</Placeholder>
-                        </Fragment>
+                        <Placeholder icon={<Icon32SearchOutline/>}>{strings.not_found}</Placeholder>
                         }
                         {(!!images.count) &&
                         <Fragment>

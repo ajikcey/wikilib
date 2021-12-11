@@ -23,6 +23,7 @@ import {
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
+import configData from "../config.json";
 
 const PanelAbout = ({
                    id,
@@ -37,7 +38,7 @@ const PanelAbout = ({
     const router = useRouter();
 
     useEffect(() => {
-        fetchApp(accessToken.access_token).then(data => {
+        fetchApp(configData.app_id, accessToken.access_token).then(data => {
             if (data.response) {
                 data.response.profiles.reverse(); // Show last friends first
 

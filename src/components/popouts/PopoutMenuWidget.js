@@ -8,9 +8,9 @@ import {
     Icon24Download, Icon24ErrorCircle,
     Icon24HelpOutline, Icon24InfoCircleOutline,
     Icon28DeleteOutline,
-    Icon28DeleteOutlineAndroid
+    Icon28DeleteOutlineAndroid, Icon28HashtagOutline
 } from "@vkontakte/icons";
-import {PAGE_IMAGES, PAGE_TIME, POPOUT_SCREEN_SPINNER} from "../../index";
+import {PAGE_IMAGES, PAGE_RESOLVE_SCREEN_NAME, PAGE_TIME, POPOUT_SCREEN_SPINNER} from "../../index";
 import configData from "../../config.json";
 import bridge from "@vkontakte/vk-bridge";
 import {AddToCommunity, ShowError} from "../../functions";
@@ -75,6 +75,7 @@ const PopoutMenuWidget = (props) => {
 
             setTimeout(() => {
                 router.replacePopup(null);
+
                 props.popoutData.setSnackbar(null);
                 props.popoutData.setSnackbar(<Snackbar
                     onClose={() => props.popoutData.setSnackbar(null)}
@@ -156,6 +157,13 @@ const PopoutMenuWidget = (props) => {
             </ActionSheetItem>
             <ActionSheetItem
                 autoclose
+                before={<Icon28HashtagOutline width={24} height={24}/>}
+                onClick={() => router.pushPage(PAGE_RESOLVE_SCREEN_NAME)}
+            >
+                {props.strings.determine_id}
+            </ActionSheetItem>
+            <ActionSheetItem
+                autoclose
                 before={<Icon24HelpOutline/>}
                 href='https://vk.com/@wikilib-rabota-s-vidzhetami'
                 target='_blank'
@@ -164,7 +172,8 @@ const PopoutMenuWidget = (props) => {
             </ActionSheetItem>
             <ActionSheetItem
                 autoclose
-                before={platform === IOS ? <Icon28DeleteOutline/> : <Icon28DeleteOutlineAndroid/>}
+                before={platform === IOS ? <Icon28DeleteOutline width={24} height={24}/> :
+                    <Icon28DeleteOutlineAndroid width={24} height={24}/>}
                 mode="destructive"
                 onClick={deleteWidget}
             >

@@ -365,15 +365,15 @@ export function fetchHistory(page_id, group_id, access_token) {
 }
 
 /**
- * Получение информации о приложении
+ * @param app_id
  * @param access_token
  * @returns {Promise}
  */
-export function fetchApp(access_token) {
+export function fetchApp(app_id, access_token) {
     return bridge.send("VKWebAppCallAPIMethod", {
         method: "apps.get",
         params: {
-            app_id: configData.app_id,
+            app_id: app_id,
             return_friends: 1,
             fields: ['photo_100', 'members_count'].join(','),
             extended: 1,
@@ -398,6 +398,23 @@ export function fetchImages(access_token, offset, count, image_type) {
             offset: offset,
             count: count,
             image_type: image_type,
+            v: configData.vk_api_version,
+            access_token: access_token
+        }
+    });
+}
+
+/**
+ * Определяет тип объекта (пользователь, сообщество, приложение) и его идентификатор по короткому имени screen_name.
+ * @param access_token
+ * @param screen_name
+ * @returns {Promise}
+ */
+export function resolveScreenName(access_token, screen_name) {
+    return bridge.send("VKWebAppCallAPIMethod", {
+        method: "utils.resolveScreenName",
+        params: {
+            screen_name: screen_name,
             v: configData.vk_api_version,
             access_token: access_token
         }
@@ -492,4 +509,34 @@ export function AddToCommunity(setModalData, router) {
 export function ShowError(e, setModalData, router) {
     setModalData({error: JSON.stringify(e, null, '\t')});
     router.pushModal(MODAL_ERROR);
+}
+
+/**
+ * @param callback
+ * @param delay
+ * @returns function
+ */
+export function throttle(callback, delay) {
+    let isThrottled = false, args, context;
+
+    function wrapper() {
+        if (isThrottled) {
+            args = arguments;
+            context = this;
+            return;
+        }
+
+        isThrottled = true;
+        callback.apply(this, arguments);
+
+        setTimeout(() => {
+            isThrottled = false;
+            if (args) {
+                wrapper.apply(context, args);
+                args = context = null;
+            }
+        }, delay);
+    }
+
+    return wrapper;
 }

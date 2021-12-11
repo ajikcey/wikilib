@@ -54,7 +54,7 @@ import {
     PANEL_HOME,
     PANEL_IMAGES,
     PANEL_LANDING,
-    PANEL_MAIN, PANEL_TIME,
+    PANEL_MAIN, PANEL_RESOLVE_SCREEN_NAME, PANEL_TIME,
     PANEL_TOKEN,
     PANEL_UNLOADED,
     PANEL_WIKI,
@@ -70,6 +70,7 @@ import PanelWiki from "./panels/PanelWiki";
 import PopoutMenuWidget from "./components/popouts/PopoutMenuWidget";
 import PanelTime from "./panels/PanelTime";
 import FormSetTimestamp from "./components/forms/FormSetTimestamp";
+import PanelResolveScreenName from "./panels/PanelResolveScreenName";
 
 const App = withAdaptivity(() => {
     const [userStatus, setUserStatus] = useState(null);
@@ -484,6 +485,10 @@ const App = withAdaptivity(() => {
                                 <PanelTime
                                     id={PANEL_TIME}
                                     setModalData={setModalData}
+                                    strings={strings} snackbarError={snackbar}/>
+                                <PanelResolveScreenName
+                                    id={PANEL_RESOLVE_SCREEN_NAME}
+                                    setModalData={setModalData} accessToken={accessToken}
                                     strings={strings} snackbarError={snackbar}/>
                                 <PanelAbout
                                     id={PANEL_ABOUT}
