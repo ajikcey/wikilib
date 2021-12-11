@@ -4,7 +4,7 @@ import {
     Avatar,
     Button,
     Div,
-    FormItem, FormStatus,
+    FormStatus,
     Group,
     Panel,
     PanelHeader,
@@ -130,13 +130,11 @@ const PanelResolveScreenName = ({id, strings, accessToken, snackbarError}) => {
                         </Button>
                     </FormStatus>
                 </Div>
-                <FormItem>
-                    <Search
-                        autoFocus
-                        placeholder={strings.enter_link}
-                        onChange={(e) => onChangeLink(e.currentTarget.value)}
-                    />
-                </FormItem>
+                <Search
+                    autoFocus
+                    placeholder={strings.enter_link}
+                    onChange={(e) => onChangeLink(e.currentTarget.value)}
+                />
                 {!resolvedObject && <Placeholder icon={<Icon32SearchOutline/>}>{strings.not_found}</Placeholder>}
                 {resolvedObject &&
                     <SimpleCell
