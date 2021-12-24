@@ -73,6 +73,29 @@ const routes = {
 const router = new Router(routes);
 router.start();
 
+/**
+ * Всегда лучше сначала создавать подписку, а затем уже производить какие-то вызовы - потому что, в теории,
+ * между вызовом метода и созданием подписки есть промежуток, в который само событие может прилететь.
+ */
+bridge.subscribe(({detail: {type, data}}) => {
+    if (process.env.NODE_ENV === "development") {
+        // console.log('bridge', type, data);
+    }
+
+    if (type === 'VKWebAppUpdateConfig') {
+        const schemeAttribute = document.createAttribute('scheme');
+        schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+        document.body.attributes.setNamedItem(schemeAttribute);
+    } else if (type === 'vk-connect') {
+        if (typeof data === 'undefined') {
+            const schemeAttribute = document.createAttribute('scheme');
+            schemeAttribute.value = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "space_gray" : "bright_light");
+            document.body.attributes.setNamedItem(schemeAttribute);
+            router.replacePage(PAGE_LANDING);
+        }
+    }
+});
+
 bridge.send("VKWebAppInit").then((data) => {
     if (process.env.NODE_ENV === "development") {
         if (0) console.log("VKWebAppInit", data);
@@ -85,25 +108,6 @@ if (bridge.supports('VKWebAppResizeWindow')) {
         "height": Math.min(Math.max(window.screen.availHeight - 250, configData.window_min_height), configData.window_max_height)
     }).then();
 }
-
-bridge.subscribe(({detail: {type, data}}) => {
-    if (process.env.NODE_ENV === "development") {
-        // console.log('bridge', type, data);
-    }
-
-    const schemeAttribute = document.createAttribute('scheme');
-
-    if (type === 'VKWebAppUpdateConfig') {
-        schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-        document.body.attributes.setNamedItem(schemeAttribute);
-    } else if (type === 'vk-connect') {
-        if (typeof data === 'undefined') {
-            schemeAttribute.value = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "space_gray" : "bright_light");
-            document.body.attributes.setNamedItem(schemeAttribute);
-            router.replacePage(PAGE_LANDING);
-        }
-    }
-});
 
 TagManager.initialize({
     gtmId: 'GTM-M6TRBHK'
