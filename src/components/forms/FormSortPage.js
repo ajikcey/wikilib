@@ -1,4 +1,4 @@
-import {Button, FormItem, FormLayout, Select, SliderSwitch} from "@vkontakte/vkui";
+import {Button, FormItem, FormLayout, SegmentedControl, Select} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {useRouter} from "@happysanta/router";
 import {ASC, DESC} from "../../index";
@@ -46,7 +46,7 @@ const FormEditAccess = (props) => {
         setField(+e.currentTarget.value);
     };
 
-    const onSwitchDirection = function (value) {
+    const onSwitchDirection = (value) => {
         setDirection(value);
     };
 
@@ -56,7 +56,7 @@ const FormEditAccess = (props) => {
                 <Select
                     name='field'
                     onChange={onChangeField}
-                    defaultValue={field}
+                    defaultValue={0}
                     options={[
                         {value: 0, label: props.strings.sort_by_creation_date},
                         {value: 1, label: props.strings.sort_by_editing_date},
@@ -66,13 +66,13 @@ const FormEditAccess = (props) => {
                 />
             </FormItem>
             <FormItem top={props.strings.sorting_direction}>
-                <SliderSwitch
-                    onSwitch={onSwitchDirection}
+                <SegmentedControl
+                    onChange={onSwitchDirection}
                     name='direction'
-                    activeValue={direction === ASC ? ASC : DESC}
+                    value={direction === ASC ? ASC : DESC}
                     options={[
-                        {value: DESC, name: props.strings.descending},
-                        {value: ASC, name: props.strings.ascending},
+                        {value: DESC, label: props.strings.descending},
+                        {value: ASC, label: props.strings.ascending},
                     ]}
                 />
             </FormItem>

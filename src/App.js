@@ -73,6 +73,14 @@ import FormSetTimestamp from "./components/forms/FormSetTimestamp";
 import PanelResolveScreenName from "./panels/PanelResolveScreenName";
 
 const App = withAdaptivity(() => {
+    const location = useLocation();
+    const router = useRouter();
+    const queryParams = qs.parse(window.location.search.slice(1));
+    let strings = getStrings();
+
+    const {viewWidth} = useAdaptivity();
+    const isMobile = viewWidth <= ViewWidth.MOBILE;
+
     const [userStatus, setUserStatus] = useState(null);
     const [user, setUser] = useState(null);
     const [groups, setGroups] = useState(null);
@@ -89,14 +97,9 @@ const App = withAdaptivity(() => {
     const [pages, setPages] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
-
-    const location = useLocation();
-    const router = useRouter();
-    const queryParams = qs.parse(window.location.search.slice(1));
-    let strings = getStrings();
-
-    const {viewWidth} = useAdaptivity();
-    const isMobile = viewWidth <= ViewWidth.MOBILE;
+    const [vk_is_recommended, setVk_is_recommended] = useState(queryParams.vk_is_recommended);
+    const [vk_are_notifications_enabled, setVk_are_notifications_enabled] = useState(queryParams.vk_are_notifications_enabled);
+    const [vk_is_favorite, setVk_is_favorite] = useState(queryParams.vk_is_favorite);
 
     if (queryParams && Object.keys(queryParams).length > 0) {
         if (queryParams.vk_language === 'ru') {
@@ -439,7 +442,7 @@ const App = withAdaptivity(() => {
     }
 
     return (
-        <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={true}>
+        <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={false}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
@@ -494,6 +497,10 @@ const App = withAdaptivity(() => {
                                     id={PANEL_ABOUT}
                                     queryParams={queryParams} strings={strings}
                                     snackbarError={snackbar} setModalData={setModalData}
+                                    vk_is_recommended={vk_is_recommended} setVk_is_recommended={setVk_is_recommended}
+                                    vk_are_notifications_enabled={vk_are_notifications_enabled}
+                                    setVk_are_notifications_enabled={setVk_are_notifications_enabled}
+                                    vk_is_favorite={vk_is_favorite} setVk_is_favorite={setVk_is_favorite}
                                     accessToken={accessToken}/>
                                 <PanelUnloaded
                                     id={PANEL_UNLOADED}

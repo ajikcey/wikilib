@@ -1,5 +1,14 @@
 import configData from "../../config.json";
-import {Button, Caption, FormItem, FormLayout, Input, Link, Select, SliderSwitch} from "@vkontakte/vkui";
+import {
+    Button,
+    Caption,
+    FormItem,
+    FormLayout,
+    Input,
+    Link,
+    SegmentedControl,
+    Select
+} from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {fetchPage, fetchPages, handleError, savePage} from "../../functions";
 import {useRouter} from "@happysanta/router";
@@ -150,16 +159,16 @@ const FormAddPage = (props) => {
                 style={{paddingLeft: 0, paddingRight: 0, paddingBottom: 0}}
                 status={titleError ? 'error' : ''}
             >
-                <SliderSwitch
-                    activeValue={0}
-                    onSwitch={(v) => setType(+v)}
+                <SegmentedControl
+                    defaultValue={TYPE_EMPTY_PAGE}
+                    onChange={(v) => setType(+v)}
                     options={[
                         {
-                            name: props.strings.empty_page,
+                            label: props.strings.empty_page,
                             value: TYPE_EMPTY_PAGE,
                         },
                         {
-                            name: props.strings.widget,
+                            label: props.strings.widget,
                             value: TYPE_WIDGET,
                         },
                     ]}

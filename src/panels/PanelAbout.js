@@ -6,32 +6,35 @@ import {
     PanelHeader,
     Div,
     PanelHeaderBack,
-    Header,
     Avatar,
     CellButton,
-    Snackbar,
-    PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, SimpleCell
+    PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, Separator
 } from '@vkontakte/vkui';
 
 import bridge from "@vkontakte/vk-bridge";
 import {
     Icon28BookmarkOutline,
-    Icon24CheckCircleOutline,
     Icon28Notifications,
     Icon28UsersOutline,
-    Icon32SearchOutline, Icon28MessageOutline, Icon12Verified, Icon28LikeOutline
+    Icon32SearchOutline,
+    Icon28LikeOutline,
+    Icon28ThumbsUpOutline,
+    Icon28WriteOutline, Icon24CheckCircleOn
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
 import configData from "../config.json";
 
 const PanelAbout = ({
-                   id,
-                   snackbarError,
-                   accessToken,
-                   setModalData,
-                   strings
-               }) => {
+                        id,
+                        snackbarError,
+                        accessToken,
+                        setModalData,
+                        strings,
+                        vk_is_recommended, setVk_is_recommended,
+                        vk_are_notifications_enabled, setVk_are_notifications_enabled,
+                        vk_is_favorite, setVk_is_favorite
+                    }) => {
     const [snackbar, setSnackbar] = useState(snackbarError);
     const [app, setApp] = useState(null);
 
@@ -67,18 +70,15 @@ const PanelAbout = ({
      * @returns {Promise<void>}
      */
     const AddToFavorites = async () => {
+        if (vk_is_favorite === '1') return;
+
         await bridge.send("VKWebAppAddToFavorites").then((data) => {
             if (data.result === true) {
                 if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
                     bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
                 }
 
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >
-                    {strings.saved}
-                </Snackbar>);
+                setVk_is_favorite('1');
             } else {
                 handleError(strings, setSnackbar, router, {}, {
                     data: data,
@@ -94,22 +94,43 @@ const PanelAbout = ({
      * @returns {Promise<void>}
      */
     const AllowNotifications = async () => {
+        if (vk_are_notifications_enabled === '1') return;
+
         await bridge.send("VKWebAppAllowNotifications").then((data) => {
             if (data.result === true) {
                 if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
                     bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
                 }
 
-                setSnackbar(<Snackbar
-                    onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
-                >
-                    {strings.allowed}
-                </Snackbar>);
+                setVk_are_notifications_enabled('1');
             } else {
                 handleError(strings, setSnackbar, router, {}, {
                     data: data,
                     default_error_msg: 'No result VKWebAppAllowNotifications'
+                });
+            }
+        }).catch(() => {
+        });
+    }
+
+    /**
+     * Запросить рекомендацию приложения
+     * @returns {Promise<void>}
+     */
+    const recommend = async () => {
+        if (vk_is_recommended === '1') return;
+
+        await bridge.send("VKWebAppRecommend").then((data) => {
+            if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                }
+
+                setVk_is_recommended('1');
+            } else {
+                handleError(strings, setSnackbar, router, {}, {
+                    data: data,
+                    default_error_msg: 'No result VKWebAppRecommend'
                 });
             }
         }).catch(() => {
@@ -125,88 +146,80 @@ const PanelAbout = ({
             </PanelHeader>
             {(!app) && <PanelSpinner/>}
             {(app && !app.items) &&
-            <Placeholder icon={<Icon32SearchOutline/>}>{strings.information_not_found}</Placeholder>}
+                <Placeholder icon={<Icon32SearchOutline/>}>{strings.information_not_found}</Placeholder>}
             {(app && app.items) &&
-            <Fragment>
-                <Group>
-                    <Div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                    }}>
-                        <Avatar mode="app" size={80} src={app.items[0].icon_150}/>
-                        <Title
-                            style={{marginBottom: 0, marginTop: 5}} level="2"
-                            weight="medium"
-                        >
-                            {app.items[0].title}
-                        </Title>
-                        <Text
-                            style={{
-                                color: 'var(--text_secondary)'
-                            }}
-                        >
-                            {cutDeclNum(app.items[0].members_count, [strings.app_user.toLowerCase(), strings.two_app_users.toLowerCase(), strings.some_app_users.toLowerCase()])}
-                        </Text>
-                        {(app.profiles.length > 0) &&
-                        <Fragment>
-                            <Spacing size={16}/>
-                            <UsersStack
-                                photos={
-                                    app.profiles.map(function (item) {
-                                        return item.photo_100
-                                    })
-                                }
-                                size="m"
-                                layout="vertical"
+                <Fragment>
+                    <Group>
+                        <Div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                        }}>
+                            <Avatar mode="app" size={80} src={app.items[0].icon_150}/>
+                            <Title
+                                style={{marginBottom: 0, marginTop: 5}} level="2"
+                                weight="medium"
                             >
-                                {cutDeclNum(app.profiles.length, [strings.friend.toLowerCase(), strings.two_friends.toLowerCase(), strings.some_friends.toLowerCase()])}
-                            </UsersStack>
-                        </Fragment>
-                        }
-                    </Div>
-                </Group>
-                <Group>
-                    <Header mode='secondary'>{strings.about_app}</Header>
-                    <Div>
-                        {strings.app_desc}
-                    </Div>
-                    <CellButton
-                        before={<Icon28Notifications/>}
-                        onClick={AllowNotifications}
-                    >{strings.allow_notifications}</CellButton>
-                    <CellButton
-                        before={<Icon28BookmarkOutline/>}
-                        onClick={AddToFavorites}
-                    >{strings.save_to_bookmarks}</CellButton>
-                    <CellButton
-                        before={<Icon28UsersOutline/>}
-                        onClick={() => AddToCommunity(setModalData, router)}
-                    >{strings.add_to_community}</CellButton>
-                    <CellButton
-                        before={<Icon28LikeOutline/>}
-                        href='https://vk.com/topic-205670119_48228061'
-                        target='_blank'
-                    >{strings.write_feedback}</CellButton>
-                    <CellButton
-                        before={<Icon28MessageOutline/>}
-                        href={'https://vk.com/im?sel=-' + app.groups[0].id}
-                        target='_blank'
-                    >{strings.contact_support}</CellButton>
-                </Group>
-                <Group>
-                    <Header mode='secondary'>{strings.developer}</Header>
-
-                    <SimpleCell
-                        href={'https://vk.com/' + app.groups[0].screen_name} target='_blank'
-                        before={<Avatar size={48} src={app.groups[0].photo_100}/>}
-                        badge={app.groups[0].verified ? <Icon12Verified/> : null}
-                        description={cutDeclNum(app.groups[0].members_count, [strings.member.toLowerCase(), strings.two_members.toLowerCase(), strings.some_members.toLowerCase()])}
-                    >{app.groups[0].name}</SimpleCell>
-                </Group>
-            </Fragment>
+                                {app.items[0].title}
+                            </Title>
+                            <Text
+                                style={{
+                                    color: 'var(--text_secondary)'
+                                }}
+                            >
+                                {cutDeclNum(app.items[0].members_count, [strings.app_user.toLowerCase(), strings.two_app_users.toLowerCase(), strings.some_app_users.toLowerCase()])}
+                            </Text>
+                            {(app.profiles.length > 0) &&
+                                <Fragment>
+                                    <Spacing size={16}/>
+                                    <UsersStack
+                                        photos={
+                                            app.profiles.map(function (item) {
+                                                return item.photo_100
+                                            })
+                                        }
+                                        size="m"
+                                        layout="vertical"
+                                    >
+                                        {cutDeclNum(app.profiles.length, [strings.friend.toLowerCase(), strings.two_friends.toLowerCase(), strings.some_friends.toLowerCase()])}
+                                    </UsersStack>
+                                </Fragment>
+                            }
+                        </Div>
+                        <Separator style={{margin: "12px 0"}}/>
+                        <CellButton
+                            before={<Icon28ThumbsUpOutline/>}
+                            after={vk_is_recommended === '1' ? <Icon24CheckCircleOn/> : null}
+                            onClick={recommend}
+                        >{strings.recommend}</CellButton>
+                        <CellButton
+                            before={<Icon28Notifications/>}
+                            after={vk_are_notifications_enabled === '1' ? <Icon24CheckCircleOn/> : null}
+                            onClick={AllowNotifications}
+                        >{strings.allow_notifications}</CellButton>
+                        <CellButton
+                            before={<Icon28BookmarkOutline/>}
+                            after={vk_is_favorite === '1' ? <Icon24CheckCircleOn/> : null}
+                            onClick={AddToFavorites}
+                        >{strings.save_to_bookmarks}</CellButton>
+                        <CellButton
+                            before={<Icon28UsersOutline/>}
+                            onClick={() => AddToCommunity(setModalData, router)}
+                        >{strings.add_to_community}</CellButton>
+                        <CellButton
+                            before={<Icon28LikeOutline/>}
+                            href='https://vk.com/topic-205670119_48228061'
+                            target='_blank'
+                        >{strings.write_feedback}</CellButton>
+                        <CellButton
+                            before={<Icon28WriteOutline/>}
+                            href={'https://vk.com/im?sel=-' + app.groups[0].id}
+                            target='_blank'
+                        >{strings.contact_support}</CellButton>
+                    </Group>
+                </Fragment>
             }
             {snackbar}
         </Panel>
