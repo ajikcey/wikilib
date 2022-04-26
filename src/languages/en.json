@@ -16,9 +16,11 @@
   "allowed": "Allowed",
   "recommended": "Recommended",
   "about_app": "About this app",
-  "save_to_bookmarks": "Save to bookmarks",
+  "add_to_bookmarks": "Add to bookmarks",
+  "added_to_bookmarks": "Added to bookmarks",
   "add_to_community": "Add to community",
   "allow_notifications": "Allow notifications",
+  "deny_notifications": "Deny notifications",
   "contact_support": "Contact support",
   "write_feedback": "Write a feedback",
   "app_installed": "App installed",
@@ -158,5 +160,6 @@
   "enter_link": "Enter link",
   "invalid_link": "Invalid link",
   "close": "Close",
-  "recommend": "Recommend to friends"
+  "recommend": "Recommend",
+  "already_recommend": "You are recommending"
 }

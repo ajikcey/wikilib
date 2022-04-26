@@ -16,9 +16,11 @@
   "allowed": "Разрешено",
   "recommended": "Рекомендовано",
   "about_app": "О приложении",
-  "save_to_bookmarks": "Сохранить в закладки",
+  "add_to_bookmarks": "Добавить в закладки",
+  "added_to_bookmarks": "Добавлено в закладки",
   "add_to_community": "Добавить в сообщество",
   "allow_notifications": "Разрешить уведомления",
+  "deny_notifications": "Запретить уведомления",
   "contact_support": "Написать в поддержку",
   "write_feedback": "Оставить отзыв",
   "app_installed": "Приложение установлено",
@@ -158,5 +160,6 @@
   "enter_link": "Введите ссылку",
   "invalid_link": "Неверная ссылка",
   "close": "Закрыть",
-  "recommend": "Рекомендовать друзьями"
+  "recommend": "Рекомендовать",
+  "already_recommend": "Вы рекомендуете"
 }

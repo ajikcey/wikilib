@@ -97,9 +97,9 @@ const App = withAdaptivity(() => {
     const [pages, setPages] = useState(null);
     const [pageSort, setPageSort] = useState({field: 0, direction: 'desc'});
     const [groupOffset, setGroupOffset] = useState(0);
-    const [vk_is_recommended, setVk_is_recommended] = useState(queryParams.vk_is_recommended);
-    const [vk_are_notifications_enabled, setVk_are_notifications_enabled] = useState(queryParams.vk_are_notifications_enabled);
-    const [vk_is_favorite, setVk_is_favorite] = useState(queryParams.vk_is_favorite);
+    const [vk_is_recommended, setVk_is_recommended] = useState(+queryParams.vk_is_recommended);
+    const [vk_are_notifications_enabled, setVk_are_notifications_enabled] = useState(+queryParams.vk_are_notifications_enabled);
+    const [vk_is_favorite, setVk_is_favorite] = useState(+queryParams.vk_is_favorite);
 
     if (queryParams && Object.keys(queryParams).length > 0) {
         if (queryParams.vk_language === 'ru') {

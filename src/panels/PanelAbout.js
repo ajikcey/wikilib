@@ -19,7 +19,7 @@ import {
     Icon32SearchOutline,
     Icon28LikeOutline,
     Icon28ThumbsUpOutline,
-    Icon28WriteOutline, Icon24CheckCircleOn
+    Icon28WriteOutline, Icon24CheckCircleOn, Icon28NotificationDisableOutline, Icon20Check
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
@@ -70,7 +70,7 @@ const PanelAbout = ({
      * @returns {Promise<void>}
      */
     const AddToFavorites = async () => {
-        if (vk_is_favorite === '1') return;
+        if (vk_is_favorite) return;
 
         await bridge.send("VKWebAppAddToFavorites").then((data) => {
             if (data.result === true) {
@@ -78,7 +78,7 @@ const PanelAbout = ({
                     bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
                 }
 
-                setVk_is_favorite('1');
+                setVk_is_favorite(1);
             } else {
                 handleError(strings, setSnackbar, router, {}, {
                     data: data,
@@ -94,23 +94,39 @@ const PanelAbout = ({
      * @returns {Promise<void>}
      */
     const AllowNotifications = async () => {
-        if (vk_are_notifications_enabled === '1') return;
+        if (vk_are_notifications_enabled) {
+            await bridge.send("VKWebAppDenyNotifications").then((data) => {
+                if (data.result === true) {
+                    if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                        bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                    }
 
-        await bridge.send("VKWebAppAllowNotifications").then((data) => {
-            if (data.result === true) {
-                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
-                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                    setVk_are_notifications_enabled(0);
+                } else {
+                    handleError(strings, setSnackbar, router, {}, {
+                        data: data,
+                        default_error_msg: 'No result VKWebAppDenyNotifications'
+                    });
                 }
+            }).catch(() => {
+            });
+        } else {
+            await bridge.send("VKWebAppAllowNotifications").then((data) => {
+                if (data.result === true) {
+                    if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                        bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
+                    }
 
-                setVk_are_notifications_enabled('1');
-            } else {
-                handleError(strings, setSnackbar, router, {}, {
-                    data: data,
-                    default_error_msg: 'No result VKWebAppAllowNotifications'
-                });
-            }
-        }).catch(() => {
-        });
+                    setVk_are_notifications_enabled(1);
+                } else {
+                    handleError(strings, setSnackbar, router, {}, {
+                        data: data,
+                        default_error_msg: 'No result VKWebAppAllowNotifications'
+                    });
+                }
+            }).catch(() => {
+            });
+        }
     }
 
     /**
@@ -118,7 +134,7 @@ const PanelAbout = ({
      * @returns {Promise<void>}
      */
     const recommend = async () => {
-        if (vk_is_recommended === '1') return;
+        if (vk_is_recommended) return;
 
         await bridge.send("VKWebAppRecommend").then((data) => {
             if (data.result === true) {
@@ -126,7 +142,7 @@ const PanelAbout = ({
                     bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'});
                 }
 
-                setVk_is_recommended('1');
+                setVk_is_recommended(1);
             } else {
                 handleError(strings, setSnackbar, router, {}, {
                     data: data,
@@ -164,11 +180,7 @@ const PanelAbout = ({
                             >
                                 {app.items[0].title}
                             </Title>
-                            <Text
-                                style={{
-                                    color: 'var(--text_secondary)'
-                                }}
-                            >
+                            <Text weight="regular" style={{color: 'var(--text_secondary)'}}>
                                 {cutDeclNum(app.items[0].members_count, [strings.app_user.toLowerCase(), strings.two_app_users.toLowerCase(), strings.some_app_users.toLowerCase()])}
                             </Text>
                             {(app.profiles.length > 0) &&
@@ -190,20 +202,17 @@ const PanelAbout = ({
                         </Div>
                         <Separator style={{margin: "12px 0"}}/>
                         <CellButton
-                            before={<Icon28ThumbsUpOutline/>}
-                            after={vk_is_recommended === '1' ? <Icon24CheckCircleOn/> : null}
+                            before={vk_is_recommended ? <Icon20Check width={28} height={28}/> : <Icon28ThumbsUpOutline/>}
                             onClick={recommend}
-                        >{strings.recommend}</CellButton>
+                        >{vk_is_recommended ? strings.already_recommend : strings.recommend}</CellButton>
                         <CellButton
-                            before={<Icon28Notifications/>}
-                            after={vk_are_notifications_enabled === '1' ? <Icon24CheckCircleOn/> : null}
-                            onClick={AllowNotifications}
-                        >{strings.allow_notifications}</CellButton>
-                        <CellButton
-                            before={<Icon28BookmarkOutline/>}
-                            after={vk_is_favorite === '1' ? <Icon24CheckCircleOn/> : null}
+                            before={vk_is_favorite ? <Icon20Check width={28} height={28}/> : <Icon28BookmarkOutline/>}
                             onClick={AddToFavorites}
-                        >{strings.save_to_bookmarks}</CellButton>
+                        >{vk_is_favorite ? strings.added_to_bookmarks : strings.add_to_bookmarks}</CellButton>
+                        <CellButton
+                            before={vk_are_notifications_enabled ? <Icon28NotificationDisableOutline/> : <Icon28Notifications/>}
+                            onClick={AllowNotifications}
+                        >{vk_are_notifications_enabled ? strings.deny_notifications : strings.allow_notifications}</CellButton>
                         <CellButton
                             before={<Icon28UsersOutline/>}
                             onClick={() => AddToCommunity(setModalData, router)}

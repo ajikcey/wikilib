@@ -119,7 +119,7 @@ const PanelTime = ({id, strings, setModalData, snackbarError}) => {
                         {calcTimestamp()}
                         <Link href="https://vk.com/@wikilib-unixtime" target="_blank"><Icon20HelpOutline/></Link>
                     </Title>
-                    <Text style={{marginBottom: 24, color: 'var(--text_secondary)'}}>
+                    <Text weight="regular" style={{marginBottom: 24, color: 'var(--text_secondary)'}}>
                         {strings.unix_time_descr}
                     </Text>
                 </Div>
