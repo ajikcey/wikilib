@@ -19,7 +19,7 @@ import {
     Icon32SearchOutline,
     Icon28LikeOutline,
     Icon28ThumbsUpOutline,
-    Icon28WriteOutline, Icon24CheckCircleOn, Icon28NotificationDisableOutline, Icon20Check
+    Icon28WriteOutline, Icon28NotificationDisableOutline, Icon20Check
 } from "@vkontakte/icons";
 import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
