@@ -7,7 +7,7 @@ import {
     Div,
     PanelHeaderBack,
     Avatar,
-    CellButton,
+    SimpleCell,
     PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, Separator
 } from '@vkontakte/vkui';
 
@@ -201,32 +201,32 @@ const PanelAbout = ({
                             }
                         </Div>
                         <Separator style={{margin: "12px 0"}}/>
-                        <CellButton
+                        <SimpleCell
                             before={vk_is_recommended ? <Icon20Check width={28} height={28}/> : <Icon28ThumbsUpOutline/>}
                             onClick={recommend}
-                        >{vk_is_recommended ? strings.already_recommend : strings.recommend}</CellButton>
-                        <CellButton
+                        >{vk_is_recommended ? strings.already_recommend : strings.recommend}</SimpleCell>
+                        <SimpleCell
                             before={vk_is_favorite ? <Icon20Check width={28} height={28}/> : <Icon28BookmarkOutline/>}
                             onClick={AddToFavorites}
-                        >{vk_is_favorite ? strings.added_to_bookmarks : strings.add_to_bookmarks}</CellButton>
-                        <CellButton
+                        >{vk_is_favorite ? strings.added_to_bookmarks : strings.add_to_bookmarks}</SimpleCell>
+                        <SimpleCell
                             before={vk_are_notifications_enabled ? <Icon28NotificationDisableOutline/> : <Icon28Notifications/>}
                             onClick={AllowNotifications}
-                        >{vk_are_notifications_enabled ? strings.deny_notifications : strings.allow_notifications}</CellButton>
-                        <CellButton
+                        >{vk_are_notifications_enabled ? strings.deny_notifications : strings.allow_notifications}</SimpleCell>
+                        <SimpleCell
                             before={<Icon28UsersOutline/>}
                             onClick={() => AddToCommunity(setModalData, router)}
-                        >{strings.add_to_community}</CellButton>
-                        <CellButton
+                        >{strings.add_to_community}</SimpleCell>
+                        <SimpleCell
                             before={<Icon28LikeOutline/>}
                             href='https://vk.com/topic-205670119_48228061'
                             target='_blank'
-                        >{strings.write_feedback}</CellButton>
-                        <CellButton
+                        >{strings.write_feedback}</SimpleCell>
+                        <SimpleCell
                             before={<Icon28WriteOutline/>}
                             href={'https://vk.com/im?sel=-' + app.groups[0].id}
                             target='_blank'
-                        >{strings.contact_support}</CellButton>
+                        >{strings.contact_support}</SimpleCell>
                     </Group>
                 </Fragment>
             }

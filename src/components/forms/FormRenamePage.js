@@ -1,16 +1,41 @@
-import {Icon24ExternalLinkOutline} from "@vkontakte/icons";
+import {Icon24CheckCircleOutline, Icon24Copy, Icon24ExternalLinkOutline} from "@vkontakte/icons";
 import {
     Button,
-    FormItem, FormLayout,
+    FormItem, FormLayout, Snackbar,
     usePlatform,
     VKCOM
 } from "@vkontakte/vkui";
 import React from "react";
+import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
 
 const FromRenamePage = (props) => {
     const platform = usePlatform();
     const router = useRouter();
+    const ext_link = 'https://vk.com/' + props.group.screen_name + '?w=page-' + props.group.id + '_' + props.pageTitle.id + '/market';
+
+    const copy = (e) => {
+        e.preventDefault();
+
+        bridge.send("VKWebAppCopyText", {text: ext_link}).then((data) => {
+            if (data.result === true) {
+                if (bridge.supports('VKWebAppTapticNotificationOccurred')) {
+                    bridge.send('VKWebAppTapticNotificationOccurred', {type: 'success'}).then();
+                }
+
+                router.popPage();
+
+                props.modalData.setSnackbar(<Snackbar
+                    onClose={() => props.modalData.setSnackbar(null)}
+                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                >
+                    {props.strings.copied_to_clipboard}
+                </Snackbar>);
+            }
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
 
     return (
         <FormLayout>
@@ -20,21 +45,22 @@ const FromRenamePage = (props) => {
                 {(platform === VKCOM) &&
                     <Button
                         size="l"
-                        href={'https://vk.com/' + props.group.screen_name + '?w=page-' + props.group.id + '_' + props.pageTitle.id + '/market'}
+                        href={ext_link}
                         target='_blank' stretched={1}
-                        after={<Icon24ExternalLinkOutline/>}
+                        before={<Icon24ExternalLinkOutline/>}
                     >
                         {props.strings.go}
                     </Button>
                 }
-                {(platform !== VKCOM) &&
+                {(platform === VKCOM) &&
                     <Button
                         mode="secondary"
                         size="l"
                         stretched={1}
-                        onClick={() => router.popPage()}
+                        onClick={copy}
+                        before={<Icon24Copy/>}
                     >
-                        {props.strings.close}
+                        {props.strings.copy_link}
                     </Button>
                 }
             </FormItem>

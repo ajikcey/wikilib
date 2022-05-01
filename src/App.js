@@ -344,6 +344,7 @@ const App = withAdaptivity(() => {
             >
                 <FormRenamePage
                     group={group} pageTitle={pageTitle} strings={strings}
+                    modalData={modalData}
                 />
             </ModalCard>
             <ModalCard

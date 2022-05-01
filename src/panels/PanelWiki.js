@@ -2,7 +2,6 @@ import React, {Fragment, useEffect, useState} from 'react';
 
 import {
     Avatar,
-    CellButton,
     Footer,
     Group,
     HorizontalScroll,
@@ -44,7 +43,7 @@ import IconPage from "../components/IconPage";
 import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
 import {
-    MODAL_ACCESS_PAGE,
+    MODAL_ACCESS_PAGE, MODAL_ADD_PAGE,
     MODAL_COPY_PAGE,
     MODAL_EDIT_PAGE,
     MODAL_RENAME_PAGE,
@@ -249,6 +248,13 @@ const PanelWiki = ({
         router.replacePopup(POPOUT_MENU_WIDGET);
     }
 
+    const renamePage = () => {
+        setModalData({
+            setSnackbar: setSnackbar,
+        });
+        router.pushModal(MODAL_RENAME_PAGE);
+    }
+
     return (
         <Panel id={id}>
             <PanelHeader
@@ -334,22 +340,22 @@ const PanelWiki = ({
                             {strings.editing}
                         </SimpleCell>
                         <Spacing separator size={16}/>
-                        <CellButton before={<Icon24Write/>} onClick={editPage}>{strings.edit}</CellButton>
-                        <CellButton
+                        <SimpleCell before={<Icon24Write/>} onClick={editPage}>{strings.edit}</SimpleCell>
+                        <SimpleCell
                             before={<Icon24TextOutline/>}
-                            onClick={() => router.pushModal(MODAL_RENAME_PAGE)}
+                            onClick={renamePage}
                         >
                             {strings.rename}
-                        </CellButton>
-                        <CellButton before={<Icon24Copy/>} onClick={copyPage}>{strings.copy}</CellButton>
-                        <CellButton
+                        </SimpleCell>
+                        <SimpleCell before={<Icon24Copy/>} onClick={copyPage}>{strings.copy}</SimpleCell>
+                        <SimpleCell
                             getRootRef={menuWidgetTargetRef}
                             onClick={openMenuWidget}
                             before={<Icon24ServicesOutline/>}
                             after={<Icon24MoreVertical/>}
                         >
                             {strings.widget}
-                        </CellButton>
+                        </SimpleCell>
                     </Fragment>
                     }
                 </Fragment>
@@ -377,9 +383,7 @@ const PanelWiki = ({
                                 </SimpleCell>
                             );
                         })}
-                        <Footer>
-                            {history.length}
-                            {declOfNum(history.length, [
+                        <Footer>{history.length} {declOfNum(history.length, [
                                 strings.record.toLowerCase(),
                                 strings.two_records.toLowerCase(),
                                 strings.some_records.toLowerCase()
