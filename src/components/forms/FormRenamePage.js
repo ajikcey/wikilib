@@ -52,7 +52,7 @@ const FromRenamePage = (props) => {
                         {props.strings.go}
                     </Button>
                 }
-                {(platform === VKCOM) &&
+                {(platform !== VKCOM) &&
                     <Button
                         mode="secondary"
                         size="l"
