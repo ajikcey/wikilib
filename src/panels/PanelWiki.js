@@ -43,7 +43,7 @@ import IconPage from "../components/IconPage";
 import bridge from "@vkontakte/vk-bridge";
 import {useRouter} from "@happysanta/router";
 import {
-    MODAL_ACCESS_PAGE, MODAL_ADD_PAGE,
+    MODAL_ACCESS_PAGE,
     MODAL_COPY_PAGE,
     MODAL_EDIT_PAGE,
     MODAL_RENAME_PAGE,
