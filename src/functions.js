@@ -422,16 +422,6 @@ export function resolveScreenName(access_token, screen_name) {
 }
 
 /**
- * Определение платформы (VKCOM, IOS, ANDROID)
- * @param params
- * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
- */
-export function definePlatform(params) {
-    return (['desktop_web'].indexOf(params.vk_platform) > -1 ? Platform.VKCOM :
-        (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? Platform.IOS : Platform.ANDROID));
-}
-
-/**
  * Localized Strings
  * @returns {LocalizedStrings}
  */

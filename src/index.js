@@ -79,20 +79,7 @@ router.start();
  */
 bridge.subscribe(({detail: {type, data}}) => {
     if (process.env.NODE_ENV === "development") {
-        // console.log('bridge', type, data);
-    }
-
-    if (type === 'VKWebAppUpdateConfig') {
-        const schemeAttribute = document.createAttribute('scheme');
-        schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-        document.body.attributes.setNamedItem(schemeAttribute);
-    } else if (type === 'vk-connect') {
-        if (typeof data === 'undefined') {
-            const schemeAttribute = document.createAttribute('scheme');
-            schemeAttribute.value = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "space_gray" : "bright_light");
-            document.body.attributes.setNamedItem(schemeAttribute);
-            router.replacePage(PAGE_LANDING);
-        }
+        if (0) console.log('bridge', type, data);
     }
 });
 

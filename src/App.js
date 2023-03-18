@@ -10,7 +10,7 @@ import {
     ConfigProvider,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, ViewWidth, Textarea, FormItem, ScreenSpinner, useAdaptivityConditionalRender, useAppearance
+    ModalCard, ModalPage, ViewWidth, Textarea, FormItem, ScreenSpinner, useAdaptivityConditionalRender
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon24TextOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -23,7 +23,7 @@ import PanelLanding from './panels/PanelLanding';
 import configData from "./config.json";
 import PanelToken from "./panels/PanelToken";
 import PanelAbout from "./panels/PanelAbout";
-import {definePlatform, fetchGroupsById, getStrings, handleError} from "./functions";
+import {fetchGroupsById, getStrings, handleError} from "./functions";
 import FormAddPage from "./components/forms/FormAddPage";
 import FormEditAccess from "./components/forms/FormEditAccess";
 import AppModalPageHeader from "./components/AppModalPageHeader";
@@ -72,7 +72,6 @@ import FormSetTimestamp from "./components/forms/FormSetTimestamp";
 import PanelResolveScreenName from "./panels/PanelResolveScreenName";
 
 const App = () => {
-    const appearance = useAppearance();
     const location = useLocation();
     const router = useRouter();
     const queryParams = qs.parse(window.location.search.slice(1));
@@ -443,7 +442,7 @@ const App = () => {
     }
 
     return (
-        <ConfigProvider appearance={appearance} platform={definePlatform(queryParams)} transitionMotionEnabled={false}>
+        <ConfigProvider transitionMotionEnabled={false}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
