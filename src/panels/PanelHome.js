@@ -106,7 +106,7 @@ const PanelHome = ({
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderButton><Icon28InfoOutline onClick={() => {
+                before={<PanelHeaderButton><Icon28InfoOutline onClick={() => {
                     router.pushPage(PAGE_ABOUT)
                 }}/></PanelHeaderButton>}
             >

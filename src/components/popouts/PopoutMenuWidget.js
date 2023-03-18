@@ -1,6 +1,5 @@
 import {
-    IOS,
-    ActionSheetItem, ActionSheet, Snackbar, Link, usePlatform
+    ActionSheetItem, ActionSheet, Snackbar, Link, usePlatform, Platform
 } from '@vkontakte/vkui';
 import React from "react";
 import {
@@ -104,7 +103,7 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(null);
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                before={<Icon24InfoCircleOutline fill='var(--vkui--color_icon_accent)'/>}
                 action={props.strings.install}
                 onActionClick={() => AddToCommunity(props.setModalData, router)}
             >
@@ -114,7 +113,7 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(null);
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                before={<Icon24InfoCircleOutline fill='var(--vkui--color_icon_accent)'/>}
                 action={props.strings.install}
                 onActionClick={() => AddToCommunity(props.setModalData, router)}
             >
@@ -172,7 +171,7 @@ const PopoutMenuWidget = (props) => {
             </ActionSheetItem>
             <ActionSheetItem
                 autoclose
-                before={platform === IOS ? <Icon28DeleteOutline width={24} height={24}/> :
+                before={platform === Platform.IOS ? <Icon28DeleteOutline width={24} height={24}/> :
                     <Icon28DeleteOutlineAndroid width={24} height={24}/>}
                 mode="destructive"
                 onClick={deleteWidget}

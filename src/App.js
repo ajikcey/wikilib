@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import qs from 'querystring';
+import qs from 'querystring-es3';
 import {
     View,
     AdaptivityProvider,
@@ -8,10 +8,9 @@ import {
     ModalRoot,
     Button,
     ConfigProvider,
-    withAdaptivity,
     SplitLayout,
     SplitCol,
-    ModalCard, ModalPage, useAdaptivity, ViewWidth, Textarea, FormItem, ScreenSpinner
+    ModalCard, ModalPage, ViewWidth, Textarea, FormItem, ScreenSpinner, useAdaptivityConditionalRender, useAppearance
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import {Icon24TextOutline, Icon56CheckCircleOutline} from "@vkontakte/icons";
@@ -72,13 +71,14 @@ import PanelTime from "./panels/PanelTime";
 import FormSetTimestamp from "./components/forms/FormSetTimestamp";
 import PanelResolveScreenName from "./panels/PanelResolveScreenName";
 
-const App = withAdaptivity(() => {
+const App = () => {
+    const appearance = useAppearance();
     const location = useLocation();
     const router = useRouter();
     const queryParams = qs.parse(window.location.search.slice(1));
     let strings = getStrings();
 
-    const {viewWidth} = useAdaptivity();
+    const { viewWidth } = useAdaptivityConditionalRender();
     const isMobile = viewWidth <= ViewWidth.MOBILE;
 
     const [userStatus, setUserStatus] = useState(null);
@@ -443,7 +443,7 @@ const App = withAdaptivity(() => {
     }
 
     return (
-        <ConfigProvider platform={definePlatform(queryParams)} transitionMotionEnabled={false}>
+        <ConfigProvider appearance={appearance} platform={definePlatform(queryParams)} transitionMotionEnabled={false}>
             <AdaptivityProvider>
                 <AppRoot>
                     <SplitLayout popout={popout} modal={modal}>
@@ -514,6 +514,6 @@ const App = withAdaptivity(() => {
             </AdaptivityProvider>
         </ConfigProvider>
     );
-}, {viewWidth: true});
+};
 
 export default App;

@@ -8,7 +8,7 @@ import {
     Snackbar,
     Textarea,
     usePlatform,
-    VKCOM
+    Platform
 } from "@vkontakte/vkui";
 import React, {useState} from "react";
 import {handleError, savePage} from "../../functions";
@@ -108,11 +108,11 @@ const FromEditPage = (props) => {
                 style={{paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
             >
                 <Div style={{display: 'flex', padding: 0}}>
-                    {(platform === VKCOM) &&
+                    {(platform === Platform.VKCOM) &&
                     <Button
                         size="l" mode="secondary"
                         style={{marginRight: 8}}
-                        href={'https://vk.com/page-' + props.group.id + '_' + props.modalData.page_id + '?act=edit&section=edit' + (props.modalData.version ? '&hid=' + props.modalData.version : '')}
+                        href={'https://vk.com/page-' + props.group.id + '_' + props.modalData.page_id}
                         target='_blank' rel='noreferrer' stretched={1}
                         after={<Icon24ExternalLinkOutline/>}
                     >{props.strings.open_vk_editor}</Button>

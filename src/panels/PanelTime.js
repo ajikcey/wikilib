@@ -109,7 +109,7 @@ const PanelTime = ({id, strings, setModalData, snackbarError}) => {
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
+                before={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 {strings.unix_time}
             </PanelHeader>

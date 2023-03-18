@@ -40,7 +40,7 @@ const PanelIntro = ({id, snackbarError, strings, userStatus, user, setUserStatus
                         style={{maxWidth: 620}}
                         icon={user.photo_100 && <Avatar src={user.photo_100}/>}
                         header={`${strings.hello}, ${user.first_name}!`}
-                        action={<Button mode='commerce' size='l' onClick={viewIntro}>{strings.open_app}</Button>}
+                        action={<Button mode='primary' size='l' onClick={viewIntro}>{strings.open_app}</Button>}
                     >
                         {strings.acquaintance}
                     </Placeholder>

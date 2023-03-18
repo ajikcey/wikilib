@@ -137,7 +137,7 @@ const PanelGroup = ({
             <Fragment>
                 <PanelHeader
                     mode="secondary"
-                    left={<PanelHeaderBack onClick={() => isFirstPage ? router.replacePage(PAGE_HOME) : router.popPage()}/>}
+                    before={<PanelHeaderBack onClick={() => isFirstPage ? router.replacePage(PAGE_HOME) : router.popPage()}/>}
                 >
                     <PanelHeaderContent
                         status={cutDeclNum(group.members_count, [

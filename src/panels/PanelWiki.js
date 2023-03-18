@@ -259,7 +259,7 @@ const PanelWiki = ({
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
+                before={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 <PanelHeaderContent
                     status={pageTitle.title}

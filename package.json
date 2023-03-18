@@ -1,34 +1,35 @@
 {
   "name": "wikilib",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "homepage": "./",
   "dependencies": {
     "@happysanta/router": "^0.3.1",
-    "@vkontakte/icons": "^1.152.0",
-    "@vkontakte/vk-bridge": "^2.5.3",
+    "@vkontakte/icons": "^2.22.0",
+    "@vkontakte/vk-bridge": "^2.7.2",
     "@vkontakte/vk-miniapps-deploy": "0.0.26",
-    "@vkontakte/vkui": "^4.29.0",
-    "chalk": "^4.1.2",
-    "eruda": "^2.4.1",
-    "eruda-code": "^2.0.0",
+    "@vkontakte/vkui": "^5.2.3",
+    "chalk": "^5.2.0",
+    "eruda": "^2.11.3",
+    "eruda-code": "^2.1.0",
     "eruda-dom": "^2.0.0",
-    "fs-extra": "^10.0.0",
-    "prop-types": "^15.7.2",
+    "fs-extra": "^11.1.0",
+    "prop-types": "^15.8.1",
+    "querystring-es3": "^0.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-gtm-module": "^2.0.11",
-    "react-localization": "^1.0.17",
-    "web-vitals": "^2.1.0"
+    "react-localization": "^1.0.19",
+    "web-vitals": "^3.3.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "react-hot-loader": "^4.13.0",
-    "react-scripts": "^4.0.3"
+    "react-hot-loader": "^4.13.1",
+    "react-scripts": "^5.0.1"
   },
   "peerDependencies": {
-    "@vkontakte/icons": "^1.152.0",
-    "@vkontakte/vk-bridge": "^2.5.3",
+    "@vkontakte/icons": "^2.22.0",
+    "@vkontakte/vk-bridge": "^2.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

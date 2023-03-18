@@ -1,6 +1,6 @@
 import bridge from "@vkontakte/vk-bridge";
 import configData from "./config.json";
-import {ANDROID, IOS, Snackbar, VKCOM} from "@vkontakte/vkui";
+import {Platform, Snackbar} from "@vkontakte/vkui";
 import {Icon24ErrorCircle} from "@vkontakte/icons";
 import LocalizedStrings from "react-localization";
 import en from "./languages/en.json";
@@ -427,8 +427,8 @@ export function resolveScreenName(access_token, screen_name) {
  * @returns {Platform.VKCOM|Platform.IOS|Platform.ANDROID}
  */
 export function definePlatform(params) {
-    return (['desktop_web'].indexOf(params.vk_platform) > -1 ? VKCOM :
-        (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? IOS : ANDROID));
+    return (['desktop_web'].indexOf(params.vk_platform) > -1 ? Platform.VKCOM :
+        (['mobile_ipad', 'mobile_iphone', 'mobile_iphone_messenger'].indexOf(params.vk_platform) > -1 ? Platform.IOS : Platform.ANDROID));
 }
 
 /**
@@ -438,7 +438,7 @@ export function definePlatform(params) {
 export function getStrings() {
     return new LocalizedStrings({
         en: en,
-        ru: ru,
+        ru: ru
     })
 }
 

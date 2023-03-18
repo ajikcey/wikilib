@@ -1,9 +1,8 @@
 import {Icon24CheckCircleOutline, Icon24Copy, Icon24ExternalLinkOutline} from "@vkontakte/icons";
 import {
     Button,
-    FormItem, FormLayout, Snackbar,
-    usePlatform,
-    VKCOM
+    FormItem, FormLayout, Platform, Snackbar,
+    usePlatform
 } from "@vkontakte/vkui";
 import React from "react";
 import bridge from "@vkontakte/vk-bridge";
@@ -42,7 +41,7 @@ const FromRenamePage = (props) => {
             <FormItem
                 style={{paddingTop: 30, paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
             >
-                {(platform === VKCOM) &&
+                {(platform === Platform.VKCOM) &&
                     <Button
                         size="l"
                         href={ext_link}
@@ -52,7 +51,7 @@ const FromRenamePage = (props) => {
                         {props.strings.go}
                     </Button>
                 }
-                {(platform !== VKCOM) &&
+                {(platform !== Platform.VKCOM) &&
                     <Button
                         mode="secondary"
                         size="l"

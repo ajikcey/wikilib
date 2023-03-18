@@ -85,7 +85,7 @@ const PanelImages = ({
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
-                before={<Icon24InfoCircleOutline fill='var(--dynamic_blue)'/>}
+                before={<Icon24InfoCircleOutline fill='var(--vkui--color_icon_accent)'/>}
                 action={strings.install}
                 onActionClick={() => AddToCommunity(setModalData, router)}
             >
@@ -259,7 +259,7 @@ const PanelImages = ({
         <Panel id={id} centered={!groupToken}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
+                before={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 {strings.images}
             </PanelHeader>

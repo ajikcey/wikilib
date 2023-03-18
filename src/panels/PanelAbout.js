@@ -6,7 +6,7 @@ import {
     PanelHeader,
     Div,
     PanelHeaderBack,
-    Avatar,
+    Avatar, Footer,
     SimpleCell,
     PanelSpinner, Title, Text, UsersStack, Spacing, Placeholder, Separator
 } from '@vkontakte/vkui';
@@ -24,6 +24,7 @@ import {
 import {cutDeclNum, handleError, fetchApp, AddToCommunity} from "../functions";
 import {useRouter} from "@happysanta/router";
 import configData from "../config.json";
+import package_json from "../../package.json";
 
 const PanelAbout = ({
                         id,
@@ -157,7 +158,7 @@ const PanelAbout = ({
         <Panel id={id} centered={!app}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
+                before={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
             </PanelHeader>
             {(!app) && <PanelSpinner/>}
@@ -227,6 +228,7 @@ const PanelAbout = ({
                             href={'https://vk.com/im?sel=-' + app.groups[0].id}
                             target='_blank'
                         >{strings.contact_support}</SimpleCell>
+                        <Footer>v. {package_json.version}</Footer>
                     </Group>
                 </Fragment>
             }

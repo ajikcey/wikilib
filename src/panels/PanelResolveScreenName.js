@@ -113,7 +113,7 @@ const PanelResolveScreenName = ({id, strings, accessToken, snackbarError}) => {
         <Panel id={id}>
             <PanelHeader
                 mode="secondary"
-                left={<PanelHeaderBack onClick={() => router.popPage()}/>}
+                before={<PanelHeaderBack onClick={() => router.popPage()}/>}
             >
                 {strings.determine_id}
             </PanelHeader>

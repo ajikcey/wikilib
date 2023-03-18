@@ -1,10 +1,8 @@
 import {
     ModalPageHeader,
-    ANDROID,
-    IOS,
     usePlatform,
     PanelHeaderClose,
-    PanelHeaderSubmit, VKCOM, useAdaptivity, ViewWidth
+    PanelHeaderSubmit, useAdaptivity, ViewWidth, Platform
 } from '@vkontakte/vkui';
 import {Fragment} from "react";
 
@@ -17,15 +15,15 @@ const AppModalPageHeader = (props) => {
         <ModalPageHeader
             left={(
                 <Fragment>
-                    {(isMobile && platform === ANDROID) && <PanelHeaderClose onClick={props.onClose}/>}
-                    {(platform === IOS) && <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
+                    {(isMobile && platform === Platform.ANDROID) && <PanelHeaderClose onClick={props.onClose}/>}
+                    {(platform === Platform.IOS) && <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
                 </Fragment>
             )}
             right={(
                 <Fragment>
-                    {(platform === ANDROID || platform === VKCOM) &&
+                    {(platform === Platform.ANDROID || platform === Platform.VKCOM) &&
                     <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
-                    {(platform === IOS) && <PanelHeaderClose onClick={props.onClose}/>}
+                    {(platform === Platform.IOS) && <PanelHeaderClose onClick={props.onClose}/>}
                 </Fragment>
             )}
         >

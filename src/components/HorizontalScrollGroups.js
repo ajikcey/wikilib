@@ -11,7 +11,7 @@ const HorizontalScrollGroups = (props) => {
         <Group>
             <Header
                 aside={<Link
-                    style={{color: 'var(--icon_secondary)'}} mode="tertiary"
+                    style={{color: 'var(--vkui--color_text_secondary)'}} mode="tertiary"
                     onClick={() => props.clearLastGroups()}
                 >
                     <Icon16Clear/>

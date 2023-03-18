@@ -1,6 +1,6 @@
 import configData from "../config.json";
 import {Icon24Article} from "@vkontakte/icons";
-import {Avatar} from "@vkontakte/vkui";
+import {Image} from "@vkontakte/vkui";
 
 /**
  * Выбор иконки для wiki-страницы в зависимости от настроек доступа
@@ -12,21 +12,21 @@ import {Avatar} from "@vkontakte/vkui";
  * @constructor
  */
 const IconPage = (props) => {
-    let color = '--dynamic_gray';
+    let color = '--vkui--color_accent_gray';
 
     if (props.page.who_can_view === configData.wiki_access.staff ||
         props.page.who_can_edit === configData.wiki_access.all) {
-        color = '--dynamic_red';
+        color = '--vkui--color_accent_red';
     } else if (props.page.who_can_edit === configData.wiki_access.member) {
-        color = '--dynamic_orange';
+        color = '--vkui--color_accent_orange';
     } else if (props.page.who_can_view === configData.wiki_access.member) {
-        color = '--dynamic_blue';
+        color = '--vkui--color_icon_accent';
     }
 
     return (
-        <Avatar mode="app" shadow={false} size={36} style={{backgroundColor: 'var(' + color + ')'}}>
+        <Image size={36} style={{backgroundColor: 'var(' + color + ')'}}>
             <Icon24Article style={{color: '#fff'}}/>
-        </Avatar>
+        </Image>
     );
 }
 

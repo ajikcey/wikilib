@@ -1,6 +1,6 @@
 ::-webkit-scrollbar {
     width: 5px;
-    background: var(--background_highlighted);
+    background: var(--vkui--color_icon_secondary);
 }
 
 body::-webkit-scrollbar {
@@ -8,7 +8,7 @@ body::-webkit-scrollbar {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--background_highlighted);
+    background: var(--vkui--color_icon_secondary);
     border-radius: 5px;
 }
 
