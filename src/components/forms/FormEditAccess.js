@@ -60,7 +60,7 @@ const FormEditAccess = (props) => {
         props.modalData.setSnackbar(null);
         props.modalData.setSnackbar(<Snackbar
             onClose={() => props.modalData.setSnackbar(null)}
-            before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+            before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
         >{props.strings.saved}</Snackbar>);
     };
 

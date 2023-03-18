@@ -81,6 +81,12 @@ bridge.subscribe(({detail: {type, data}}) => {
     if (process.env.NODE_ENV === "development") {
         if (0) console.log('bridge', type, data);
     }
+
+    if (type === 'vk-connect') {
+        if (typeof data === 'undefined') {
+            router.replacePage(PAGE_LANDING);
+        }
+    }
 });
 
 bridge.send("VKWebAppInit").then((data) => {

@@ -261,7 +261,7 @@ export function handleError(strings, setSnackbar, router, e, options) {
     if (setSnackbar) {
         setSnackbar(<Snackbar
             onClose={() => setSnackbar(null)}
-            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+            before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
         >
             {error_msg || JSON.stringify(e)}
         </Snackbar>);

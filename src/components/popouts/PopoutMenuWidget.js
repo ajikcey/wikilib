@@ -33,7 +33,7 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(null);
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
             >
                 {props.strings.invalid_widget_type}
             </Snackbar>);
@@ -54,7 +54,7 @@ const PopoutMenuWidget = (props) => {
                 props.popoutData.setSnackbar(null);
                 props.popoutData.setSnackbar(<Snackbar
                     onClose={() => props.popoutData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                     action={<Link target="_blank"
                                   href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
                 >
@@ -78,7 +78,7 @@ const PopoutMenuWidget = (props) => {
                 props.popoutData.setSnackbar(null);
                 props.popoutData.setSnackbar(<Snackbar
                     onClose={() => props.popoutData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                     action={<Link target="_blank"
                                   href={`https://vk.com/club${props.group.id}`}>{props.strings.open_community}</Link>}
                 >
@@ -95,7 +95,7 @@ const PopoutMenuWidget = (props) => {
             props.popoutData.setSnackbar(null);
             props.popoutData.setSnackbar(<Snackbar
                 onClose={() => props.popoutData.setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
             >
                 {props.strings.error_widget_code}
             </Snackbar>);

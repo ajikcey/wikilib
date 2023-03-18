@@ -39,7 +39,7 @@ const PanelResolveScreenName = ({id, strings, accessToken, snackbarError}) => {
 
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                 >
                     {strings.copied_to_clipboard}
                 </Snackbar>);
@@ -59,7 +59,7 @@ const PanelResolveScreenName = ({id, strings, accessToken, snackbarError}) => {
             setSnackbar(null);
             setSnackbar(<Snackbar
                 onClose={() => setSnackbar(null)}
-                before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
             >
                 {strings.invalid_link}
             </Snackbar>);

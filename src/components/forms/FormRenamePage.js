@@ -26,7 +26,7 @@ const FromRenamePage = (props) => {
 
                 props.modalData.setSnackbar(<Snackbar
                     onClose={() => props.modalData.setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                 >
                     {props.strings.copied_to_clipboard}
                 </Snackbar>);

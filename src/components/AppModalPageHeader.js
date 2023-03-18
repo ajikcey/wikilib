@@ -13,13 +13,13 @@ const AppModalPageHeader = (props) => {
 
     return (
         <ModalPageHeader
-            left={(
+            before={(
                 <Fragment>
                     {(isMobile && platform === Platform.ANDROID) && <PanelHeaderClose onClick={props.onClose}/>}
                     {(platform === Platform.IOS) && <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}
                 </Fragment>
             )}
-            right={(
+            after={(
                 <Fragment>
                     {(platform === Platform.ANDROID || platform === Platform.VKCOM) &&
                     <PanelHeaderSubmit form={props.onSubmitFormId} type='submit'/>}

@@ -291,7 +291,7 @@ const App = () => {
             <ModalCard
                 id={MODAL_GROUP}
                 onClose={() => router.popPage()}
-                icon={<Icon56CheckCircleOutline fill='var(--dynamic_green)'/>}
+                icon={<Icon56CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                 header={strings.app_installed}
                 subheader={strings.app_installed_subheader}
                 actions={

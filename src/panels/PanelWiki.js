@@ -138,7 +138,7 @@ const PanelWiki = ({
 
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                 >
                     {strings.copied_to_clipboard}
                 </Snackbar>);

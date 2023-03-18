@@ -133,7 +133,7 @@ const PanelImages = ({
                     setSnackbar(null);
                     setSnackbar(<Snackbar
                         onClose={() => setSnackbar(null)}
-                        before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                        before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
                     >
                         {strings.not_all_access_rights}
                     </Snackbar>);
@@ -167,7 +167,7 @@ const PanelImages = ({
                 setSnackbar(null);
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
-                    before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                    before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
                 >
                     {strings.wrong_image_size}
                 </Snackbar>);
@@ -200,7 +200,7 @@ const PanelImages = ({
                                 setSnackbar(null);
                                 setSnackbar(<Snackbar
                                     onClose={() => setSnackbar(null)}
-                                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                                 >{strings.saved}</Snackbar>);
                             }).catch((e) => {
                                 setLoading(false);
@@ -215,7 +215,7 @@ const PanelImages = ({
                         setSnackbar(null);
                         setSnackbar(<Snackbar
                             onClose={() => setSnackbar(null)}
-                            before={<Icon24ErrorCircle fill='var(--dynamic_red)'/>}
+                            before={<Icon24ErrorCircle fill='var(--vkui--color_accent_red)'/>}
                         >
                             {e.message}
                         </Snackbar>);
@@ -239,7 +239,7 @@ const PanelImages = ({
 
                 setSnackbar(<Snackbar
                     onClose={() => setSnackbar(null)}
-                    before={<Icon24CheckCircleOutline fill='var(--dynamic_green)'/>}
+                    before={<Icon24CheckCircleOutline fill='var(--vkui--color_accent_green)'/>}
                 >
                     {strings.copied_to_clipboard}
                 </Snackbar>);
